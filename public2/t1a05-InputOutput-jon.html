@@ -1,0 +1,164 @@
+Version 3000.2
+
+<h2>
+t1a05 input output
+</h2>
+
+<a href="https://www.w3schools.com/js/js_output.asp">Great place to ctrl c+ ctrl v  </a>
+
+<h1>
+ This is a really cool website that I will definitely not use instead of a calculator! 
+ 
+</h1>
+
+<div class=example>
+ 
+
+<h4>
+ Example input output code 
+</h4>
+
+<pre> 
+let myIn01 = document.getElementById('myNum01').value document.getElementById('myDiv01').innerHTML = myIn01 + ' squared = ' + myIn01*myIn01 
+
+</pre>
+</div>
+<br> 
+<br> 
+
+
+<table style="width:100%" class="table">
+  <tr>
+  <td> <h4> Example working code: </h4> </td> <td> </td>
+    <td> <input id="myNum01" type="nunber" value="0² " > <br>  </td>
+
+  </tr>
+  
+  
+  <tr>
+  </tr>
+  
+    <td> <input  class="calculate" type=button value="CALCULATE " onClick="{
+let myIn01 =  parseFloat(document.getElementById('myNum01').value)
+let myAnswer = myIn01 * myIn01
+document.getElementById('myDiv01').innerHTML =
+myIn01 + ' squared = ' + myAnswer
+}"> <br> </td> 
+
+
+
+    <td>
+    <div id="myDiv01">
+ ...
+</div> 
+
+
+</td>
+<td> <--- Cool answer that might not   be correct (sorry) <br> </td>
+  </tr>
+</table>
+
+<br> <br> 
+<div class="calculator-text">
+<h4>
+ The most original Calculator:
+</h4>
+</div> 
+
+
+<div class=calculator> 
+
+<input type="text" id="myTextIn1" value="3.45" size="30"> + <input type="text" id="myTextIn2" value="6.78" size="30">
+
+<input id="myButton124" class="calculate" type="button" value="Add the numbers" onclick="{
+   var my1 = document.getElementById('myTextIn1').value  
+   var my2 = document.getElementById('myTextIn2').value  
+   document.getElementById('myDiv124').innerHTML =   'Numbers added as strings ' +  my1 + ' + ' +  my2 + ' = ' +  (my1 + my2)  + '<br>'  
+   
+   
+   
+   
+   }"><br><br> <div id='myDiv124'>...</div><br>
+   
+   </div>
+
+<style>
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+
+
+.example {
+  background-color: gray;
+  padding: 10px;
+  
+}
+
+.table {
+  background-color: green;
+  border: 2px solid black; 
+  color: orange;
+  padding: 
+  
+  
+}
+
+.calculate, input {
+  
+  background-color: gray; 
+  padding: 5px;
+  border: 2px solid white;
+  margin: 2px;
+  
+}
+
+.calculate:hover {
+  transform: scale(0.95);
+  transition: 0.3s all
+}
+
+#myDiv01 {
+  opacity: 1;
+  padding-left: 100px;
+  padding-right: 100px;
+  transition: .3s all;
+  color: red;
+  animation-name: example;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  text-shadow: color: #d9d9d9;
+text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+}
+@keyframes example {
+  0%   {color:red; left:0px; top:0px;}
+  25%  {color:yellow; left:200px; top:0px;}
+  50%  {color:blue; left:200px; top:200px;}
+
+  100% {color:red; left:0px; top:0px;}
+}
+
+.calculator {
+  background-color: green;
+  border: 2px solid black; 
+  color: orange;
+  padding: 10px;
+  
+}
+
+.calculator-text {
+  color: orange;
+
+}
+
+body {
+  background-color: hotpink;
+  font-family: 'Poppins', sans-serif;
+
+background-color: #FAACA8;
+background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%);
+
+}
+
+
+</style>
