@@ -11,6 +11,8 @@ version 10000
 
 
 
+
+
 <h3>
 
 
@@ -94,9 +96,52 @@ document.getElementById('myDiv01').innerHTML = myIn01 + ' is not complex '
 4. everything else <br>
 </div>
 
+<br>
+<br> 
+
+
+<p> what mark should this website get </p>
+
+<input id="myInput01" type="number"> 
 
 
 
+<button onclick="myFunction3()">Submit answer </button>
+<button onclick="myFunction4()">Show/hide possible answers</button> 
+<p id="demo2"></p>
+
+<div id="myDiv03">
+ 
+Value = <br> 
+<10/11 = You are right! <br> 
+>9 Wrong! <br> 
+</div>
+
+
+
+
+<script> 
+function myFunction3() {
+  var value = document.getElementById("myInput01").value;
+  var text;
+
+  
+  if (value === "10" || value === "11" ) {
+    text = "You are right!"
+
+    
+
+  } else if (value === "8" || value === "9")  {
+    text = " Really? My website is much more amazing than that! ";
+    
+    
+  } else {
+    text = "Wrong.  ";
+  }
+  document.getElementById("demo2").innerHTML = text;
+}
+
+</script> 
 
 
 
@@ -139,6 +184,17 @@ function myFunction2() {
 }
 </script>
 
+<script>
+function myFunction4() {
+  var x = document.getElementById("myDiv03");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+</script>
+
 
 
 
@@ -163,6 +219,9 @@ function myFunction2() {
 
 <style> 
 
+#myDiv03 {
+  display: none;
+}
 
 #myDiv02 {
   display: none;
@@ -170,6 +229,7 @@ function myFunction2() {
 
 body {
   background-color: lime;
+  margin: 100px;
 }
 
 .output {
