@@ -1,0 +1,82 @@
+vwgheq872437855
+
+<h2>
+ t1a08 loops
+</h2>
+
+<h4>
+
+output code
+</h4>
+
+<pre>
+<div class="code">
+onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+    if (myLoop*2 >myMax){
+      myTemp += ' Cool '
+    }
+    
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+}">
+</div>
+
+</pre>
+
+<h4>
+
+working code
+</h4>
+
+Max Loops: <input id="myNum01" type=number value="4"> <br>
+
+<input type=button value="Basic for loop with decisions" onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+    if (myLoop*2 >myMax){
+      myTemp += ' Cool '
+    }
+    
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+}">
+
+<div id="myDiv01">...</div>
+
+<style>
+  body {
+    margin: 50px;
+    
+  background-color: #FFDEE9;
+background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+
+font-family: 'Permanent Marker', cursive;
+    font-size: 20px;
+opacity: 1;
+    color: black;
+    text-align: right;
+background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+  }
+  .code {
+   font-size: 10px;
+   margin: 0px auto;
+   padding: 0px;
+  }
+  </style>
