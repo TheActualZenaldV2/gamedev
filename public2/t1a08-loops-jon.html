@@ -36,7 +36,8 @@ onclick="{
 working code
 </h4>
 
-Max Loops: <input id="myNum01" type=number value="4"> <br>
+
+Normal Max Loops: <input id="myNum01" type=number value="4"> <br>
 
 <input type=button value="Basic for loop with decisions" onclick="{
   document.getElementById('myDiv01').innerHTML = ''
@@ -53,11 +54,55 @@ Max Loops: <input id="myNum01" type=number value="4"> <br>
   }
   
   document.getElementById('myDiv01').innerHTML = myTemp
+}"> <br> 
+
+
+
+
+Modified Max Loops: <input id="myNum01" type=number value="4"> <br>
+
+<input type=button value="Basic for loop with decisions" onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+    if (myLoop*2 <myMax){
+      myTemp += ' Cool '
+    }
+    
+    if (myLoop<8 <myMax){
+    myTemp += 'Cooler '
+    }
+    
+     if (myLoop=> 100) {
+    document.getElementById('myDiv02').innerHTML = ' nice '
+    }
+    
+   
+  
+    
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
 }">
+<br>
+
+
+
+
+<div id="myDiv02">
+
+.....
+</div>
 
 <div id="myDiv01">...</div>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
   body {
     margin: 50px;
     
@@ -78,5 +123,14 @@ background-position: center;
    font-size: 10px;
    margin: 0px auto;
    padding: 0px;
+  }
+  
+  .code:hover {
+    color: gray;
+    font-size: 12px;
+    transition: 0.2s all;
+    text-transform: bold;
+    
+    
   }
   </style>
