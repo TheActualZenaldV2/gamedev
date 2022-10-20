@@ -18,12 +18,24 @@ return myReply
 <script>
 
 function myFunction05(){
-let myIn03 = parseInt(document.getElementById('myText03').value)
-let myIn04 = parseInt(document.getElementById('myText04').value)
+let myIn03 = parseInt(document.getElementById('myText05').value)
+let myIn04 = parseInt(document.getElementById('myText06').value)
 let mySum01 = myIn03 * myIn04
-let wiggles = myIn03 * ' x' * myIn04 + ' = ' * mySum01
+let wiggles = myIn03 * ' x ' * myIn04 + ' = ' + mySum01
 return wiggles
 
+}
+
+
+</script>
+
+<script>
+
+function divideBy() 
+{ 
+        num1 = document.getElementById("firstNumber").value;
+        num2 = document.getElementById("secondNumber").value;
+document.getElementById("myDiv03").innerHTML = num1 / num2;
 }
 
 
@@ -54,23 +66,24 @@ return parseInt(document.getElementById('myText01').value)
 </h4>
 
 <input type=text id=myText01 value=3> <br> 
-<input type=button value="Function Example" onClick="{
+<input type=button class="button" value="Addition Function" onClick="{
 document.getElementById('myDiv01').innerHTML = myExampleFunction()
 
 
-}"> <br>
+}"> 
 <br>
 <div id="myDiv01">
 
 ...
-</div>
+</div> 
 
-<input type=text id=myText03 value=7> <br>
-<input type=button value="Multiply Function" onClick="{
+<input type=text id=myText05 value=2> x
+<input type=text id=myText06 value=2> 
+<input type=button class="button" value="Multiply Function" onClick="{
 document.getElementById('myDiv02').innerHTML = myFunction05()
 
 
-}">
+}"> 
 
 
 
@@ -79,6 +92,20 @@ document.getElementById('myDiv02').innerHTML = myFunction05()
 
 ...
 </div>
+
+
+ <input type="text" id="firstNumber" /> /
+<input type="text" id="secondNumber" /> 
+<input type="button" class="button" onClick="divideBy()" Value="Divide" /> <br> 
+<div id=myDiv03>
+...
+</div>
+
+
+
+
+
+
 
 <style>
 body {
@@ -96,6 +123,28 @@ background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   
+  }
+  
+   .button {
+    background: transparent;
+    border: 2px solid gray;
+    
+  }
+  
+  .button:hover {
+    transform: scale(0.99);
+    transition: 0.2s all;
+    border: 2px solid black;
+    
+  }
+  
+  .button:active {
+    
+    transform: scale(0.93);
+    transition: 0.2s all;
+    
+    
+    
   }
 
 
