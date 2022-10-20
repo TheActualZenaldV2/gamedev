@@ -39,7 +39,7 @@ working code
 
 Normal Max Loops: <input id="myNum01" type=number value="4"> <br>
 
-<input type=button value="Basic for loop with decisions" onclick="{
+<input type=button class="button" value="Basic for loop with decisions" onclick="{
   document.getElementById('myDiv01').innerHTML = ''
   let myTemp = ''
   
@@ -54,14 +54,15 @@ Normal Max Loops: <input id="myNum01" type=number value="4"> <br>
   }
   
   document.getElementById('myDiv01').innerHTML = myTemp
-}"> <br> 
+   document.getElementById('myDiv02').innerHTML = ' Basic for loop with decisions Activated '
+}"> 
 
 
 
 
-Modified Max Loops: <input id="myNum01" type=number value="4"> <br>
 
-<input type=button value="Basic for loop with decisions" onclick="{
+
+<input type=button class="button" value="Basic for loop with more decisions" onclick="{
   document.getElementById('myDiv01').innerHTML = ''
   let myTemp = ''
   
@@ -76,9 +77,7 @@ Modified Max Loops: <input id="myNum01" type=number value="4"> <br>
     myTemp += 'Cooler '
     }
     
-     if (myLoop=> 100) {
-    document.getElementById('myDiv02').innerHTML = ' nice '
-    }
+  
     
    
   
@@ -87,10 +86,98 @@ Modified Max Loops: <input id="myNum01" type=number value="4"> <br>
   }
   
   document.getElementById('myDiv01').innerHTML = myTemp
+   document.getElementById('myDiv02').innerHTML = 'Basic for loop with more decisions Activated '
 }">
-<br>
+
+<input type=button class="button" value="Even Loop Identifier" onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+ 
+    if(myLoop % 2 == 0){
+    myTemp+= 'Even '
+    }
+    
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+   document.getElementById('myDiv02').innerHTML = 'Even Loop Identifier Activated '
+}">
+
+<input type=button class="button" value="Odd Loop Identifier" onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+ 
+    if(myLoop % 2 == 1){
+    myTemp+= 'Odd '
+    }
+    
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+   document.getElementById('myDiv02').innerHTML = ' Odd Loop Identifier Activated '
+}">
+
+<input type=button class="button" value="Funny Number Identifier (69)" onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+  
+if(myLoop == 69){
+myTemp += 'Nice '
+}
+
+    
+
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+   document.getElementById('myDiv02').innerHTML = ' Funny Number Identifier  Activated '
+}">
+
+<input type=button class="button" value="Funny Number Identifier v2 (6, 9, 69) " onclick="{
+  document.getElementById('myDiv01').innerHTML = ''
+  let myTemp = ''
+  
+  let myMax = parseInt(document.getElementById('myNum01').value)
+  
+  for (let myLoop = 0; myLoop < myMax; myLoop++){
+  
+if(myLoop == 69){
+myTemp += ' <h1 class=nice> NICE </h1> '
+}
+if(myLoop == 6){
+myTemp += ' <h1 class=nice> NICE </h1> '
+}
+if(myLoop == 9){
+myTemp += ' <h1 class=nice> NICE </h1> '
+}
+    
+
+    myTemp += 'Loop number: ' + myLoop + '<br>'
+  }
+  
+  document.getElementById('myDiv01').innerHTML = myTemp
+   document.getElementById('myDiv02').innerHTML = 'Funny Number Identifier v2 (6, 9, 69) Activated '
+}">
 
 
+
+
+<br> 
 
 
 <div id="myDiv02">
@@ -102,6 +189,16 @@ Modified Max Loops: <input id="myNum01" type=number value="4"> <br>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+.myNum01 {
+      background: transparent;
+    border: 12px solid gray;
+    
+}
+.nice {
+  color: green;
+  font-size: 30px;
+}
 
   body {
     margin: 50px;
@@ -130,6 +227,28 @@ background-position: center;
     font-size: 12px;
     transition: 0.2s all;
     text-transform: bold;
+    
+    
+  }
+  
+  .button {
+    background: transparent;
+    border: 2px solid gray;
+    
+  }
+  
+  .button:hover {
+    transform: scale(0.99);
+    transition: 0.2s all;
+    border: 2px solid black;
+    
+  }
+  
+  .button:active {
+    
+    transform: scale(0.93);
+    transition: 0.2s all;
+    
     
     
   }
