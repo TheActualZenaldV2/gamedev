@@ -1,199 +1,133 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.js"></script>
- 
- <script async src="//jsfiddle.net/BigBootyLatina/wo8hz0ys/2/embed/js/"></script>
- 
- <script> 
+
+ <script src="https://github.com/TheActualZenaldV2/gamedev/blob/main/public2/js/t1a09-functions.js"> </script>
+
+ <script>
+ //* pineapple function 
+   function myPineapple() {
+     var value = document.getElementById("myInput").value;
+     var text;
+
+
+     if (value === "pineapple") {
+       text = "You are right!"
 
 
 
-function myPineapple() {
-  var value = document.getElementById("myInput").value;
-  var text;
+     } else if (value === "pepperoni" || value === "cheese") {
+       text = " Please fix your tastebuds ";
 
-  
-  if (value === "pineapple") {
-    text = "You are right!"
 
-    
+     } else {
+       text = "Your opinion is wrong. ";
+     }
+     document.getElementById("demo").innerHTML = text;
+   }
 
-  } else if (value === "pepperoni" || value === "cheese") {
-    text = " Please fix your tastebuds ";
-    
-    
-  } else {
-    text = "Your opinion is wrong. ";
-  }
-  document.getElementById("demo").innerHTML = text;
-}
+//* 1+1 function
+   function myMath01() {
+     var value = document.getElementById("myInput1").value;
+     var text;
 
-function myMath01() {
-  var value = document.getElementById("myInput1").value;
-  var text;
 
-  
-  if (value === "2") {
-    text = "You are right!"
-
-    
-
-  } else if (value === "1" || value === "3") {
-    text = " You're dumb! ";
-    
-    
-  } else {
-    text = " Stop failing math class ";
-  }
-  document.getElementById("demo1").innerHTML = text;
-}
+     if (value === "2") {
+       text = "You are right!"
 
 
 
+     } else if (value === "1" || value === "3") {
+       text = " You're dumb! ";
 
-</script> 
- 
- 
- <script> 
-function myExampleFunction(){
-let myIn01 = parseInt(document.getElementById('myText01').value)
-let mySum = myIn01 + myIn01
-let myReply = myIn01 + ' + ' + myIn01 + ' = ' + mySum
-return myReply 
+
+     } else {
+       text = " Stop failing math class ";
+     }
+     document.getElementById("demo1").innerHTML = text;
+   }
+
+//* square function
+   function myExampleFunction() {
+     let myIn01 = parseInt(document.getElementById('myText01').value)
+     let mySum = myIn01 + myIn01
+     let myReply = myIn01 + ' + ' + myIn01 + ' = ' + mySum
+     return myReply
 
 
 
 
 
-}
+   }
 
+//* unused broken multiply function
+   function myFunction05() {
+     let myIn03 = parseInt(document.getElementById('myText05').value)
+     let myIn04 = parseInt(document.getElementById('myText06').value)
+     let mySum01 = myIn03 * myIn04
+     let wiggles = myIn03 * ' x ' * myIn04 + ' = ' + mySum01
+     return wiggles
 
+   }
 
-</script>
+//* working multiply function being used 
+   function multiplyBy() {
 
-<script>
+     num1 = document.getElementById("firstNumber1").value;
+     num2 = document.getElementById("secondNumber1").value;
+     document.getElementById("myDiv04").innerHTML = num1 * num2;
+   }
 
-function myFunction05(){
-let myIn03 = parseInt(document.getElementById('myText05').value)
-let myIn04 = parseInt(document.getElementById('myText06').value)
-let mySum01 = myIn03 * myIn04
-let wiggles = myIn03 * ' x ' * myIn04 + ' = ' + mySum01
-return wiggles
+//* working divide function being used 
+   function divideBy() {
+     num1 = document.getElementById("firstNumber").value;
+     num2 = document.getElementById("secondNumber").value;
+     document.getElementById("myDiv03").innerHTML = num1 / num2;
+   }
 
-}
-
-
-</script>
-
-<script> 
-function multiplyBy()
-{
-
-        num1 = document.getElementById("firstNumber1").value;
-        num2 = document.getElementById("secondNumber1").value;
-        document.getElementById("myDiv04").innerHTML = num1 * num2;
-}
-
-</script>
-
-<script>
-
-function divideBy() 
-{ 
-        num1 = document.getElementById("firstNumber").value;
-        num2 = document.getElementById("secondNumber").value;
-document.getElementById("myDiv03").innerHTML = num1 / num2;
-}
-
-
-</script>
-
-
-
-<script> 
-
-
-
-</script>
-
-Version 1.23
-
-<h2>
- t1a09 functions
-</h2>
+ </script>
 
 
 
 
-<a href="https://www.youtube.com/embed/feq6MOg3qpA"> <button id='runaway-btn' class="button2">Try to Click &#128516;</button> </a>
+ Version 101290821985238
 
-<a href="https://www.w3schools.com/js/js_functions.asp"> ctrl c ctrl v goes hard </a>
+ <h2>
+   t1a09 functions
+ </h2>
 
-Functions are used to organize code or something 
 
-<h4>
- Example functions code
-</h4>
 
-<pre> 
+
+ <a href="https://www.youtube.com/embed/feq6MOg3qpA"> <button id='runaway-btn' class="button2">Try to Click &#128516;</button> </a>
+
+ <a href="https://www.w3schools.com/js/js_functions.asp"> ctrl c ctrl v goes hard </a>
+
+ Functions are used to organize code or something
+
+ <h4>
+   Example functions code
+ </h4>
+
+ <pre>
 funtion myGrabNumber(){
 return parseInt(document.getElementById('myText01').value)
 }
 </pre>
 
-<h4>
- example working code
-</h4>
+ <h4>
+   example working code
+ </h4>
 
-<input type=text id=myText01 value=4> 
-<input type=button class="button" value="Square Function" onClick="{
+ <input type=text id=myText01 value=4>
+ <input type=button class="button" value="Square Function" onClick="{
 document.getElementById('myDiv01').innerHTML = myExampleFunction()
 
 
-}"> 
+}">
 
-<div id="myDiv01">
+ <div id="myDiv01">
 
-...
-</div> 
-
-
-
-
-
-
-
-
- <input type="text" id="firstNumber" value="4"/> /
-<input type="text" id="secondNumber" value="4"/> 
-<input type="button" class="button" onClick="divideBy()" Value="Divide" /> <br> 
-<div id=myDiv03>
-...
-</div>
-
-
-
-<input type="text" id="firstNumber1" value="4"/> x
-<input type="text" id="secondNumber1" value="4"/> 
-<input type="button" class="button" onClick="multiplyBy()" Value="Multiply" />
-<div id=myDiv04>
-
-...
-</div>
-
-
-<p>Whats the best kind of pizza? </p>
-
-<input id="myInput" value="pineapple" type="text">
-
-<button onclick="myPineapple()">Submit answer </button>
-<p id="demo"></p>
-
-
-<p> Whats 1+1 </p>
-
-<input id="myInput1" value="3" type="text">
-
-<button onclick="myMath01()">Submit answer </button>
-<p id="demo1"></p>
+   ...
+ </div>
 
 
 
@@ -202,77 +136,115 @@ document.getElementById('myDiv01').innerHTML = myExampleFunction()
 
 
 
-<style>
-body {
-    margin: 50px;
-    
-  background-color: #FFDEE9;
-background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+ <input type="text" id="firstNumber" value="4" /> /
+ <input type="text" id="secondNumber" value="4" />
+ <input type="button" class="button" onClick="divideBy()" Value="Divide" /> <br>
+ <div id=myDiv03>
+   ...
+ </div>
 
-font-family: 'Permanent Marker', cursive;
-    font-size: 20px;
-opacity: 1;
-    color: black;
-    text-align: right;
-background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  
-  }
-  
+
+
+ <input type="text" id="firstNumber1" value="4" /> x
+ <input type="text" id="secondNumber1" value="4" />
+ <input type="button" class="button" onClick="multiplyBy()" Value="Multiply" />
+ <div id=myDiv04>
+
+   ...
+ </div>
+
+
+ <p>Whats the best kind of pizza? </p>
+
+ <input id="myInput" value="pineapple" type="text">
+
+ <button onclick="myPineapple()">Submit answer </button>
+ <p id="demo"></p>
+
+
+ <p> Whats 1+1 </p>
+
+ <input id="myInput1" value="3" type="text">
+
+ <button onclick="myMath01()">Submit answer </button>
+ <p id="demo1"></p>
+
+
+
+
+
+
+
+
+ <style>
+   body {
+     margin: 50px;
+
+     background-color: #FFDEE9;
+     background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+
+     font-family: 'Permanent Marker', cursive;
+     font-size: 20px;
+     opacity: 1;
+     color: black;
+     text-align: right;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-size: cover;
+
+   }
+
    .button {
-    background: transparent;
-    border: 2px solid gray;
-    
-  }
-  
-  .button:hover {
-    transform: scale(0.99);
-    transition: 0.2s all;
-    border: 2px solid black;
-    
-  }
-  
-  .button:active {
-    
-    transform: scale(0.93);
-    transition: 0.2s all;
-    
-    
-    
-  }
+     background: transparent;
+     border: 2px solid gray;
 
+   }
 
- {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    user-select: none;
-  }
-  
+   .button:hover {
+     transform: scale(0.99);
+     transition: 0.2s all;
+     border: 2px solid black;
 
-  
-  .button2 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 4rem;
-    width: 10rem;
-    font-size: 1.5rem;
-    border-radius: 5px;
-    border: none;
-    box-shadow: 1px 1px 5px black;
-    color: #fff;
-        background: transparent;
-    border: 2px solid gray;
-    -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000; 
-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000;
-    cursor: pointer;
-    color: black;
-    border: 3px solid black;
-  }
+   }
+
+   .button:active {
+
+     transform: scale(0.93);
+     transition: 0.2s all;
 
 
 
-</style>
+   }
+
+
+     {
+     padding: 0;
+     margin: 0;
+     box-sizing: border-box;
+     user-select: none;
+   }
+
+
+
+   .button2 {
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     height: 4rem;
+     width: 10rem;
+     font-size: 1.5rem;
+     border-radius: 5px;
+     border: none;
+     box-shadow: 1px 1px 5px black;
+     color: #fff;
+     background: transparent;
+     border: 2px solid gray;
+     -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000;
+     box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000;
+     cursor: pointer;
+     color: black;
+     border: 3px solid black;
+   }
+
+ </style>
