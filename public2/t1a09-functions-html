@@ -1,4 +1,37 @@
-<script> 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.js"></script>
+ 
+ <script src=""> </script>
+ 
+ <script> 
+
+
+
+function myPineapple() {
+  var value = document.getElementById("myInput").value;
+  var text;
+
+  
+  if (value === "pineapple") {
+    text = "You are right!"
+
+    
+
+  } else if (value === "pepperoni" || value === "cheese") {
+    text = " Please fix your tastebuds ";
+    
+    
+  } else {
+    text = "Your opinion is wrong. ";
+  }
+  document.getElementById("demo").innerHTML = text;
+}
+
+
+
+</script> 
+ 
+ 
+ <script> 
 function myExampleFunction(){
 let myIn01 = parseInt(document.getElementById('myText01').value)
 let mySum = myIn01 + myIn01
@@ -29,6 +62,17 @@ return wiggles
 
 </script>
 
+<script> 
+function multiplyBy()
+{
+
+        num1 = document.getElementById("firstNumber1").value;
+        num2 = document.getElementById("secondNumber1").value;
+        document.getElementById("myDiv04").innerHTML = num1 * num2;
+}
+
+</script>
+
 <script>
 
 function divideBy() 
@@ -41,11 +85,24 @@ document.getElementById("myDiv03").innerHTML = num1 / num2;
 
 </script>
 
+
+
+<script> 
+
+
+
+</script>
+
 Version 101290821985238
 
 <h2>
  t1a09 functions
 </h2>
+
+
+
+
+<a href="https://www.youtube.com/embed/feq6MOg3qpA"> <button id='runaway-btn' class="button2">Try to Click &#128516;</button> </a>
 
 <a href="https://www.w3schools.com/js/js_functions.asp"> ctrl c ctrl v goes hard </a>
 
@@ -65,37 +122,27 @@ return parseInt(document.getElementById('myText01').value)
  example working code
 </h4>
 
-<input type=text id=myText01 value=3> <br> 
-<input type=button class="button" value="Addition Function" onClick="{
+<input type=text id=myText01 value=4> 
+<input type=button class="button" value="Square Function" onClick="{
 document.getElementById('myDiv01').innerHTML = myExampleFunction()
 
 
 }"> 
-<br>
+
 <div id="myDiv01">
 
 ...
 </div> 
 
-<input type=text id=myText05 value=2> x
-<input type=text id=myText06 value=2> 
-<input type=button class="button" value="Multiply Function" onClick="{
-document.getElementById('myDiv02').innerHTML = myFunction05()
-
-
-}"> 
 
 
 
 
-<div id="myDiv02">
-
-...
-</div>
 
 
- <input type="text" id="firstNumber" /> /
-<input type="text" id="secondNumber" /> 
+
+ <input type="text" id="firstNumber" value="4"/> /
+<input type="text" id="secondNumber" value="4"/> 
 <input type="button" class="button" onClick="divideBy()" Value="Divide" /> <br> 
 <div id=myDiv03>
 ...
@@ -103,7 +150,21 @@ document.getElementById('myDiv02').innerHTML = myFunction05()
 
 
 
+<input type="text" id="firstNumber1" value="4"/> x
+<input type="text" id="secondNumber1" value="4"/> 
+<input type="button" class="button" onClick="multiplyBy()" Value="Multiply" />
+<div id=myDiv04>
 
+...
+</div>
+
+
+<p>Whats the best kind of pizza? </p>
+
+<input id="myInput" type="text">
+
+<button onclick="myPineapple()">Submit answer </button>
+<p id="demo"></p>
 
 
 
@@ -147,6 +208,36 @@ background-position: center;
     
   }
 
+
+ {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    user-select: none;
+  }
+  
+
+  
+  .button2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 4rem;
+    width: 10rem;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 1px 1px 5px black;
+    color: #fff;
+        background: transparent;
+    border: 2px solid gray;
+    -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000; 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 13px 17px 50px 20px #000000;
+    cursor: pointer;
+    color: black;
+    border: 3px solid black;
+  }
 
 
 
