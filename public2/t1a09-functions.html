@@ -26,6 +26,27 @@ function myPineapple() {
   document.getElementById("demo").innerHTML = text;
 }
 
+function myMath01() {
+  var value = document.getElementById("myInput1").value;
+  var text;
+
+  
+  if (value === "2") {
+    text = "You are right!"
+
+    
+
+  } else if (value === "1" || value === "3") {
+    text = " You're dumb! ";
+    
+    
+  } else {
+    text = " Stop failing math class ";
+  }
+  document.getElementById("demo1").innerHTML = text;
+}
+
+
 
 
 </script> 
@@ -161,10 +182,23 @@ document.getElementById('myDiv01').innerHTML = myExampleFunction()
 
 <p>Whats the best kind of pizza? </p>
 
-<input id="myInput" type="text">
+<input id="myInput" value="pineapple" type="text">
 
 <button onclick="myPineapple()">Submit answer </button>
 <p id="demo"></p>
+
+
+<p> Whats 1+1 </p>
+
+<input id="myInput1" value="3" type="text">
+
+<button onclick="myMath01()">Submit answer </button>
+<p id="demo1"></p>
+
+
+
+
+
 
 
 
