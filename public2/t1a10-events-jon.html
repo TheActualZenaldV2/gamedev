@@ -1,0 +1,137 @@
+<script> 
+function myFunction1 () {
+alert('you pressed a key ')
+}
+
+function myFunction() {
+  var x = document.getElementById("myInput").value;
+  document.getElementById("demo").innerHTML = "You wrote: " + x;
+}
+
+function myFunction2() {
+ alert('you double clicked!')
+
+}
+
+function myFunction3() {
+ document.getElementById("demo2").innerHTML = "I was double-clicked!";
+
+}
+
+function myFunction4() {
+ document.getElementById('myDiv02').innerHTML = " You moved your mouse over this DIV"
+
+}
+function myFunction5() {
+ document.getElementById('myDiv02').innerHTML = " 1234"
+
+}
+
+
+
+
+
+
+
+
+</script>
+version 0101010
+<br> 
+<a href= https://www.w3schools.com/tags/ref_eventattributes.asp> ctrl c ctrl v </a>
+events are html code that activates javascript 
+<h4>
+ example functions code
+</h4>
+
+
+<pre> 
+ input type=button value="example onclick" onClick="{
+alert(hi)
+}"> 
+</pre>
+
+<h4>
+ working code
+</h4>
+
+<input type="text" id="myText01" value="3"> <br> 
+
+<input type=button value="Example Onclick" onClick="{
+document.getElementById('myDiv01').innerHTML = document.getElementById('myText01').value
+}">
+
+<div id="myDiv01">
+...
+</div>
+
+<b id="myB01" onMouseOut=
+"{
+document.getElementById('myB01').innerHTML = 'This is bold '
+}"
+onMouseOver=
+"{
+document.getElementById('myB01').innerHTML = 'This is cool'
+}"    > this is bold </b> <br> 
+
+
+
+
+
+<input type="text" value="press a key inside this box" onkeydown="myFunction1()"><br> 
+<h4>
+Write something in this box
+</h4>
+<input type="text" id="myInput" value="write something" oninput="myFunction()">
+
+<p id="demo">
+ 
+</p>
+
+<br> 
+<h4>
+ Double click this button
+</h4>
+<input type="button" id="myText02" value="double click me " ondblclick="myFunction2()">
+
+
+<p id="demo2" ondblclick="myFunction3()">Double-click me.</p>
+<h5>
+ this code resets the text of the DIV on mouse out too! 
+</h5>
+
+<div id="myDiv02" onmousemove="myFunction4()" onmouseout="myFunction5()">
+
+1234
+
+</div>
+
+
+
+<style> 
+ body {
+     margin: 50px;
+
+     background-color: #FFDEE9;
+     background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+
+     font-family: 'Permanent Marker', cursive;
+     font-size: 20px;
+     opacity: 1;
+     color: black;
+     text-align: right;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-size: cover;
+
+   }
+   
+   #myDiv02 {
+     width: 200px;
+  height: 100px;
+  border: 1px solid black;
+  padding: 20px;
+  
+   }
+   
+   
+   </style>
