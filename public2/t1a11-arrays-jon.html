@@ -1,6 +1,60 @@
 <script> 
-
-
+     function myFunction1() {
+         let myTemp = document.getElementById('myText01').value
+         let mySum = ''
+         document.getElementById('myDiv01').innerHTML = ' '
+      
+         myArray = new Array()
+         myArray[0] = '22334'
+         myArray[1] = '123y'
+         myArray[2] = '456'
+      
+         for (let myLoop=0;   myLoop < myTemp;  myLoop++){
+            mySum += 'Loop #: ' + myLoop + ' array entry: ' + myArray[myLoop] +'<br>'
+         }
+         document.getElementById('myDiv01').innerHTML = mySum
+      }
+      
+      
+      
+           function myFunction2() {
+         let myTemp = document.getElementById('myText01').value
+         let mySum = ''
+         document.getElementById('myDiv01').innerHTML = ' '
+      
+         myArray = new Array()
+         myArray[0] = ' Pizza '
+         myArray[1] = ' Pineapple pizza '
+         myArray[2] = 'Hawiian pizza  '
+          myArray[3] = 'Pizza with Pineapples on it  '
+           myArray[4] = 'Pizza with more pinapples on it!!  '
+      
+         for (let myLoop=0;   myLoop < myTemp;  myLoop++){
+            mySum += 'Loop #: ' + myLoop + ' The best kind of pizza # ' + myLoop + ' : ' + myArray[myLoop] +'<br>'
+         }
+         document.getElementById('myDiv01').innerHTML = mySum
+      }
+      
+               function myFunction3() {
+         let myTemp = document.getElementById('myText01').value
+         let mySum = ''
+         document.getElementById('myDiv01').innerHTML = ' '
+      
+         myArray = new Array()
+         myArray[0] = ' <h1 id="cars"> <img src="https://hips.hearstapps.com/hmg-prod/images/2023-toyota-supra-manual-front-three-quarters-1651102388.jpg?crop=0.783xw:1.00xh;0.109xw,0&resize=640:*"> not a supra  </h1> '
+         myArray[1] = '  <h1 id="cars"> <img src="https://cdn.jdpower.com/ArticleImages/2019%20Subaru%20WRX%20STI%2019MY_STI-3%20635.jpg"> and not a subaru either </h1> '
+         myArray[2] = ' <img src="https://tdrresearch.azureedge.net/photos/chrome/Expanded/White/2022TOC320001/2022TOC32000101.jpg"> PRIUS PRIME   '
+          myArray[3] = ' <h1 id="cars"> second best car is the prius prime 2022 model </h1>   '
+           myArray[4] = '  <h1 id="cars"> the prius is an amazing car!!! </h1> '
+      
+         for (let myLoop=0;   myLoop < myTemp;  myLoop++){
+            mySum += 'Loop #: ' + myLoop + ' The best kind of cars # ' + myLoop + ' : ' + myArray[myLoop] +'<br>'
+         }
+         document.getElementById('myDiv01').innerHTML = mySum
+      }
+      
+      
+      
 </script>
 
 
@@ -28,7 +82,8 @@ myArray[1] = 'Mary'
  Working array code:
 </h4>
 
-Max array entry: <input type=text id="myText01" value="3"> <br> 
+Max array entry: 
+<input type=text id="myText01" value="3"> <br> 
 <input type=button value="Example onclick" onClick="
 {
 let myTemp = document.getElementById('myText01').value 
@@ -46,13 +101,30 @@ mySum += 'Loop#: ' + myLoop + ' array entry: ' + myArray[myLoop] + ' <br> '
 }
 document.getElementById('myDiv01').innerHTML = mySum
 }"> 
-<div id="myDiv01">
+
+      <input type="button" value="Example  function onClick" onclick="myFunction1()">
+           <input type="button" value="Best Kinds of Pizza " onclick="myFunction2()">
+<input type="button" value="Best kind of cars " onclick="myFunction3()">
+
+
+<div id=myDiv01>
 ...
 </div>
 
+
+
+
+
+
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 
+#cars {
+  text-decoration: underline;
+  color: black;
+  size: 20px;
+}
  body {
      margin: 50px;
 
