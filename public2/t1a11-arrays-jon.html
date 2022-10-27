@@ -1,4 +1,8 @@
+<body onload="myFunction4()">
+ 
+</body>
 <script> 
+
      function myFunction1() {
          let myTemp = document.getElementById('myText01').value
          let mySum = ''
@@ -41,10 +45,15 @@
          document.getElementById('myDiv01').innerHTML = ' '
       
          myArray = new Array()
+         
          myArray[0] = ' <h1 id="cars"> <img src="https://hips.hearstapps.com/hmg-prod/images/2023-toyota-supra-manual-front-three-quarters-1651102388.jpg?crop=0.783xw:1.00xh;0.109xw,0&resize=640:*"> not a supra  </h1> '
+         
          myArray[1] = '  <h1 id="cars"> <img src="https://cdn.jdpower.com/ArticleImages/2019%20Subaru%20WRX%20STI%2019MY_STI-3%20635.jpg"> and not a subaru either </h1> '
+         
          myArray[2] = ' <img src="https://tdrresearch.azureedge.net/photos/chrome/Expanded/White/2022TOC320001/2022TOC32000101.jpg"> PRIUS PRIME   '
+         
           myArray[3] = ' <h1 id="cars"> second best car is the prius prime 2022 model </h1>   '
+          
            myArray[4] = '  <h1 id="cars"> the prius is an amazing car!!! </h1> '
       
          for (let myLoop=0;   myLoop < myTemp;  myLoop++){
@@ -52,10 +61,38 @@
          }
          document.getElementById('myDiv01').innerHTML = mySum
       }
-      
-      
-      
+    
+      function myFunction4() {
+
+
+let myMath = Math.floor(Math.random() * 1000);
+document.getElementById("demo3").innerHTML = 'Your page number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time you restart the page ' + '<br>' +'If your number is 5, you will get a special message. '
+if(myMath %5 == 0)
+{
+document.getElementById("demo3").innerHTML = 'Your page number is a multiple of 5. ' + '<br> ' + 'Your number = ' + myMath + '<br>' + '<img src=https://charlieintel.com/wp-content/uploads/2021/02/Untitled-2-2.png width=200 height=200> ' + '<br>' + ' Flopper loves multiples of 5! '
+}
+
+} 
+//* 2d array code 
+function myFunction5() {
+
+
+}
+
+function myFunction6() {
+
+let myMath = Math.floor(Math.random() * 1000);
+document.getElementById("demo4").innerHTML = 'Your page number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time click the button ' + '<br>' +'If your number is 623, you win! '
+if(myMath == 623)
+{
+document.getElementById("demo4").innerHTML = 'You got lucky! Your number is: ' +  + myMath + '<br>' + '<a href="https://www.youtube.com/embed/dQw4w9WgXcQ"> <input type=button value="CLICK ME FOR YOUR REWARD!! " class="win"> </a> ' + '<br>' 
+}
+
+}
+
+
 </script>
+<p id="demo3"></p>
 
 
 version .0001 
@@ -84,41 +121,108 @@ myArray[1] = 'Mary'
 
 Max array entry: 
 <input type=text id="myText01" value="3"> <br> 
-<input type=button value="Example onclick" onClick="
+<input type=button class="button" value="Example onclick" onClick="
 {
 let myTemp = document.getElementById('myText01').value 
 let mySum = ''
 document.getElementById('myDiv01').innerHTML = ' '
-
 myArray = new Array()
 myArray[0] = ' Fred '
 myArray[1] = ' Marry '
 myArray[2] = ' Zizzy '
-
 for (let myLoop=0; myLoop < myTemp; myLoop++) {
 mySum += 'Loop#: ' + myLoop + ' array entry: ' + myArray[myLoop] + ' <br> '
-
 }
 document.getElementById('myDiv01').innerHTML = mySum
 }"> 
 
-      <input type="button" value="Example  function onClick" onclick="myFunction1()">
-           <input type="button" value="Best Kinds of Pizza " onclick="myFunction2()">
-<input type="button" value="Best kind of cars " onclick="myFunction3()">
+      <input type="button" class="button" value="Example  function onClick" onclick="myFunction1()">
+           <input type="button" class="button" value="Best Kinds of Pizza " onclick="myFunction2()">
+<input type="button" class="button" value="Best kind of cars " onclick="myFunction3()">
+
 
 
 <div id=myDiv01>
 ...
 </div>
 
+<h1>
+Do you love gambling? Click the button below and get lucky (1 in 1000 chance)
+</h1>
+<input type=button class="button" value="click me" onclick="myFunction6()">
 
 
-
+<p id="demo4">
+ 
+</p>
 
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
+ .button {
+    background: transparent;
+    border: 2px solid gray;
+    
+  }
+  
+  .button:hover {
+    transform: scale(0.99);
+    transition: 0.2s all;
+    border: 2px solid black;
+    
+  }
+  
+  .button:active {
+    
+    transform: scale(0.93);
+    transition: 0.2s all;
+    
+    
+    
+  }
+  
+  .win 
+  {
+size: 50px;
+color: red; 
+border: 2px solid gray;
+font-size: 50px;
+transition: 0.4s all;
+
+
+}
+
+.win:hover {
+  transform: scale(0.98);
+  border: 3px solid gray;
+}
+
+.win:active {
+  transform: scale(0.95);
+  border: 2px solid white;
+}
+  
+
+#pageStart
+{
+  color: green;
+  font-size: 30px;
+  
+  
+ 
+  transition: 0.3s all;
+
+  
+  
+}
+#pageStart:hover {
+  color: blue; 
+  font-size: 50px;
+  
+ 
+
+}
 
 #cars {
   text-decoration: underline;
