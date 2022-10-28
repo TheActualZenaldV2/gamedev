@@ -81,9 +81,9 @@ function myFunction5() {
 
 function myFunction6() {
 
-let myMath = Math.floor(Math.random() * 1000);
-document.getElementById("demo4").innerHTML = 'Your page number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time click the button ' + '<br>' +'If your number is 623, you win! '
-if(myMath == 623)
+let myMath = Math.floor(Math.random() * 10);
+document.getElementById("demo4").innerHTML = 'Your page number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time click the button ' + '<br>' +'If your number is 1, you win! '
+if(myMath == 1)
 {
 document.getElementById("demo4").innerHTML = 'You got lucky! Your number is: ' +  + myMath + '<br>' + '<a href="https://www.youtube.com/embed/dQw4w9WgXcQ"> <input type=button value="CLICK ME FOR YOUR REWARD!! " class="win"> </a> ' + '<br>' 
 }
@@ -149,7 +149,7 @@ document.getElementById('myDiv01').innerHTML = mySum
 </div>
 
 <h1>
-Do you love gambling? Click the button below and get lucky (1 in 1000 chance)
+Do you love gambling? Click the button below and get lucky (1 in 10 chance)
 </h1>
 <input type=button class="button" value="click me" onclick="myFunction6()">
 
