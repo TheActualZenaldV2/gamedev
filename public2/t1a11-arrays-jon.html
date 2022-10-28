@@ -78,21 +78,28 @@ function myFunction5() {
 
 
 }
-
+//* gambling function 
 function myFunction6() {
 
 let myMath = Math.floor(Math.random() * 10);
-document.getElementById("demo4").innerHTML = 'Your page number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time click the button ' + '<br>' +'If your number is 1, you win! '
+document.getElementById("demo4").innerHTML = 'Your number is ' + '<h1 id=pageStart> ' + myMath + '</h1> ' + '<br>' + ' P.S this number changes every time click the button ' + '<br>' +'If your number is 1, you win! '
+document.getElementById('button2').style.display = 'none'
 if(myMath == 1)
 {
-document.getElementById("demo4").innerHTML = 'You got lucky! Your number is: ' +  + myMath + '<br>' + '<a href="https://www.youtube.com/embed/dQw4w9WgXcQ"> <input type=button value="CLICK ME FOR YOUR REWARD!! " class="win"> </a> ' + '<br>' 
+document.getElementById("demo4").innerHTML = 'You got lucky! Your number is: ' +  + myMath + '<br>' + '<a href="https://www.youtube.com/embed/dQw4w9WgXcQ"> <input type=button id="reward" value="CLICK ME FOR YOUR REWARD!! " class="win"> </a> ' + '<br>' 
+document.getElementById("button").style.display = 'none'
+document.getElementById("button2").style.display = 'block'
 }
 
 }
+
+
 
 
 
 </script>
+
+
 <p id="demo3"></p>
 
 
@@ -151,16 +158,27 @@ document.getElementById('myDiv01').innerHTML = mySum
 <h1>
 Do you love gambling? Click the button below and get lucky (1 in 10 chance)
 </h1>
-<input type=button class="button" value="click me" onclick="myFunction6()">
+<input type=button id="button" value="click me" onclick="myFunction6()">
+
 
 
 <p id="demo4">
  
 </p>
-
+<input type=button id="button2" value="Reset" onclick="
+{
+document.getElementById('button').style.display = 'block'
+document.getElementById('button2').style.display = 'none'
+document.getElementById('reward').style.display = 'none'
+document.getElementById('demo4').innerHTML = 'You reset!'
+}">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+#button2 {
+  display:none;
+}
 
  .button {
     background: transparent;
