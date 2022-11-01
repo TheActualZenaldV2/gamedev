@@ -1,32 +1,33 @@
 version 202000
 <script>
-function myFunction1()
-{
+function usingVariable() {
   let myPerson1 = {   
-    'firstName': 'John',
-    'lastName' :'Doe',
-    'age' :  '50',
-    'eyeColor': 'blue'
+    'firstName': 'Empty field ',
+    'lastName' :'Empty field',
+    'age' :  'Empty field',
+    'eyeColor': 'Empty field'
   }
-   document.getElementById("myDiv01").innerHTML = "<br>myPerson Object has properties: <br> <br> "
+   document.getElementById("myDiv01").innerHTML = ""
    document.getElementById('myDiv01').innerHTML += 'firstName: ' + myPerson1.firstName + '<br> <br> '
    document.getElementById('myDiv01').innerHTML += 'lastName: ' + myPerson1.lastName + '<br> <br> ' 
-      document.getElementById('myDiv01').innerHTML += 'age:  ' + myPerson1.age  + '. John is very old. He should be in a nursing home. ' + '<br> <br> '
-         document.getElementById('myDiv01').innerHTML += 'eye color:  ' + myPerson1.eyeColor + ' <br> <br> ' 
-          
-            
+      document.getElementById('myDiv01').innerHTML += 'age:  ' + myPerson1.age  + '<br> <br> '
+         document.getElementById('myDiv01').innerHTML += 'eye color:  ' + myPerson1.eyeColor + ' <br> <br> ' + '<b> Yes, these are supposed to say empty field </b> ' 
+  }         
+           
 
-function myFunction() {
-let myPerson = {
-'firstName' : 'John',
-'lastName' : 'Doe',
-'age' : '50',
-'eyeColor' : 'green',
+function variable() {
+let firstName = document.getElementById('myDiv02').innerHTML = document.getElementById('myText01').value
+let lastName = document.getElementById('myDiv02').innerHTML = document.getElementById('myText02').value
+let age = document.getElementById('myDiv02').innerHTML = document.getElementById('myText03').value
+let eyeColor = document.getElementById('myDiv02').innerHTML = document.getElementById('myText04').value
 
-}
 
-document.getElementById('myDiv01').innerHTML = ' myPerson Object has properties '
 
+   document.getElementById("myDiv02").innerHTML = " "
+   document.getElementById('myDiv02').innerHTML += 'First Name: ' + firstName  + '<br> <br> '
+   document.getElementById('myDiv02').innerHTML += 'Last Name: ' + lastName + '<br> <br> ' 
+      document.getElementById('myDiv02').innerHTML += 'Age:  ' + age  +  '<br> <br> '
+         document.getElementById('myDiv02').innerHTML += 'Eye Color:  ' + eyeColor + ' <br> <br> ' 
 
 }
 </script>
@@ -55,7 +56,6 @@ document.getElementById('myDiv01').innerHTML = ' myPerson Object has properties 
  example working code
 </h4>
 
-Nothing: <input type=text id="myText01" value="Useless"> <br> 
 
 <input type="button" value="Example Object Set and Show" onclick="{
   let myPerson = {   
@@ -73,52 +73,62 @@ Nothing: <input type=text id="myText01" value="Useless"> <br>
             
 }">
 
-<input type="button" value="Example Object Set and Show" onclick="{
+<input type="button" value="See joe's social security number" onclick="{
   let myPerson = {   
-    'firstName' : 'Joe',
-    'lastName'  : 'Mamma',
-    'age'       :  'Very fucking old',
-    'eyeColor'  : 'dead'
+    'ssNumber' : '119293883',
+    'creditNumber'  : '6337 4329 3394 4492 ',
+    'pin'       :  '5483',
+    'expDate'  : '25/11'
   }
-   document.getElementById('myDiv01').innerHTML = '<br>myPerson Object has properties: <br> <br> '
-   document.getElementById('myDiv01').innerHTML += 'firstName: ' + myPerson.firstName + '<br> <br> '
-   document.getElementById('myDiv01').innerHTML += 'lastName: ' + myPerson.lastName + '<br> <br> ' 
-      document.getElementById('myDiv01').innerHTML += 'age:  ' + myPerson.age  + '<br> <br> '
-         document.getElementById('myDiv01').innerHTML += 'eye color:  ' + myPerson.eyeColor + ' <br> <br> ' 
-          
-            
-}">
-
-<input type=text id="myName" value="Type something here"> 
-<input type="button" value="Example Object Set and Show using variable" onclick="{
-let myName = document.getElementById('myName').value
-  let myPerson = {   
-    'firstName' : 'myName',
-    'lastName'  : 'Mamma',
-    'age'       :  'Very fucking old',
-    'eyeColor'  : 'dead'
-  }
-   document.getElementById('myDiv01').innerHTML = '<br>myPerson Object has properties: <br> <br> '
-   document.getElementById('myDiv01').innerHTML += 'firstName: ' + myPerson.firstName + '<br> <br> '
-   document.getElementById('myDiv01').innerHTML += 'lastName: ' + myPerson.lastName + '<br> <br> ' 
-      document.getElementById('myDiv01').innerHTML += 'age:  ' + myPerson.age  + '<br> <br> '
-         document.getElementById('myDiv01').innerHTML += 'eye color:  ' + myPerson.eyeColor + ' <br> <br> ' 
+   document.getElementById('myDiv01').innerHTML = ' '
+   document.getElementById('myDiv01').innerHTML += 'Joes social security number: ' + myPerson.ssNumber + '<br> <br> '
+   document.getElementById('myDiv01').innerHTML += 'Joes Credit Card Number: ' + myPerson.creditNumber + '<br> <br> ' 
+      document.getElementById('myDiv01').innerHTML += 'Joes Pin:  ' + myPerson.pin + '<br> <br> '
+         document.getElementById('myDiv01').innerHTML += 'Joes Credit Card Expiery Date:   ' + myPerson.expDate + ' <br> <br> ' + 'im sorry joe '
           
             
 }">
 
 
 
+ 
+
+<input type="button" value="Example Object Set and Show using variable" onclick="usingVariable()">
+
+<br>
+<br>
+<br>
 
 
 
+<div id="myDiv01">
+
+///
+</div>
+<br>
+<br>
+
+<h5>
+ Set custom names using input field (lets user set their own name)
+</h5>
+
+Set name: <input type=text id="myText01" value="Billy"> <br> 
+Set last name: <input type=text id="myText02" value="Joe"> <br> 
+Set age: <input type=text id="myText03" value="30"> <br> 
+Set eye color:  <input type=text id="myText04" value="Green"> <br> 
 
 
-<div id="myDiv01">...</div>
+<br> <input type="button" id="myButton01" value="show" onclick="variable()">
+
+
+
+<div id="myDiv02">...</div>
 
 
 
 <style> 
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 body {
      margin: 50px;
 
