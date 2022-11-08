@@ -1,0 +1,46 @@
+Hourly Wage <input type="text" id="hourWage" value="15">
+Hours worked <input type="text" id="hourWorked" value="8">
+Tax bracket (%)     <input type="text" id="taxBracket" value="30">
+<input type="button" id="value" value="Calculate" onclick="myCalculate()">
+
+<div id="myDiv01"> 
+    ...
+</div>
+<div id="myDiv02"> 
+    ...
+    </div>
+
+    <div id="myDiv03">
+        ...
+    </div>
+
+<script>
+function myCalculate() {
+let hourWage = document.getElementById("hourWage").value;
+let hourWorked = document.getElementById("hourWorked").value;
+let taxBracket = document.getElementById("taxBracket").value;
+let salary = hourWage * hourWorked;
+let tax = salary * taxBracket / 100;
+let netSalary = salary - tax;
+
+
+
+let weeklySalary = hourWage * hourWorked * 5;
+let weekyTax = salary * taxBracket / 100 * 5;
+let weekyNetSalary = weeklySalary - weekyTax;   
+
+let monthlySalary = hourWage * hourWorked * 30;
+let monthlyTax = salary * taxBracket / 100 * 30;
+let monthlyNetSalary = monthlySalary - monthlyTax;
+
+
+document.getElementById("myDiv01").innerHTML = "Daily Salary: " + salary + "$ <br> "+ "Daily Tax: " + tax + "$ <br>" +"Daily Net salary: " + netSalary + "$ <br>" 
+
+document.getElementById("myDiv02").innerHTML = "<br> <br> <br> <h3> Weekly Ammounts </h3>" + "Weekly Salary: " + weeklySalary + "$ <br>" + "Weekly Tax: " + weekyTax + " $ <br>" + "Weekly Net salary: " + weekyNetSalary + "$ <br>" 
+}
+
+document.getElementById("myDiv03").innerHTML = "<br> <br> <br> <h3> Monthly Ammounts </h3>" + "Monthly Salary: " + monthlySalary + "$ <br>" + "Monthly Tax: " + monthlyTax + " $ <br>" + "Monthly Net salary: " + monthlyNetSalary + "$ <br>"
+
+
+
+</script>
