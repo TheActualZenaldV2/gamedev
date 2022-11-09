@@ -1,0 +1,199 @@
+<script>
+    function update() {
+        document.getElementById('text').value = cookiecount;
+        document.title = cookiecount + " Jeremycoin";
+        
+        document.getElementById('ammountMultiplier').innerHTML = "Multiplier Upgrade x" + (multiplier+1);
+        document.getElementById('ammountMultiplier2').innerHTML = "x" + (multiplier+1);
+        document.getElementById('costMultiplier').innerHTML = ((multiplier+1) * 100) + " Jeremycoin";
+        document.getElementById('currentMultiplier').innerHTML = "Your current Multiplier is x" + (multiplier);
+        
+        document.getElementById('ammountSchoolpc').innerHTML = "You Own " + Schoolpc + " Schoolpc";
+        document.getElementById('costSchoolpc').innerHTML = ((Schoolpc+1) * 12) + " Jeremycoin";
+        
+        document.getElementById('ammountHightechpc').innerHTML = "You Own " + Hightechpc + " Hightechpc";
+        document.getElementById('costHightechpc').innerHTML = ((Hightechpc+1) * 15) + " Jeremycoin";
+        
+        document.getElementById('Jeremycoinpersecond').innerHTML = "You are gaining " + (((Schoolpc)+(Hightechpc*2))*multiplier) + " Jeremycoin per/s";
+    }
+    
+    var multiplier = 1;
+    var cookiecount = 0;
+    var Schoolpc = 0;
+    var Hightechpc = 0;
+    
+    function timer() {
+        cookiecount = cookiecount + Schoolpc*multiplier;
+        cookiecount = cookiecount + Hightechpc*2*multiplier;
+        update()
+    }
+    setInterval(timer, 1000)
+</script>
+<html>
+<head><title>0 Jeremycoin</title></head>
+<body>
+
+    <p id="Jeremycoinpersecond">You are gaining 0 Jeremy Ellis Coins per/s</p>
+    
+    <a href=# onclick="add()"><img src="https://avatars.githubusercontent.com/u/5605614?v=4"></a>
+    <br><br>
+    You got: 
+    <input type="text" id="text" disabled style= text-align:center value=0>
+    <script>
+    function add() {
+        cookiecount = cookiecount + 1
+        update()
+    }
+    
+    </script>
+     Jeremycoin
+    <br><br>
+    <div id="buttonHolder">
+    <button><a href="#" onClick="save()">Save</a></button>
+    <button><a href="#" onclick="load()">Load</a></button>
+    <br><br>
+    
+    <p id="ammountMultiplier">Multiplier Upgrade x2</p>
+    <button><a href="#" onClick="buyMultiplier()"><span id="ammountMultiplier2">x2</span></a></button>
+    <p id="costMultiplier">200 Jeremy Coins</p>
+    <p id="currentMultiplier">Your current Multiplier is x1</p>
+    <br>
+    
+    <p id="buy">Buy 1 Schoolpc</p>
+    <button><a href="#" onClick="buySchoolpc()"><img src="https://hehimhismedia.com/wp-content/uploads/2020/05/Dell-Computer.jpg" width="30px" height="40px"></a></button>
+    <p id="costSchoolpc">12 Jeremy Coins</p>
+    <p id="ammountSchoolpc">You Own 0 Schoolpc</p>
+    
+    <br>
+    
+    <p id="buy">Buy 1 Hightechpc</p>
+    <button><a href="#" onClick="buyHightechpc()"><img src="https://c1.neweggimages.com/ProductImageOriginal/83-360-205-13.jpg" width="50px" height="50px"></a></button>
+    <p id="costHightechpc">15 Jeremy Coins</p>
+    <p id="ammountHightechpc">You Own 0 Farms</p>
+    
+    </div>
+
+
+    <script>
+    function save() {
+        localStorage.setItem("cookiecount", cookiecount);
+        localStorage.setItem("Schoolpc", autoClick);
+        localStorage.setItem("Hightechpc", Hightechpc);
+        localStorage.setItem("multiplier", multiplier);
+    }
+    function load() {
+        cookiecount = localStorage.getItem("cookiecount");
+        cookiecount = parseInt(cookiecount);
+        Schoolpc = localStorage.getItem("Schoolpc");
+        Schoolpc = parseInt(autoClick);
+        Hightechpc = localStorage.getItem("Hightechpc");
+        Hightechpc = parseInt(Hightechpc);
+        multiplier = localStorage.getItem("multiplier");
+        multiplier = parseInt(multiplier);        
+        update()
+    }
+        
+    function buySchoolpc() {
+        if (cookiecount >= ((Schoolpc+1) * 12)) {
+            cookiecount = cookiecount - ((Schoolpc+1) * 12);
+            Schoolpc = Schoolpc + 1;
+            update()
+        }
+    }
+        
+    function buyHightechpc() {
+        if (cookiecount >= ((Hightechpc+1) * 15)) {
+            cookiecount = cookiecount - ((Hightechpc+1) * 15);
+            Hightechpc = Hightechpc + 1;
+            update()
+        }
+    }
+    
+    function buyMultiplier() {
+        if (cookiecount >= ((multiplier+1) * 100)) {
+            cookiecount = cookiecount - ((multiplier+1) * 50);
+            multiplier = multiplier + 1;
+            update()
+        }
+    }
+    </script>
+
+
+<style>
+
+
+#buttonHolder {
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-20%, -50%);
+    border: 3px solid #73AD21;
+    padding: 10px;
+    box-shadow: inset 0 0 10px #000000;
+
+}
+
+
+    #ammountMultiplier, #costMultiplier, #currentMultiplier, #ammountSchoolpc, #costSchoolpc, #ammountHightechpc, #costHightechpc, #buy {
+        display: inline-block;
+      
+    }
+
+    #Jeremycoinpersecond {
+        font-family: Arial;
+        font-size: 40px;
+        color: gray;
+    }
+body {
+ 
+    background-image: url("https://img.freepik.com/premium-photo/colorful-pink-fluffy-cotton-candy-background-soft-color-sweet-candyfloss-abstract-blurre_44651-197.jpg?w=826"); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: "Comic Sans MS", cursive, sans-serif;  
+    text-align: center;
+
+}
+
+img {
+    border-radius: 50%;
+    display: block;
+  
+    margin-right: auto;
+  padding: 50px;
+  width:
+box-shadow: 0 0 10px #000000;
+}
+
+input {
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    font-size: 30px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+
+
+
+</style>
+
+
+
+</body>
+</html>
