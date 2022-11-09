@@ -1,0 +1,291 @@
+Hourly Wage: <input type="number" id="hourWage" value="15" oninput="clearButtons()">
+Hours worked Per Day: <input type="number" id="hourWorked" value="8" oninput="clearButtons()">
+   <input type="number" id="taxBracket" value="30">
+<input type="button" id="button" value="Calculate Tax Bracket" onclick="calculateTaxBracket()">
+
+<input type="button" id="button2" value="Calculate Taxes " onclick="myCalculate()">
+<div id="myDiv05">
+    ...
+    </div>
+<div id="myDiv01"> 
+    ...
+</div>
+<div id="myDiv02"> 
+    ...
+    </div>
+
+    <div id="myDiv03">
+        ...
+    </div>
+
+    <div id="myDiv04">
+        ...
+        </div>
+
+        <div id="myDiv07">
+            ...
+            </div>
+
+<br>
+        <div id="myDiv06">
+             <br> Features: <br>
+             <li>  Automatically calculates the tax bracket based on the salary <br> </li>
+                <li>  Calculates the taxes based on the tax bracket <br> </li>
+                <li>  Calculates the net salary based on the taxes <br> </li>
+                <li>  Calculates the daily, weekly, monthly and yearly ammounts <br> </li>
+                <li> Forced Recalculating tax bracket on input change with hiding buttons <br> </li> 
+                <li> Forced Number value only in input fields </li>
+                <li> Enjoy calculating your taxes nerds </li>
+
+           <br>
+           
+
+            </div>
+<br>
+<br>
+        
+
+<script>
+//show calculate tax bracket button when changing a value
+    function clearButtons() {
+        document.getElementById("button2").style.display = "none";
+        document.getElementById("button").style.display = "inline";
+        document.getElementById("myDiv05").style.display = "none";
+        document.getElementById("myDiv04").style.display = "none";
+        document.getElementById("myDiv03").style.display = "none";
+        document.getElementById("myDiv02").style.display = "none";
+        document.getElementById("myDiv01").style.display = "none";
+        document.getElementById("myDiv07").innerHTML = " <br> Recalculate tax bracket to see results ";
+    }
+
+
+
+//*automatically calculate tax bracket 
+    function calculateTaxBracket() {
+        let hourWage = document.getElementById("hourWage").value;
+let hourWorked = document.getElementById("hourWorked").value;
+let taxBracket = document.getElementById("taxBracket").value;
+
+
+//* daily 
+let salary = hourWage * hourWorked;
+let tax = salary * taxBracket / 100;
+let netSalary = salary - tax;
+
+
+//* weekly
+let weeklySalary = hourWage * hourWorked * 5;
+let weekyTax = salary * taxBracket / 100 * 5;
+let weekyNetSalary = weeklySalary - weekyTax;   
+
+//* monthly
+let monthlySalary = hourWage * hourWorked * 30;
+let monthlyTax = monthlySalary * taxBracket / 100;
+let monthlyNetSalary = monthlySalary - monthlyTax;
+
+//* yearly
+let yearlySalary = hourWage * hourWorked * 365;
+let yearlyTax = yearlySalary * taxBracket / 100;
+let yearlyNetSalary = yearlySalary - yearlyTax;
+
+document.getElementById("button2").style.display = "none";
+        document.getElementById("button").style.display = "block";
+        document.getElementById("myDiv05").style.display = "block";
+        document.getElementById("myDiv04").style.display = "block";
+        document.getElementById("myDiv03").style.display = "block";
+        document.getElementById("myDiv02").style.display = "block";
+        document.getElementById("myDiv01").style.display = "block";
+        document.getElementById("myDiv07").innerHTML = " ";
+        
+
+        document.getElementById("button2").style.display = "inline";
+        document.getElementById("button").style.display = "none";
+
+       
+       //* actual code to determine tax bracket automatically
+        if (yearlySalary >= 42184) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 20.06% ";
+    document.getElementById("taxBracket").value = "20.06"; 
+} 
+
+if (yearlySalary >= 49020) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 22.70% ";
+    document.getElementById("taxBracket").value = "22.70"; 
+} 
+
+if (yearlySalary >= 84369) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 28.20% ";
+    document.getElementById("taxBracket").value = "28.20"; 
+} 
+
+if (yearlySalary >= 96866) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 31.00% ";
+    document.getElementById("taxBracket").value = "31"; 
+} 
+
+if (yearlySalary >= 98040) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 32.79% ";
+    document.getElementById("taxBracket").value = "32.79"; 
+} 
+
+if (yearlySalary >= 117623) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 38.29% ";
+    document.getElementById("taxBracket").value = "38.29"; 
+} 
+
+if (yearlySalary >= 151978) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 40.70% ";
+    document.getElementById("taxBracket").value = "40.70"; 
+} 
+
+if (yearlySalary >= 159483) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 43.70% ";
+    document.getElementById("taxBracket").value = "43.70"; 
+} 
+
+if (yearlySalary >= 216511) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 45.80% ";
+    document.getElementById("taxBracket").value = "45.80"; 
+} 
+
+if (yearlySalary >= 222420) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 49.80% ";
+    document.getElementById("taxBracket").value = "49.80"; 
+} 
+
+if (yearlySalary >= 223000) {
+    document.getElementById("myDiv05").innerHTML = "Your tax bracket is 53.50% ";
+    document.getElementById("taxBracket").value = "53.50"; 
+} 
+
+uihjnbm
+
+
+    }
+
+    //* Function to calculate the gross pay, tax and net pay, global variables
+    function myCalculate() {
+let hourWage = document.getElementById("hourWage").value;
+let hourWorked = document.getElementById("hourWorked").value;
+let taxBracket = document.getElementById("taxBracket").value;
+
+
+//* daily 
+let salary = hourWage * hourWorked;
+let tax = salary * taxBracket / 100;
+let netSalary = salary - tax;
+
+
+//* weekly
+let weeklySalary = hourWage * hourWorked * 5;
+let weekyTax = salary * taxBracket / 100 * 5;
+let weekyNetSalary = weeklySalary - weekyTax;   
+
+//* monthly
+let monthlySalary = hourWage * hourWorked * 30;
+let monthlyTax = monthlySalary * taxBracket / 100;
+let monthlyNetSalary = monthlySalary - monthlyTax;
+
+//* yearly
+let yearlySalary = hourWage * hourWorked * 365;
+let yearlyTax = yearlySalary * taxBracket / 100;
+let yearlyNetSalary = yearlySalary - yearlyTax;
+
+
+
+
+//* display the daily ammounts 
+document.getElementById("myDiv01").innerHTML = "<br> <br> <br> <h3> Daily Ammounts </h3>" + "Daily Salary: " + salary + "$ <br> "+ "Daily Tax: " + tax + "$ <br>" +"Daily Net salary: " + netSalary + "$ <br>" 
+
+
+//* display the weekly ammounts 
+document.getElementById("myDiv02").innerHTML = "<br> <br> <br> <h3> Weekly Ammounts </h3>" + "Weekly Salary: " + weeklySalary + "$ <br>" + "Weekly Tax: " + weekyTax + " $ <br>" + "Weekly Net salary: " + weekyNetSalary + "$ <br>" 
+
+
+//* display the monthly ammounts
+
+document.getElementById("myDiv03").innerHTML = "<br> <br> <br> <h3> Monthly Ammounts </h3>" + "Monthly Salary: " + monthlySalary + "$ <br>" + "Monthly Tax: " + monthlyTax + " $ <br>" + "Monthly Net salary: " + monthlyNetSalary + "$ <br>" 
+
+
+//* display the yearly ammounts
+document.getElementById("myDiv04").innerHTML = "<br> <br> <br> <h3> Yearly Ammounts </h3>" + "Yearly Salary: " + yearlySalary + "$ <br>" + "Yearly Tax: " + yearlyTax + " $ <br>" + "Yearly Net salary: " + yearlyNetSalary + "$ <br>" 
+
+
+
+ 
+ 
+
+
+
+
+
+}
+
+</script>
+
+
+<style>
+
+
+#myDiv06 {
+    background-color: #ccb6db;
+    border: 3px solid black;
+    border-radius: 1em;
+
+}
+
+    #button2 {
+        display: none;
+    }
+
+#taxBracket {
+display: none;
+}
+
+// 
+#myDiv05 {
+position: absolute;
+margin: auto;
+
+}
+
+
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: #000000;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+
+
+}
+
+input, #button, #button2 {
+    font-size: 20px;
+    color: #000000;
+    text-align: center;
+    background-color: #f2f2f2;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
+
+input:hover, #button:hover, #button2:hover {
+    background-color: gray;
+    color: #f2f2f2;
+    transition: 0.2s all;
+    transform: scale(0.99);
+    border-radius: 0.2em;
+    
+}
+#button:active, #button2:active {
+    background-color: #000000;
+    color: #f2f2f2;
+    transition: 0.2s all;
+    transform: scale(0.95);
+    border-radius: 0.2em;
+    
+}
