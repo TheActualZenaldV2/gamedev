@@ -1,0 +1,162 @@
+
+
+
+<h1 align=center>t2a06-spy-name.html</h1>
+
+
+
+<input type=button value="normal encrypt" onclick="{
+   let myTemp = ''
+   myString = document.getElementById('myArea01').value.toLowerCase().split('')
+   for (let myLoop=0;   myLoop < myString.length; myLoop++){
+      myTemp = myString[myLoop]
+      if (myString[myLoop] == 'a') {myTemp  = 'b'} 
+      if (myString[myLoop] == 'b') {myTemp  = 'c'}
+        if (myString[myLoop] == 'c') {myTemp  = 'd'}
+        if (myString[myLoop] == 'd') {myTemp  = 'e'}
+        if (myString[myLoop] == 'e') {myTemp  = 'f'}
+        if (myString[myLoop] == 'f') {myTemp  = 'g'}
+        if (myString[myLoop] == 'g') {myTemp  = 'h'}
+        if (myString[myLoop] == 'h') {myTemp  = 'i'}
+        if (myString[myLoop] == 'i') {myTemp  = 'j'}
+        if (myString[myLoop] == 'j') {myTemp  = 'k'}
+        if (myString[myLoop] == 'k') {myTemp  = 'l'}
+        if (myString[myLoop] == 'l') {myTemp  = 'm'}
+        if (myString[myLoop] == 'm') {myTemp  = 'n'}
+        if (myString[myLoop] == 'n') {myTemp  = 'o'}
+        if (myString[myLoop] == 'o') {myTemp  = 'p'}
+        if (myString[myLoop] == 'p') {myTemp  = 'q'}
+        if (myString[myLoop] == 'q') {myTemp  = 'r'}
+        if (myString[myLoop] == 'r') {myTemp  = 's'}
+        if (myString[myLoop] == 's') {myTemp  = 't'}
+        if (myString[myLoop] == 't') {myTemp  = 'u'}
+        if (myString[myLoop] == 'u') {myTemp  = 'v'}
+        if (myString[myLoop] == 'v') {myTemp  = 'w'}
+        if (myString[myLoop] == 'w') {myTemp  = 'x'}
+        if (myString[myLoop] == 'x') {myTemp  = 'y'}
+        if (myString[myLoop] == 'y') {myTemp  = 'z'}
+        if (myString[myLoop] == 'z') {myTemp  = 'a'}
+
+        
+
+      myString[myLoop] = myTemp
+   }
+   document.getElementById('myArea02').value = myString.join('')
+}">
+<input type=button value="normal decrypt" onclick="{
+    let myTemp = ''
+    myString = document.getElementById('myArea02').value.toLowerCase().split('')
+    for (let myLoop=0;   myLoop < myString.length; myLoop++){
+       myTemp = myString[myLoop]
+         if (myString[myLoop] == 'b') {myTemp  = 'a'}
+         if (myString[myLoop] == 'c') {myTemp  = 'b'}
+         if (myString[myLoop] == 'd') {myTemp  = 'c'}
+            if (myString[myLoop] == 'e') {myTemp  = 'd'}
+            if (myString[myLoop] == 'f') {myTemp  = 'e'}
+            if (myString[myLoop] == 'g') {myTemp  = 'f'}
+            if (myString[myLoop] == 'h') {myTemp  = 'g'}
+            if (myString[myLoop] == 'i') {myTemp  = 'h'}
+            if (myString[myLoop] == 'j') {myTemp  = 'i'}
+            if (myString[myLoop] == 'k') {myTemp  = 'j'}
+            if (myString[myLoop] == 'l') {myTemp  = 'k'}
+            if (myString[myLoop] == 'm') {myTemp  = 'l'}
+            if (myString[myLoop] == 'n') {myTemp  = 'm'}
+            if (myString[myLoop] == 'o') {myTemp  = 'n'}
+            if (myString[myLoop] == 'p') {myTemp  = 'o'}
+            if (myString[myLoop] == 'q') {myTemp  = 'p'}
+            if (myString[myLoop] == 'r') {myTemp  = 'q'}
+            if (myString[myLoop] == 's') {myTemp  = 'r'}
+            if (myString[myLoop] == 't') {myTemp  = 's'}
+            if (myString[myLoop] == 'u') {myTemp  = 't'}
+            if (myString[myLoop] == 'v') {myTemp  = 'u'}
+            if (myString[myLoop] == 'w') {myTemp  = 'v'}
+            if (myString[myLoop] == 'x') {myTemp  = 'w'}
+            if (myString[myLoop] == 'y') {myTemp  = 'x'}
+            if (myString[myLoop] == 'z') {myTemp  = 'y'}
+
+           
+
+         myString[myLoop] = myTemp
+    }
+      document.getElementById('myArea03').value = myString.join('')
+ }">
+
+
+<button onclick="encrypt()">Base 64 Encypt</button>
+<button onclick="decrypt()">Base 64 Decyrpt</button>
+
+
+
+
+    
+
+
+<br><br>
+
+<textarea id="myArea01" rows=4 cols=70>Hello how are you</textarea><br>  <br> 
+
+<textarea id="myArea02" rows=4 cols=70></textarea> <br> <br> 
+
+
+
+
+<textarea id="myArea03" rows=4 cols=70></textarea> <br> 
+
+<br> <br>
+
+
+
+
+
+
+
+
+<script>
+  
+    var base64 = "SGVsbG8gV29ybGQh";
+
+    var text = atob(base64);
+   
+    document.write();
+
+</script>
+
+
+
+<script>
+    function encrypt() {
+        var text = document.getElementById("myArea01").value;
+        var base64 = btoa(text);
+        document.getElementById("myArea02").value = base64;
+    }
+    function decrypt() {
+    
+        var base64 = document.getElementById("myArea02").value;
+
+        var text = atob(base64);
+ 
+        document.getElementById("myArea03").value = text;
+    }
+</script>
+
+
+<div id="result"></div> 
+
+<style>
+    body {
+     margin: 50px;
+
+     background-color: #FFDEE9;
+     background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+
+     font-family: 'Permanent Marker', cursive;
+     font-size: 20px;
+     opacity: 1;
+     color: black;
+     text-align: center;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-size: cover;
+
+   }
+</style>
