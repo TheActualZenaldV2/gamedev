@@ -1,7 +1,6 @@
-
 <title> Gabby was here lol </title>
 
-<body onload="createDecryptionKey()">
+<body onload="createDecryptionKey()" onload="checkDecryptKey()">
 
 <h1 align=center>t2a06-spy-name.html</h1>
 
@@ -38,9 +37,7 @@
         if (myString[myLoop] == 'x') {myTemp  = 'y'}
         if (myString[myLoop] == 'y') {myTemp  = 'z'}
         if (myString[myLoop] == 'z') {myTemp  = 'a'}
-
        
-
       myString[myLoop] = myTemp
    }
    document.getElementById('myArea02').value = myString.join('')
@@ -76,16 +73,9 @@
             if (myString[myLoop] == 'y') {myTemp  = 'x'}
             if (myString[myLoop] == 'z') {myTemp  = 'y'}
             if (myString[myLoop] == 'a') {myTemp  = 'z'}
-
            
-
-
-
-
             
-
            
-
          myString[myLoop] = myTemp
     }
       document.getElementById('myArea03').value = myString.join('')
@@ -139,6 +129,7 @@
     let decryptionKey = Math.floor(Math.random() * 100000000);
     document.getElementById('decryptionKeyHolder').innerHTML = decryptionKey;
     document.getElementById('decryptionKey').value = decryptionKey;
+    console.log("Decryption key created." + "Decryption Key: " + decryptionKey);
 
   }
 
@@ -156,6 +147,11 @@
         document.getElementById("myArea03").value = text;
     }
 
+ 
+
+
+
+
 
     function checkDecryptKey() {
       let decryptionKey = document.getElementById('decryptionKeyHolder').innerHTML;
@@ -167,21 +163,28 @@
 //* decode variables
         var decode = document.getElementById("myArea05").value;
         var text = atob(base64);
-
-
-
-
-        console.log ("decryptionKey");
+         console.log("initial check key complete ")
         
+
+
+   
+
+
+
+     
 
 
       //* check if the user key is the same as the decryption key
    if(userKey == decryptionKey){
-    alert("You have the correct key");
-    //* encrypt the text
-    document.getElementById("myArea06").value = encode;
-    //* decrypt the text
-    document.getElementById("myArea07").value = decode;
+    console.log ("key success")
+    document.getElementById("keyResultHolder").innerHTML = "Key Success";
+    document.getElementById("keyResultHolder").style.color = "green";
+    
+          
+            
+
+    
+    
 
    
         
@@ -189,13 +192,66 @@
   
 
    } else {
-    alert("You have the wrong key");
+    console.log("key fail")
     document.getElementById("myArea06").value = "";
     document.getElementById("myArea07").value = "";
+    document.getElementById("keyResultHolder").innerHTML = "Key Fail";
+    document.getElementById("keyResultHolder").style.color = "red";
+    
    }
     }
    
     
+</script>
+
+
+<script> 
+
+
+
+
+   function keyEncode() {
+    //* encode variables
+var text = document.getElementById("myArea05").value;
+        var encode = btoa(text);
+//* decode variables
+        var decode = document.getElementById("myArea05").value;
+        var text = atob(base64);
+
+
+        if(document.getElementById("keyResultHolder").innerHTML == "Key Success") {
+    document.getElementById("myArea06").value = encode;
+    console.log("key encode success ")
+    } 
+}
+
+    function keyDecode() {
+    //* encode variables
+var text = document.getElementById("myArea05").value;
+        var encode = btoa(text);
+//* decode variables
+        var decode = document.getElementById("myArea05").value;
+        var text = atob(base64);
+
+
+    //* decrypt the text
+    if(document.getElementById("keyResultHolder").innerHTML == "Key Success") {
+    document.getElementById("myArea07").value = decode;
+    console.log("key decode success ");
+    }
+
+    if(document.getElementById("keyResultHolder").innerHTML == "Key Fail") {
+    document.getElementById("myArea07").value = "";
+    document.getElementById("myArea06").value = "";
+
+    console.log("key decode fail ");
+    
+    }
+} 
+
+
+
+
 </script>
 
 
@@ -207,9 +263,11 @@ Your decryption Key is:
 
 
 <br><br>
-<input type="number" id="decryptionKey" value=""> 
-<input type="button" onclick="checkDecryptKey()" value="submit key">  <br> 
-<br> 
+<input type="button" value="Key encryption" onclick="keyEncode()">
+<input type="button" value="Key decryption" onclick="keyDecode()">
+
+<input type="number" id="decryptionKey" oninput="checkDecryptKey()"> 
+
 
 
 <textarea id="myArea05" rows=4 cols=70>Hello how are you</textarea><br>  <br> 
@@ -219,6 +277,8 @@ Your decryption Key is:
 
 
 <textarea id="myArea07" rows=4 cols=70></textarea> <br> 
+
+<h5 id="keyResultHolder" style="color: red;"> </h5> 
 
 <br> <br>
 
