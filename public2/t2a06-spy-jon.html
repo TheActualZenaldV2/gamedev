@@ -1,6 +1,6 @@
 <title> Gabby was here lol </title>
 
-<body onload="createDecryptionKey()" onload="checkDecryptKey()">
+<body onload="createDecryptionKey()">
 
 <h1 align=center>t2a06-spy-name.html</h1>
 
@@ -126,12 +126,60 @@
 <script>
 
   function createDecryptionKey() {
-    let decryptionKey = Math.floor(Math.random() * 100000000);
-    document.getElementById('decryptionKeyHolder').innerHTML = decryptionKey;
-    document.getElementById('decryptionKey').value = decryptionKey;
-    console.log("Decryption key created." + "Decryption Key: " + decryptionKey);
+    let decryptionKey = document.getElementById('decryptionKeyHolder').innerHTML;
+        let userKey = document.getElementById("decryptionKey").value;
+
+        let decryptionKeyNumber = Math.floor(Math.random() * 100000000);
+    document.getElementById('decryptionKeyHolder').innerHTML = decryptionKeyNumber;
+    document.getElementById('decryptionKey').value = decryptionKeyNumber;
+    console.log("Decryption key created." + "Decryption Key: " + decryptionKeyNumber);
+       
+//* encode variables
+        var text = document.getElementById("myArea05").value;
+        var encode = btoa(text);
+//* decode variables
+        var decode = document.getElementById("myArea05").value;
+        var text = atob(base64);
+         console.log("key check: " +  userKey) 
+        
+
+
+   
+
+
+
+     
+
+
+      //* check if the user key is the same as the decryption key
+   if(userKey == decryptionKeyNumber){
+    console.log ("key success")
+    document.getElementById("keyResultHolder").innerHTML = "Key Success";
+    document.getElementById("keyResultHolder").style.color = "green";
+    
+          
+            
+
+    
+    
+
+   
+        
+
+  
+
+   } else {
+    console.log("key fail")
+    document.getElementById("myArea06").value = "";
+    document.getElementById("myArea07").value = "";
+    document.getElementById("keyResultHolder").innerHTML = "Key Fail";
+    document.getElementById("keyResultHolder").style.color = "red";
+    
+   }
 
   }
+
+
 
     function encrypt() {
         var text = document.getElementById("myArea01").value;
@@ -255,7 +303,7 @@ var text = document.getElementById("myArea05").value;
 </script>
 
 
-<div id="result"></div> 
+<div id="result"></div>  <br> 
 Your decryption Key is: 
 <div id="decryptionKeyHolder"> Decryption key goes here </div>
 
@@ -268,6 +316,7 @@ Your decryption Key is:
 
 <input type="number" id="decryptionKey" oninput="checkDecryptKey()"> 
 
+<br> <br>
 
 
 <textarea id="myArea05" rows=4 cols=70>Hello how are you</textarea><br>  <br> 
