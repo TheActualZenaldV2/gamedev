@@ -1,0 +1,114 @@
+<script> 
+
+// * display a random image based off Math.random 
+
+
+function randomImage() {
+
+let randomNum = Math.floor(Math.random() * 10);
+console.log("randomNum: " + randomNum);
+let imageNumber = randomNum;
+let flagnumber = document.getElementById("flagnumber");
+
+if(randomNum == 1){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Flag_of_Canada_%281964%29.svg/2560px-Flag_of_Canada_%281964%29.svg.png";
+imageNumber = 1;
+flagnumber = 1; 
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 2){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=999&q=80";
+imageNumber = 2;
+flagnumber = 2;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 3){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=765&q=80";
+imageNumber = 3;
+flagnumber = 3;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 4){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80";
+imageNumber = 4;
+flagnumber = 4;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 5){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1603064752734-4c48eff53d05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80";
+imageNumber = 5;
+flagnumber = 5;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 6){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+imageNumber = 6;
+flagnumber = 6;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 7){
+document.getElementById("flag").src = "https://plus.unsplash.com/premium_photo-1667682209336-9079678199d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+imageNumber = 7;
+flagnumber = 7;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 8){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=722&q=80";
+imageNumber = 8;
+flagnumber = 8;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 9){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80";
+imageNumber = 9;
+flagnumber = 9;
+console.log("image number is: " + imageNumber);
+}
+if(randomNum == 10){
+document.getElementById("flag").src = "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+imageNumber = 10;
+flagnumber = 10;
+console.log("image number is: " + imageNumber);
+}
+
+if(randomNum == 0){
+document.getElementById("flag").src = "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/2/27/S3_Flipper_flopper_snapshot.jpg/334px-S3_Flipper_flopper_snapshot.jpg";
+imageNumber = 0;
+flagnumber = 0;
+//* display image number in the p tag 
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+
+
+
+console.log("image number is: " + imageNumber);
+}
+
+
+
+
+
+}
+
+
+
+</script>
+
+<body onload="randomImage()">
+
+<img id="flag" src=""> 
+
+<p id="imageNumber"> image number goes here </p>
+
+<style>
+#flag{
+width: 750px;
+height: 750px;
+text-align: center;
+align-self: start;
+align-self: auto;
+margin: auto; 
+
+
+}
+</style>
+</body>
