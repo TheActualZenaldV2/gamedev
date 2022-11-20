@@ -1,0 +1,515 @@
+<script> 
+//* flag guessing game 
+
+//*global variables
+
+
+
+let score = 0;
+let tries = 0;
+let guess = document.getElementById("guess");
+
+
+//* make a clock to keep track of time 
+//* make clock update every 0.1 seconds 
+let time = 0;
+let timer = setInterval(function(){
+    time++;
+    document.getElementById("timer").innerHTML = time;
+}, 1000);
+
+//* make a fucntion to end game if score is 12 
+function endGame(){
+    
+        clearInterval(timer);
+        document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of 12. You took " + time + " seconds to complete the game. Refresh the page to play again.";
+    }
+
+
+
+
+
+
+function generateImage(){
+    document.getElementById("flag").src = "https://c4.wallpaperflare.com/wallpaper/1000/716/63/4k-canadian-flag-maple-leaf-national-flag-wallpaper-preview.jpg"
+    document.getElementById("flag").style.display = "block";
+    flagName = "canada"
+    document.getElementById("nextButton").style.display = "none";
+    
+
+}
+
+
+//* GLOBAL VARIABLES AND CODE TO RUN ON PAGE LOAD
+
+
+    
+    
+
+
+    
+
+
+
+
+
+//* declaring function to change flag
+function changeFlag(){
+    document.getElementById("nextButton").style.display = "none";
+    
+    document.getElementById("guess").value = "";
+    document.getElementById("guess").focus();
+    document.getElementById("guessButton").style.display = "inline-block";
+    document.getElementById("guess").disabled = false;
+
+
+
+
+
+
+
+
+    
+
+    let = previousNumber = flagName; 
+
+let = randomNum = Math.floor(Math.random() * 11);
+console.log("Number is  :  " + randomNum);
+//* if the random number is the same as the previous number, then generate a new random number and display the new image 
+if (randomNum == previousNumber) {
+    
+    randomNum = "12"
+    console.log("Previus and new numbers are the same. Defaulted to image 12 ");
+}
+
+//* if the random number is the same as the previous number, then generate display image 13 
+if (randomNum == previousNumber) {
+    
+    randomNum = "13"
+    console.log("Previus and new numbers are the same. Defaulted to image 13 ");
+}
+
+
+
+
+
+
+if(randomNum == 1){
+document.getElementById("flag").src = "https://c4.wallpaperflare.com/wallpaper/1000/716/63/4k-canadian-flag-maple-leaf-national-flag-wallpaper-preview.jpg";
+imageNumber = 1;
+flagName = "canada";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "1";
+}
+
+
+if(randomNum == 2){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/1200px-Flag_of_the_United_States.svg.png";
+imageNumber = 2;
+flagName = "usa";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "2";
+}
+if(randomNum == 3){
+document.getElementById("flag").src = "https://cdn.britannica.com/73/2573-004-29818847/Flag-Mexico.jpg";
+imageNumber = 3;
+flagName = "mexico";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "3";
+}
+if(randomNum == 4){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/640px-Flag_of_Brazil.svg.png";
+imageNumber = 4;
+flagName = "brazil";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "4";
+}
+if(randomNum == 5){
+document.getElementById("flag").src = "https://cdn.britannica.com/82/682-004-F0B47FCB/Flag-France.jpg";
+imageNumber = 5;
+flagName = "france";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "5";
+}
+if(randomNum == 6){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png";
+imageNumber = 6;
+flagName = "germany";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "6";
+}
+if(randomNum == 7){
+document.getElementById("flag").src = "https://www.countryflags.com/wp-content/uploads/italy-flag-png-large.png";
+imageNumber = 7;
+flagName = "italy";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "7";
+}
+if(randomNum == 8){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1200px-Bandera_de_Espa%C3%B1a.svg.png";
+imageNumber = 8;
+flagName  = "spain";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "8";
+}
+if(randomNum == 9){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1200px-Flag_of_Japan.svg.png";
+imageNumber = 9;
+flagName = "japan";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "9";
+}
+if(randomNum == 10){
+document.getElementById("flag").src = "https://cdn.pixabay.com/photo/2013/07/13/14/16/china-162389_960_720.png";
+imageNumber = 10;
+flagName = "china";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "10";
+}
+if(randomNum == 0){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/640px-Flag_of_Russia.svg.png"
+flagName = "russia";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "0";
+}
+if(randomNum == 12){
+document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png";
+imageNumber = 12;
+flagName = "india";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "12";
+}
+if(randomNum == 13){
+document.getElementById("flag").src = "https://cdn.britannica.com/78/6078-004-77AF7322/Flag-Australia.jpg";
+imageNumber = 13;
+flagName = "australia";
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("answer is:  " + flagName);
+previousNumber = "13";
+}
+    
+    
+
+
+    
+}
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+//* check if guess is correct 
+function myGuess() {
+
+
+    if (document.getElementById("guess").value.toLowerCase().replace(/\s/g,'') == flagName) {
+        score++;
+        document.getElementById("score").innerHTML = score;
+        document.getElementById("tries").innerHTML = tries;
+        document.getElementById("myDiv").innerHTML = "Correct!";
+        
+        document.getElementById("guess").disabled = true;
+        document.getElementById("guess").style.color = "white";
+        document.getElementById("guessButton").style.display = "none";
+        document.getElementById("nextButton").style.display = "inline-block";
+        
+    } else {
+        tries++;
+        document.getElementById("score").innerHTML = score;
+        document.getElementById("tries").innerHTML = tries;
+        document.getElementById("myDiv").innerHTML = "Wrong!";
+        document.getElementById("guess").style.backgroundColor = "red";
+        
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+//* display the score and tries
+function myScore() {
+    document.getElementById("score").innerHTML = score;
+    document.getElementById("tries").innerHTML = tries;
+}
+
+//* display the time
+function myTime() {
+    document.getElementById("timer").innerHTML = time;
+}
+
+//* display the flag
+function myFlag() {
+    document.getElementById("flag").innerHTML = flags;
+}
+
+
+
+
+
+
+//* make a button that changes the flag
+
+  
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flag Guessing Game</title>
+   
+</head>
+
+<body onload="generateImage()">
+
+    <div id="leftContainer"> 
+    <h1>Flag Guessing Game</h1>
+    
+    <img id="flag" src="" alt="flag">
+    </div>
+
+
+
+
+    <div id="rightContainer">
+        <p id="imageNumber" display="none">  </p>
+        
+    <br>
+    <input type="text" id="guess" placeholder="Guess the country"> <div id="myDiv"></div>
+    <button id="guessButton" onclick="myGuess()">Guess</button>
+    <button id="nextButton" display="none" onclick="changeFlag()">Next</button>
+    <br>
+    <p>Score: <span id="score"></span></p>
+    <p>Tries: <span id="tries"></span></p>
+    <p>Time: <span id="timer"></span></p>
+
+    
+    <div id="currentFlag"></div>
+
+    
+    <button id="" onclick="endGame()">End Game</button>
+    <h5 id="endGame">       </h5>
+    </div>
+
+
+
+    
+
+
+
+
+
+<style>
+
+    #imageNumber {
+        display: none;
+
+    }
+#nextButton {
+    display: none;
+}
+    #leftContainer {
+        float: left;
+        width: 65%;
+        height: 100%;
+        background-color: #f1f1f1;
+        text-align: center;
+        background-color: orange;
+    }
+
+    #rightContainer {
+        float: right;
+        width: 35%;
+        height: 100%;
+        background-color: #f1f1f1;
+        text-align: center;
+        
+        background-color: green;
+    }
+
+
+    body {
+        background-color: #f2f2f2;
+        font-family: Arial, Helvetica, sans-serif;
+        align-items: center; 
+        text-align: center;
+        background-color: black;
+
+
+    }
+    input {
+        width: 200px;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 16px;
+
+    }
+    button {
+        width: 100px;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 16px;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: #ccc;
+        transform: scale(0.97);
+        border: 2px solid gray;
+
+    }
+    button:active {
+        background-color: #ccc;
+        transform: scale(0.9);
+        transition: 0.3s;
+        border: 3px solid black;
+
+    }
+    h1 {
+        text-align: center;
+        font-size: 40px;
+        color: #333;
+    }
+    #myDiv {
+        text-align: center;
+        font-size: 30px;
+        color: #333;
+    }
+    #flag {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+    #score {
+        color: #333;
+    }
+    #tries {
+        color: #333;
+    }
+    #timer {
+        color: #333;
+    }
+
+    #flag{
+width: 750px;
+height: 750px;
+text-align: center;
+align-self: start;
+align-self: auto;
+margin: auto; 
+transition: 0.3s all;
+border-radius: 5rem;
+
+}
+#flag:hover {
+    transform: scale(1.06);
+    transition: 0.3s all;
+    border-radius: 6rem;
+    border: 7px solid black;
+}
+
+p {
+    font-size: 20px;
+    color: #333;
+}
+
+#guess {
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 16px;
+    margin: 5px;
+    color: white;
+    background-color:#ccc;
+}
+
+
+#guess:focus {
+    outline: none;
+    border: 2px solid #333;
+}
+
+#guess:active {
+    background-color: #ccc;
+    transform: scale(0.9);
+    transition: 0.3s;
+    border: 3px solid black;
+}
+
+#guess:hover {
+    background-color: #ccc;
+    transform: scale(0.97);
+    border: 2px solid gray;
+    transition: 0.2s all;
+}
+
+#guess:disabled {
+    background-color: #ccc;
+    transform: scale(0.97);
+    border: 2px solid gray;
+    cursor: not-allowed;
+   
+}
+
+
+
+
+
+
+</style>
+
+
+
+
+</html>
