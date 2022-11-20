@@ -2,7 +2,14 @@
     //* flag guessing game 
     
     //*global variables
-    
+    var startTime = Date.now();
+
+var interval = setInterval(function() {
+    var elapsedTime = Date.now() - startTime;
+    document.getElementById("timer").innerHTML = (elapsedTime / 1000).toFixed(1);
+}, 1);
+
+
     
     
     let score = 0;
@@ -13,17 +20,10 @@
     //* make a clock to keep track of time 
     //* make clock update every 0.1 seconds 
     let time = 0;
-    let timer = setInterval(function(){
-        time++;
-        document.getElementById("timer").innerHTML = time;
-    }, 1000);
+    
     
     //* make a fucntion to end game if score is 12 
-    function endGame(){
-        
-            clearInterval(timer);
-            document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of 12. You took " + time + " seconds to complete the game. Refresh the page to play again.";
-        }
+  
     
     
     
@@ -54,7 +54,23 @@
         
     function endGame(){
         clearInterval(timer);
+        //* stop timer 
+        
+        
+
         document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of 12. You took " + time + " seconds to complete the game. Refresh the page to play again.";
+      document.getElementById("guess").style.display = "none";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("guessButton").style.display = "none";
+        
+        document.getElementById("endGame").style.display = "block";
+        document.getElementById("endGameButton").style.display = "none";
+        document.getElementById("flag").style.display = "none";
+        
+        
+
+        
+
     }
     
     
@@ -68,7 +84,19 @@
         document.getElementById("guess").focus();
         document.getElementById("guessButton").style.display = "inline-block";
         document.getElementById("guess").disabled = false;
+        document.getElementById("myDiv").innerHTML = ""; 
+
+        //* pause timer 
+        clearInterval(timer);
+
+        
     
+
+      //* automatically end game if score is 12 
+
+        if (score == 12){
+            endGame();
+        }
     
     
     
@@ -82,24 +110,37 @@
     
     let = randomNum = Math.floor(Math.random() * 11);
     console.log("Number is  :  " + randomNum);
-    let myArray = new Array();
+
+                                                                 
+    const myArray = [];
+    
 
 
-    //* check if current number is one of the used numbers 
-    //* if it is, generate a new number
-    //* if it is not, add it to the used numbers array
-    //* if the used numbers array is 12 numbers long, end the game
-    //* if the used numbers array is not 12 numbers long, continue the game
-
-if (myArray.includes(randomNum)){
-        changeFlag();
-    } else {
-        myArray.push(randomNum);
-        console.log("Used numbers are: " + myArray);
-        if (myArray.length == 12){
-            endGame();
-        }
+function isStored(number) {
+  for (var i = 0; i < myArray.length; i++) {
+    if (myArray[i] == number) {
+      return true;
     }
+  }
+
+  return false;
+}
+
+function getNumber() {
+  while (true) {
+    const num = getRand();
+    
+    if (!isStored(num)) {
+      myArray.push(num);
+      return num;
+    }
+  }
+}
+
+function getRand() {
+    return Math.floor(Math.random() * 11);
+}
+
 
 
 
@@ -306,6 +347,9 @@ if (myArray.includes(randomNum)){
             document.getElementById("tries").innerHTML = tries;
             document.getElementById("myDiv").innerHTML = "Wrong!";
             document.getElementById("guess").style.backgroundColor = "red";
+            document.getElementById("guessButton").style.display = "none";
+            document.getElementById("nextButton").style.display = "inline-block";
+            
             
     
         }
@@ -369,6 +413,7 @@ if (myArray.includes(randomNum)){
     </head>
     
     <body onload="generateImage()">
+        <div id="bg-image"> </div>
     
         <div id="leftContainer"> 
         <h1>Flag Guessing Game</h1>
@@ -387,19 +432,23 @@ if (myArray.includes(randomNum)){
         <button id="guessButton" onclick="myGuess()">Guess</button>
         <button id="nextButton" display="none" onclick="changeFlag()">Next</button>
         <br>
-        <p>Score: <span id="score"></span></p>
-        <p>Tries: <span id="tries"></span></p>
-        <p>Time: <span id="timer"></span></p>
+        <p id="">Correct: <span id="score"></span></p>
+        <p id=""> Incorrect: <span id="tries"></span></p>
+        <p id="">Time: <span id="timer"></span></p>
     
         
         <div id="currentFlag"></div>
     
         
-        <button id="" onclick="endGame()">End Game</button>
+        <button id="endGameButton" onclick="endGame()">End Game</button>
         <h5 id="endGame">       </h5>
+
+        <span id="timer"></span> 
         </div>
+
+   
     
-    
+
     
         
     
@@ -420,28 +469,40 @@ if (myArray.includes(randomNum)){
             float: left;
             width: 65%;
             height: 100%;
-            background-color: #f1f1f1;
+            background-image: url("https://64.media.tumblr.com/20b34e8d12d4230f9b362d7feb148c57/tumblr_oiwytz4dh41tf8vylo1_1280.pnj");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             text-align: center;
-            background-color: orange;
+            padding: 0px; 
         }
     
         #rightContainer {
             float: right;
             width: 35%;
             height: 100%;
-            background-color: #f1f1f1;
+            background-image: linear-gradient(to top, #cfd9df07 0%, #e2ebf007 100%);
             text-align: center;
-            
-            background-color: green;
+     
+            background-color: rgba(255,255,255,0.8);
         }
     
-    
+       
         body {
-            background-color: #f2f2f2;
+            
             font-family: Arial, Helvetica, sans-serif;
             align-items: center; 
             text-align: center;
             background-color: black;
+            background-image: url("https://i.imgur.com/EnnHsdM.jpeg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            
+            
     
     
         }
