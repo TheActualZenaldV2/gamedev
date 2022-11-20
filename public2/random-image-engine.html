@@ -4,104 +4,44 @@
 
 
 
-function randomImage() {
-
-
-
-if(randomNum == 1){
-document.getElementById("flag").src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Flag_of_Canada_%281964%29.svg/2560px-Flag_of_Canada_%281964%29.svg.png";
-imageNumber = 1;
-flagnumber = 1; 
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 2){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=999&q=80";
-imageNumber = 2;
-flagnumber = 2;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 3){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=765&q=80";
-imageNumber = 3;
-flagnumber = 3;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 4){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80";
-imageNumber = 4;
-flagnumber = 4;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 5){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1603064752734-4c48eff53d05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80";
-imageNumber = 5;
-flagnumber = 5;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 6){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
-imageNumber = 6;
-flagnumber = 6;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 7){
-document.getElementById("flag").src = "https://plus.unsplash.com/premium_photo-1667682209336-9079678199d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
-imageNumber = 7;
-flagnumber = 7;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 8){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=722&q=80";
-imageNumber = 8;
-flagnumber = 8;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 9){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80";
-imageNumber = 9;
-flagnumber = 9;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-if(randomNum == 10){
-document.getElementById("flag").src = "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
-imageNumber = 10;
-flagnumber = 10;
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-console.log("image number is: " + imageNumber);
-}
-
-if(randomNum == 0){
-document.getElementById("flag").src = "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/2/27/S3_Flipper_flopper_snapshot.jpg/334px-S3_Flipper_flopper_snapshot.jpg";
-imageNumber = 0;
-flagnumber = 0;
-//* display image number in the p tag 
-document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
-
-
-
-console.log("image number is: " + imageNumber);
-}
-
-
-
-
-
-}
 
 function randomImage(){
-var randomNum = Math.floor(Math.random() * 11);
+
+    var previousNumber = imageNumber; 
+    document.getElementById("previousNumber").innerHTML = "Previous number is: " + previousNumber;
+
+
+    var randomNum = Math.floor(Math.random() * 11);
 console.log("Number is  :  " + randomNum);
 
-//* make it so you cant get the same image if you already have it 
+
+
+//* if the random number is the same as the previous number, then generate a new random number and display the new image 
+if (randomNum == previousNumber) {
+    
+    randomNum = "12"
+    console.log("Previus and new numbers are the same. Defaulted to image 12 ");
+}
+
+//* if the random number is the same as the previous number, then generate display image 13 
+if (randomNum == previousNumber) {
+    
+    randomNum = "13"
+    console.log("Previus and new numbers are the same. Defaulted to image 13 ");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,6 +51,7 @@ imageNumber = 1;
 flagnumber = 1;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "1";
 }
 if(randomNum == 2){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1603064752734-4c48eff53d05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80";
@@ -118,6 +59,7 @@ imageNumber = 2;
 flagnumber = 2;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "2";
 }
 if(randomNum == 3){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
@@ -125,6 +67,7 @@ imageNumber = 3;
 flagnumber = 3;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "3";
 }
 if(randomNum == 4){
 document.getElementById("flag").src = "https://plus.unsplash.com/premium_photo-1667682209336-9079678199d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
@@ -132,6 +75,7 @@ imageNumber = 4;
 flagnumber = 4;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "4";
 }
 if(randomNum == 5){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=722&q=80";
@@ -139,6 +83,7 @@ imageNumber = 5;
 flagnumber = 5;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "5";
 }
 if(randomNum == 6){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80";
@@ -146,6 +91,7 @@ imageNumber = 6;
 flagnumber = 6;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "6";
 }
 if(randomNum == 7){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
@@ -153,6 +99,7 @@ imageNumber = 7;
 flagnumber = 7;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "7";
 }
 if(randomNum == 8){
 document.getElementById("flag").src = "https://heavy.com/wp-content/uploads/2020/10/fortnite-midas-flopper-bug.jpg?quality=65&strip=all&w=780";
@@ -160,6 +107,7 @@ imageNumber = 8;
 flagnumber = 8;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "8";
 }
 if(randomNum == 9){
 document.getElementById("flag").src = "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80";
@@ -167,6 +115,7 @@ imageNumber = 9;
 flagnumber = 9;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "9";
 }
 if(randomNum == 10){
 document.getElementById("flag").src = "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/2/27/S3_Flipper_flopper_snapshot.jpg/334px-S3_Flipper_flopper_snapshot.jpg";
@@ -174,6 +123,7 @@ imageNumber = 10;
 flagnumber = 10;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "10";
 }
 if(randomNum == 0){
 document.getElementById("flag").src = "https://heavy.com/wp-content/uploads/2020/09/fortnite-midas-flopper.jpg?quality=65&strip=all&w=780";
@@ -181,6 +131,23 @@ imageNumber = 0;
 flagnumber = 0;
 document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
 console.log("image number is: " + imageNumber);
+previousNumber = "0";
+}
+if(randomNum == 12){
+document.getElementById("flag").src = "https://static.wikia.nocookie.net/fortnite/images/9/94/Chinhook_Hop_Flopper_-_Hop_Flopper_-_Fortnite.png/revision/latest?cb=20200831154203";
+imageNumber = 12;
+flagnumber = 12;
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("image number is: " + imageNumber);
+previousNumber = "12";
+}
+if(randomNum == 13){
+document.getElementById("flag").src = "https://cdn.custom-cursor.com/packs/2975/you-tubers-tiko-fishstick-and-orange-flopper-cursor-pack.png";
+imageNumber = 13;
+flagnumber = 13;
+document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
+console.log("image number is: " + imageNumber);
+previousNumber = "13";
 }
 
 
@@ -198,7 +165,11 @@ console.log("image number is: " + imageNumber);
 
 
 
-<button onclick="randomImage()">Change Image</button>
+<button id="myBtn" onclick="randomImage()">Change Image</button>
+
+
+
+<p id="previousNumber">  </p>
 
 <style>
 button {
