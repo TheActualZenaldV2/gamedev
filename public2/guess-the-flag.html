@@ -54,10 +54,6 @@ var interval = setInterval(function() {
         
     function endGame(){
         clearInterval(timer);
-        //* stop timer 
-        
-        
-
         document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of 12. You took " + time + " seconds to complete the game. Refresh the page to play again.";
       document.getElementById("guess").style.display = "none";
         document.getElementById("nextButton").style.display = "none";
@@ -74,6 +70,34 @@ var interval = setInterval(function() {
     }
     
     
+const myArray = [];
+    
+
+
+function isStored(number) {
+  for (var i = 0; i < myArray.length; i++) {
+    if (myArray[i] == number) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getNumber() {
+  while (true) {
+    const num = getRand();
+    
+    if (!isStored(num)) {
+      myArray.push(num);
+      return num;
+    }
+  }
+}
+
+function getRand() {
+    return Math.floor(Math.random() * 11);
+}
     
     
     //* declaring function to change flag
@@ -108,38 +132,10 @@ var interval = setInterval(function() {
         
     
     
-    let = randomNum = Math.floor(Math.random() * 11);
+    let = randomNum = getNumber();
     console.log("Number is  :  " + randomNum);
 
-                                                                 
-    const myArray = [];
-    
-
-
-function isStored(number) {
-  for (var i = 0; i < myArray.length; i++) {
-    if (myArray[i] == number) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function getNumber() {
-  while (true) {
-    const num = getRand();
-    
-    if (!isStored(num)) {
-      myArray.push(num);
-      return num;
-    }
-  }
-}
-
-function getRand() {
-    return Math.floor(Math.random() * 11);
-}
+                                                                
 
 
 
