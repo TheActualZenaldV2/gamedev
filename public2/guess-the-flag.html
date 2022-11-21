@@ -440,6 +440,26 @@ function getRand() {
         <h5 id="endGame">       </h5>
 
         <span id="timer"></span> 
+
+        <select id="mySelect01" size="0">
+        <option value="0">Select Option </option>
+        <option value="myOne"> <ul> Canada </ul> </option> 
+        <option value="myTwo"> <ul> Japan </ul> </option> 
+        <option value="myThree"> <ul> Three </ul> </option>
+        <option value="myFour"> <ul> Four </ul> </option>
+        <option value="myFive"> <ul> Five </ul> </option>
+        <option value="mySix"> <ul> Six </ul> </option>
+            
+            
+            
+           
+            
+            
+            
+            
+           </select>
+
+
         </div>
 
    
@@ -502,7 +522,7 @@ function getRand() {
     
     
         }
-        input {
+        input, select {
             width: 200px;
             height: 30px;
             border-radius: 5px;
@@ -510,6 +530,12 @@ function getRand() {
             padding: 5px;
             font-size: 16px;
     
+        }
+
+      
+        select:hover {
+            background-color: #ccc;
+
         }
         button {
             width: 100px;
@@ -634,4 +660,3 @@ function getRand() {
     
     
     </html>
-
