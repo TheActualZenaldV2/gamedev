@@ -444,19 +444,21 @@ function getRand() {
     <body onload="generateImage()">
         <div id="bg-image"> </div>
     
-        <div id="leftContainer"> 
+        <div id="topContainer"> 
         <h1>Flag Guessing Game</h1>
         <h5>
         Guess the flag!
         </h5>
         
         <img id="flag" src="" alt="flag">
-        </div>
+        
     
     
     
+    <br>
+    <br>
     
-        <div id="rightContainer">
+        <div id="bottomContainer">
             <p id="imageNumber" display="none">  </p>
             
         <br>
@@ -465,7 +467,7 @@ function getRand() {
         <select id="list" onchange="getSelectValue();">
 
             //* sort alphabetically *// 
-            <option value="0">Select a country</option>
+            <option value="Select Option">Select a country</option>
             <option value="Afghanistan">Afghanistan</option>
             <option value="Albania">Albania</option>
             <option value="Algeria">Algeria</option>
@@ -694,6 +696,7 @@ function getRand() {
 
 
         </div>
+        </div>
 
    
     
@@ -714,9 +717,9 @@ function getRand() {
     #nextButton {
         display: none;
     }
-        #leftContainer {
-            float: left;
-            width: 65%;
+        #topContainer {
+             
+            width: 100%;
             height: 100%;
             background-image: url("https://64.media.tumblr.com/20b34e8d12d4230f9b362d7feb148c57/tumblr_oiwytz4dh41tf8vylo1_1280.pnj");
             background-size: cover;
@@ -727,8 +730,12 @@ function getRand() {
             padding: 0px; 
         }
     
-        #rightContainer {
-            float: right;
+        #bottomContainer {
+            float: center;
+            align-self: center;
+            position: relative;
+            padding: 15px;
+            margin: auto;
             width: 35%;
             height: 100%;
             background-image: linear-gradient(to top, #cfd9df07 0%, #e2ebf007 100%);
@@ -844,7 +851,7 @@ function getRand() {
     
     }
     #flag:hover {
-        transform: scale(1.06);
+        transform: scale(1.01);
         transition: 0.3s all;
         border-radius: 6rem;
         border: 7px solid black;
@@ -906,4 +913,3 @@ function getRand() {
     
     
     </html>
-
