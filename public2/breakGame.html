@@ -1,0 +1,36 @@
+<script>
+  //* infinite ammo for machine gun 
+  function minigun() {
+    if (gunType == 4) {
+        if (minigunBool == false) {
+            if (canFire == true) {
+                x = block0.x;
+                y = block0.y;
+                bulletSpeed = 10;
+                canFire = true;
+                let Cursordx = (mouseX + (Math.random() * 100) - 50) - block0.x;
+                let Cursordy = (mouseY + (Math.random() * 100) - 50) - block0.y;
+                distance = Math.sqrt(Cursordx*Cursordx + Cursordy*Cursordy);
+                factor = distance / 1;
+                xSpeed = (Cursordx * (Math.random() * (10 - 7) + 7)/10) / factor;
+                ySpeed = (Cursordy * (Math.random() * (10 - 7) + 7)/10) / factor;
+                Bullets.push(new Bullet(x, y, xSpeed, ySpeed, 1, 'goldenrod', 5));
+                setTimeout(function () {canFire = true},bulletSpeed);
+                minigunTimer += 0.05;
+                if (minigunTimer >= 2) {
+                    canFire = true;
+                    minigunBool = false;
+                }
+            }
+        }             
+    }
+}
+  
+  // infinite score 
+  
+  timer = Infinity 
+  
+  
+  
+  
+</script>
