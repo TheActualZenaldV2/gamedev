@@ -67,9 +67,9 @@ var interval = setInterval(function() {
 let time = document.getElementById("timer").innerHTML
 
 
-
+let maxScore = 30;
 clearInterval(timer);
-document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of 12. You took " + time + " seconds to complete the game. Refresh the page to play again.";
+document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of " + maxScore + ". " + " You took " + time + " seconds to complete the game. Refresh the page to play again.";
 document.getElementById("list").style.display = "none";
 document.getElementById("nextButton").style.display = "none";
 document.getElementById("guessButton").style.display = "none";
@@ -199,6 +199,22 @@ function getRand() {
     let image33 = " "
     let image34 = " "
     let image35 = " "
+    let image36 = " "
+    let image37 = " "
+    let image38 = " "
+    let image39 = " "
+    let image40 = " "
+    let image41 = " "
+    let image42 = " "
+    let image43 = " "
+    let image44 = " "
+    let image45 = " "
+    let image46 = " "
+    let image47 = " "
+    let image48 = " "
+    let image49 = " "
+    let image50 = " "
+
 
     
     
@@ -208,7 +224,6 @@ function getRand() {
     if(randomNum == 0){
         document.getElementById("flag").src = image0;
     flagName = "russia";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "0";
     const storeNumber0 = "0";
@@ -219,7 +234,6 @@ function getRand() {
     document.getElementById("flag").src = image2;
     imageNumber = 2;
     flagName = "usa";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "2";
     storeNumber2 = "2";
@@ -231,7 +245,6 @@ function getRand() {
         document.getElementById("flag").src = image3;
     imageNumber = 3;
     flagName = "mexico";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "3";
     const storeNumber3 = "3";
@@ -243,7 +256,6 @@ function getRand() {
         document.getElementById("flag").src = image4;
     imageNumber = 4;
     flagName = "brazil";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "4";
     const storeNumber4 = "4";
@@ -254,7 +266,6 @@ function getRand() {
         document.getElementById("flag").src = image5;
     imageNumber = 5;
     flagName = "france";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "5";
     const storeNumber5 = "5";
@@ -265,7 +276,6 @@ function getRand() {
         document.getElementById("flag").src = image6;
     imageNumber = 6;
     flagName = "germany";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "6";
     const storeNumber6 = "6";
@@ -276,7 +286,6 @@ function getRand() {
         document.getElementById("flag").src = image7;
     imageNumber = 7;
     flagName = "italy";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "7";
     const storeNumber7 = "7";
@@ -287,7 +296,6 @@ function getRand() {
         document.getElementById("flag").src = image8;
     imageNumber = 8;
     flagName  = "spain";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "8";
     const storeNumber8 = "8";
@@ -298,7 +306,6 @@ function getRand() {
         document.getElementById("flag").src = image9;
     imageNumber = 9;
     flagName = "japan";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "9";
     const storeNumber9 = "9";
@@ -309,7 +316,6 @@ function getRand() {
         document.getElementById("flag").src = image10;
     imageNumber = 10;
     flagName = "china";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "10";
     const storeNumber10 = "10";
@@ -320,7 +326,6 @@ function getRand() {
         document.getElementById("flag").src = image11;
     imageNumber = 11;
     flagName = "cambodia";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "11";
     const storeNumber11 = "11";
@@ -331,7 +336,6 @@ function getRand() {
         document.getElementById("flag").src = image12;
     imageNumber = 12;
     flagName = "india";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "12";
     const storeNumber12 = "12";
@@ -342,7 +346,6 @@ function getRand() {
         document.getElementById("flag").src = image13;
     imageNumber = 13;
     flagName = "australia";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "13";
     const storeNumber13 = "13";
@@ -353,7 +356,6 @@ function getRand() {
         document.getElementById("flag").src = image14;
     imageNumber = 14;
     flagName = "new zealand";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "13";
     const storeNumber14 = "14";
@@ -364,7 +366,6 @@ function getRand() {
         document.getElementById("flag").src = image15;
     imageNumber = 15;
     flagName = "afganistan";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "14";
     const storeNumber15 = "15";
@@ -375,7 +376,6 @@ function getRand() {
         document.getElementById("flag").src = image16;
     imageNumber = 16;
     flagName = "albania";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "15";
     const storeNumber16 = "16";
@@ -386,7 +386,6 @@ function getRand() {
         document.getElementById("flag").src = image17;
     imageNumber = 17;
     flagName = "algeria";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "16";
     const storeNumber17 = "17";
@@ -397,7 +396,6 @@ function getRand() {
         document.getElementById("flag").src = image18;
     imageNumber = 18;
     flagName = "andorra";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "17";
     const storeNumber18 = "18";
@@ -408,7 +406,6 @@ function getRand() {
         document.getElementById("flag").src = image19;
     imageNumber = 19;
     flagName = "angola";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "18";
     const storeNumber19 = "19";
@@ -419,7 +416,6 @@ function getRand() {
         document.getElementById("flag").src = image20;
     imageNumber = 20;
     flagName = "antigua and barbuda";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "19";
     const storeNumber20 = "20";
@@ -430,7 +426,6 @@ function getRand() {
         document.getElementById("flag").src = image21;
     imageNumber = 21;
     flagName = "argentina";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "20";
     const storeNumber21 = "21";
@@ -441,7 +436,6 @@ function getRand() {
         document.getElementById("flag").src = image22;
     imageNumber = 22;
     flagName = "armenia";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "21";
     const storeNumber22 = "22";
@@ -452,7 +446,6 @@ function getRand() {
         document.getElementById("flag").src = image23;
     imageNumber = 23;
     flagName = "austria";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "22";
     const storeNumber23 = "23";
@@ -463,7 +456,6 @@ function getRand() {
         document.getElementById("flag").src = image24;
     imageNumber = 24;
     flagName = "azerbaijan";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "23";
     const storeNumber24 = "24";
@@ -474,7 +466,6 @@ function getRand() {
         document.getElementById("flag").src = image25;
     imageNumber = 25;
     flagName = "bahamas";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "24";
     const storeNumber25 = "25";
@@ -485,7 +476,6 @@ function getRand() {
         document.getElementById("flag").src = image26;
     imageNumber = 26;
     flagName = "bahrain";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "25";
     const storeNumber26 = "26";
@@ -496,7 +486,6 @@ function getRand() {
         document.getElementById("flag").src = image27;
     imageNumber = 27;
     flagName = "bangladesh";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "26";
     const storeNumber27 = "27";
@@ -507,7 +496,6 @@ function getRand() {
         document.getElementById("flag").src = image28;
     imageNumber = 28;
     flagName = "barbados";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "27";
     const storeNumber28 = "28";
@@ -518,7 +506,6 @@ function getRand() {
         document.getElementById("flag").src = image29;
     imageNumber = 29;
     flagName = "belarus";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "28";
     const storeNumber29 = "29";
@@ -529,12 +516,222 @@ function getRand() {
         document.getElementById("flag").src = image30;
     imageNumber = 30;
     flagName = "belgium";
-    document.getElementById("imageNumber").innerHTML = "Image number: " + imageNumber;
     console.log("answer is:  " + flagName);
     previousNumber = "29";
     const storeNumber30 = "30";
     myArray.push(storeNumber30);
     }
+
+    if(randomNum == 31){
+        document.getElementById("flag").src = image31;
+    imageNumber = 31;
+    flagName = "belize";
+    console.log("answer is:  " + flagName);
+    previousNumber = "30";
+    const storeNumber31 = "31";
+    myArray.push(storeNumber31);
+    }
+
+    if(randomNum == 32){
+        document.getElementById("flag").src = image32;
+    imageNumber = 32;
+    flagName = "benin";
+    console.log("answer is:  " + flagName);
+    previousNumber = "31";
+    const storeNumber32 = "32";
+    myArray.push(storeNumber32);
+    }
+
+    if(randomNum == 33){
+        document.getElementById("flag").src = image33;
+    imageNumber = 33;
+    flagName = "bhutan";
+    console.log("answer is:  " + flagName);
+    previousNumber = "32";
+    const storeNumber33 = "33";
+    myArray.push(storeNumber33);
+    }
+
+    if(randomNum == 34){
+        document.getElementById("flag").src = image34;
+    imageNumber = 34;
+    flagName = "bolivia";
+    console.log("answer is:  " + flagName);
+    previousNumber = "33";
+    const storeNumber34 = "34";
+    myArray.push(storeNumber34);
+    }
+
+    if(randomNum == 35){
+        document.getElementById("flag").src = image35;
+    imageNumber = 35;
+    flagName = "bosnia and herzegovina";
+    console.log("answer is:  " + flagName);
+    previousNumber = "34";
+    const storeNumber35 = "35";
+    myArray.push(storeNumber35);
+    }
+
+    if(randomNum == 36){
+        document.getElementById("flag").src = image36;
+    imageNumber = 36;
+    flagName = "botswana";
+    console.log("answer is:  " + flagName);
+    previousNumber = "35";
+    const storeNumber36 = "36";
+    myArray.push(storeNumber36);
+    }
+
+    if(randomNum == 37){
+        document.getElementById("flag").src = image37;
+    imageNumber = 37;
+    flagName = "central african republic";
+    console.log("answer is:  " + flagName);
+    previousNumber = "36";
+    const storeNumber37 = "37";
+    myArray.push(storeNumber37);
+    }
+
+    if(randomNum == 38){
+        document.getElementById("flag").src = image38;
+    imageNumber = 38;
+    flagName = "brunei";
+    console.log("answer is:  " + flagName);
+    previousNumber = "37";
+    const storeNumber38 = "38";
+    myArray.push(storeNumber38);
+    }
+
+    if(randomNum == 39){
+        document.getElementById("flag").src = image39;
+    imageNumber = 39;
+    flagName = "bulgaria";
+    console.log("answer is:  " + flagName);
+    previousNumber = "38";
+    const storeNumber39 = "39";
+    myArray.push(storeNumber39);
+    }
+
+    if(randomNum == 40){
+        document.getElementById("flag").src = image40;
+    imageNumber = 40;
+    flagName = "burkina faso";
+    console.log("answer is:  " + flagName);
+    previousNumber = "39";
+    const storeNumber40 = "40";
+    myArray.push(storeNumber40);
+    }
+
+    if(randomNum == 41){
+        document.getElementById("flag").src = image41;
+    imageNumber = 41;
+    flagName = "burundi";
+    console.log("answer is:  " + flagName);
+    previousNumber = "40";
+    const storeNumber41 = "41";
+    myArray.push(storeNumber41);
+    }
+
+    if(randomNum == 42){
+        document.getElementById("flag").src = image42;
+    imageNumber = 42;
+    flagName = "cabo verde";
+    console.log("answer is:  " + flagName);
+    previousNumber = "41";
+    const storeNumber42 = "42";
+    myArray.push(storeNumber42);
+    }
+
+    if(randomNum == 43){
+        document.getElementById("flag").src = image43;
+    imageNumber = 43;
+    flagName = "cameroon";
+    console.log("answer is:  " + flagName);
+    previousNumber = "42";
+    const storeNumber43 = "43";
+    myArray.push(storeNumber43);
+    }
+
+    if(randomNum == 44){
+        document.getElementById("flag").src = image44;
+    imageNumber = 44;
+    flagName = "chad";
+    console.log("answer is:  " + flagName);
+    previousNumber = "43";
+    const storeNumber44 = "44";
+    myArray.push(storeNumber44);
+    }
+
+    if(randomNum == 45){
+        document.getElementById("flag").src = image45;
+    imageNumber = 45;
+    flagName = "chile";
+    console.log("answer is:  " + flagName);
+    previousNumber = "44";
+    const storeNumber45 = "45";
+    myArray.push(storeNumber45);
+    }
+
+    if(randomNum == 46){
+        document.getElementById("flag").src = image46;
+    imageNumber = 46;
+    flagName = "colombia";
+    console.log("answer is:  " + flagName);
+    previousNumber = "45";
+    const storeNumber46 = "46";
+    myArray.push(storeNumber46);
+    }
+
+    if(randomNum == 47){
+        document.getElementById("flag").src = image47;
+    imageNumber = 47;
+    flagName = "comoros";
+    console.log("answer is:  " + flagName);
+    previousNumber = "46";
+    const storeNumber47 = "47";
+    myArray.push(storeNumber47);
+    }
+
+    if(randomNum == 48){
+        document.getElementById("flag").src = image48;
+    imageNumber = 48;
+    flagName = "congo, democratic republic of the congo";
+    console.log("answer is:  " + flagName);
+    previousNumber = "47";
+    const storeNumber48 = "48";
+    myArray.push(storeNumber48);
+    }
+
+    if(randomNum == 49){
+        document.getElementById("flag").src = image49;
+    imageNumber = 49;
+    flagName = "congo, republic of the congo";
+    console.log("answer is:  " + flagName);
+    previousNumber = "48";
+    const storeNumber49 = "49";
+    myArray.push(storeNumber49);
+    }
+
+    if(randomNum == 50){
+        document.getElementById("flag").src = image50;
+    imageNumber = 50;
+    flagName = "costa rica";
+    console.log("answer is:  " + flagName);
+    previousNumber = "49";
+    const storeNumber50 = "50";
+    myArray.push(storeNumber50);
+    }
+
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -735,7 +932,7 @@ function getRand() {
             <option value="Colombia">Colombia</option>
             <option value="Comoros">Comoros</option>
             <option value="Congo, Democratic Republic of the Congo">Congo, Democratic Republic of the Congo</option>
-            <option value="Congo, Republic of the">Congo, Republic of the</option>
+            <option value="Congo, Republic of the congo">Congo, Republic of the Congo</option>
             <option value="Costa Rica">Costa Rica</option>
             <option value="Cote d'Ivoire">Cote d'Ivoire</option>
             <option value="Croatia">Croatia</option>
@@ -902,7 +1099,7 @@ function getRand() {
                 
                 
                 
-               <input type="button" value="Show Hint" onclick="showHint()">  
+               <input type="button" id="hintButton" value="Show Hint" onclick="showHint()">  
                <h5 id="hintHolder"> Hint Holder </h5>
                 <h5 id="hint">  </h5>
 
@@ -947,6 +1144,10 @@ function getRand() {
     
     
         <style>
+
+            #hintHolder, #hintButton {
+                display: none;
+            }
         
             #hint {
                 display: none;
@@ -969,7 +1170,8 @@ function getRand() {
                 background-position: center;
                 background-attachment: fixed;
                 text-align: center;
-                 
+                background-color: rgba(255, 255, 255, 0.8);
+                padding-bottom: 2rem;
             }
         
             #bottomContainer {
@@ -982,14 +1184,11 @@ function getRand() {
                 
                 text-align: center;
          
-                background-color: rgba(255,255,255,0.8);
+                background-color: rgba(116, 195, 219,0.7);
+                padding-bottom: 0px;
             }
         
-           #websiteHolder {
-            background-image: url("https://64.media.tumblr.com/20b34e8d12d4230f9b362d7feb148c57/tumblr_oiwytz4dh41tf8vylo1_1280.pnj");
-            padding-bottom: 75px;
-    
-           }
+           
             body {
                 
                 font-family: Arial, Helvetica, sans-serif;
