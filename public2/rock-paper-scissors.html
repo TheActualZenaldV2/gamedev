@@ -1,0 +1,352 @@
+<script>
+
+    //simple game of rock, paper, scissors
+
+    
+
+    
+
+    //choose class function, lets user choose rock, paper, or scissors
+   
+    
+
+
+    
+
+
+  
+    
+//function to reload page on use 
+
+function newGame() {
+    location.reload();
+}
+    
+
+function chooseRock() {
+       var userChoice = "rock";
+        document.getElementById("userChoice").innerHTML = userChoice;
+        document.getElementById("submit").style.display = "inline-block";
+        
+        
+        
+
+    }
+
+    function choosePaper() {
+        var userChoice = "paper";
+        document.getElementById("userChoice").innerHTML = userChoice; 
+        document.getElementById("submit").style.display = "inline-block";
+
+        
+        
+        
+
+        
+
+    }
+
+    function chooseScissors() {
+       var userChoice = "scissors";
+        document.getElementById("userChoice").innerHTML = userChoice;
+        document.getElementById("submit").style.display = "inline-block";
+
+        
+        
+        
+
+
+    }
+    //compare choices function
+    
+
+
+
+    function compare(choice, computerChoice){
+        document.getElementById("submit").style.display = "none";
+        document.getElementById("newGame").style.display = "inline-block";
+
+        
+
+
+
+        //get computer choice 
+
+        computerChoice = Math.random();
+        let userChoice = document.getElementById("userChoice").innerHTML;
+
+        if (computerChoice < 0.34) {
+
+computerChoose = "rock";
+
+
+} else if(computerChoice <= 0.67) {
+
+computerChoose = "paper";
+
+
+} else {
+
+computerChoose = "scissors";
+
+}
+
+document.getElementById("computerChoice").innerHTML = "The computer chose " + computerChoose;
+
+//display results 
+
+        
+if(userChoice === computerChoose){
+
+document.getElementById("result").innerHTML = "The result is a tie!";
+
+}
+
+else if(userChoice === "rock"){
+
+if(computerChoose === "scissors"){
+
+    document.getElementById("result").innerHTML = "You win!";
+
+}
+
+else{
+
+    document.getElementById("result").innerHTML = "You lose!";
+
+}
+
+}
+
+else if(userChoice === "paper"){
+
+if(computerChoose === "rock"){
+
+    document.getElementById("result").innerHTML = "You win!";
+
+}
+
+else{
+
+    document.getElementById("result").innerHTML = "You lose!";
+
+}
+
+}
+
+else if(userChoice === "scissors"){
+
+if(computerChoose === "rock"){
+
+    document.getElementById("result").innerHTML = "You lose!";
+
+}
+
+else{
+
+    document.getElementById("result").innerHTML = "You win!";
+
+}
+
+}
+
+      
+
+    }
+</script>
+
+</html>
+<body> 
+    <h1>Rock, Paper, Scissors</h1>
+   
+
+<p id="demo"></p>
+
+
+<table>
+    <td> 
+    <tr> You chose: </tr>
+    </td>
+    <td>
+    <tr> <div id="userChoice"></div> </tr>
+    </td>
+    
+   </table>
+   <hr>
+   <br> 
+   <div id="computerChoice"></div> <br> 
+<div id="result"></div>
+
+
+
+
+
+<button id="classButtons" onclick="chooseScissors()">
+<img src="https://i.imgur.com/rKCZBFz.png" alt="rock" width="300" height="300">
+</button>
+
+<button id="classButtons" onclick="choosePaper()"> 
+<img src="https://i.imgur.com/0JKFMwN.png" alt="paper" width="300" height="300">
+
+</button>
+
+<button id="classButtons" onclick="chooseRock()">
+<img src="https://i.imgur.com/jpmpisk.png" alt="scissors" width="300" height="300">
+</button>
+<br> 
+<button id="submit" onclick="compare()">Submit</button>
+<button id="newGame" onclick="newGame()">New Game</button>
+
+
+<style>
+
+#newgame {
+    display: none;
+    background-color: ghostwhite;
+        border: none;
+        color: black;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        display: none;
+
+}
+
+#newGame:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#newGame:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+#classButtons {
+    
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 1rem;
+
+}
+#classButtons:hover {
+    background-color: #4CAF50;
+    color: white;
+    transition: 0.3s all;
+
+}
+#classButtons:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+    transition: 0.3s all;
+}
+
+
+    #submit{
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        display: none;
+    }
+
+    #submit:hover {
+        background-color: #4CAF50;
+        color: white;
+        transition: 0.3s all;
+
+    }
+
+    #submit:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+        transition: 0.3s all;
+    }
+
+
+    div {
+            
+            text-align: center;
+    
+
+    }
+body {
+    background-color: #dfc5e8;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+
+}
+
+#demo {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#computerChoice {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+   
+    border: none;
+    color: gray;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+
+}
+
+
+
+#result {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+
+
+
+</style>
+</body>
+
+
+
