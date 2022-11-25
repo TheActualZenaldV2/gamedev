@@ -21,12 +21,13 @@
 function newGame() {
     location.reload();
 }
-    
+    gameEnd = false;
 
 function chooseRock() {
-       var userChoice = "rock";
+       var userChoice = "Rock";
         document.getElementById("userChoice").innerHTML = userChoice;
         document.getElementById("submit").style.display = "inline-block";
+
         
         
         
@@ -34,9 +35,10 @@ function chooseRock() {
     }
 
     function choosePaper() {
-        var userChoice = "paper";
+        var userChoice = "Paper";
         document.getElementById("userChoice").innerHTML = userChoice; 
         document.getElementById("submit").style.display = "inline-block";
+        
 
         
         
@@ -47,9 +49,13 @@ function chooseRock() {
     }
 
     function chooseScissors() {
-       var userChoice = "scissors";
+        
+       var userChoice = "Scissors";
         document.getElementById("userChoice").innerHTML = userChoice;
         document.getElementById("submit").style.display = "inline-block";
+        
+
+        
 
         
         
@@ -65,7 +71,15 @@ function chooseRock() {
     function compare(choice, computerChoice){
         document.getElementById("submit").style.display = "none";
         document.getElementById("newGame").style.display = "inline-block";
+        gameEnd = true;
 
+        //disable buttons 
+        document.getElementById("classButton1").disabled = true;
+        document.getElementById("classButton2").disabled = true;
+        document.getElementById("classButton3").disabled = true;
+        
+
+        
         
 
 
@@ -77,21 +91,21 @@ function chooseRock() {
 
         if (computerChoice < 0.34) {
 
-computerChoose = "rock";
+computerChoose = "Rock";
 
 
 } else if(computerChoice <= 0.67) {
 
-computerChoose = "paper";
+computerChoose = "Paper";
 
 
 } else {
 
-computerChoose = "scissors";
+computerChoose = "Scissors";
 
 }
 
-document.getElementById("computerChoice").innerHTML = "The computer chose " + computerChoose;
+document.getElementById("computerChoice").innerHTML = "The computer chose: " +"<br>" + computerChoose;
 
 //display results 
 
@@ -102,25 +116,9 @@ document.getElementById("result").innerHTML = "The result is a tie!";
 
 }
 
-else if(userChoice === "rock"){
+else if(userChoice === "Rock"){
 
-if(computerChoose === "scissors"){
-
-    document.getElementById("result").innerHTML = "You win!";
-
-}
-
-else{
-
-    document.getElementById("result").innerHTML = "You lose!";
-
-}
-
-}
-
-else if(userChoice === "paper"){
-
-if(computerChoose === "rock"){
+if(computerChoose === "Scissors"){
 
     document.getElementById("result").innerHTML = "You win!";
 
@@ -134,9 +132,25 @@ else{
 
 }
 
-else if(userChoice === "scissors"){
+else if(userChoice === "Paper"){
 
-if(computerChoose === "rock"){
+if(computerChoose === "Rock"){
+
+    document.getElementById("result").innerHTML = "You win!";
+
+}
+
+else{
+
+    document.getElementById("result").innerHTML = "You lose!";
+
+}
+
+}
+
+else if(userChoice === "Scissors"){
+
+if(computerChoose === "Rock"){
 
     document.getElementById("result").innerHTML = "You lose!";
 
@@ -174,23 +188,24 @@ else{
    </table>
    <hr>
    <br> 
-   <div id="computerChoice"></div> <br> 
+   <div id="computerChoice"></div> <br> <hr> 
 <div id="result"></div>
+<br> <hr>
 
 
 
 
 
-<button id="classButtons" onclick="chooseScissors()">
+<button id="classButton1" onclick="chooseScissors()">
 <img src="https://i.imgur.com/rKCZBFz.png" alt="rock" width="300" height="300">
 </button>
 
-<button id="classButtons" onclick="choosePaper()"> 
+<button id="classButton2" onclick="choosePaper()"> 
 <img src="https://i.imgur.com/0JKFMwN.png" alt="paper" width="300" height="300">
 
 </button>
 
-<button id="classButtons" onclick="chooseRock()">
+<button id="classButton3" onclick="chooseRock()">
 <img src="https://i.imgur.com/jpmpisk.png" alt="scissors" width="300" height="300">
 </button>
 <br> 
@@ -199,6 +214,11 @@ else{
 
 
 <style>
+
+    #classButton1:disabled, #classButton2:disabled, #classButton3:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 
 #newgame {
     display: none;
@@ -225,8 +245,9 @@ else{
     background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
+    transition: 0.2s all;
 }
-#classButtons {
+#classButton1, #classButton2, #classButton3 {
     
     border: none;
     color: white;
@@ -240,13 +261,13 @@ else{
     border-radius: 1rem;
 
 }
-#classButtons:hover {
+#classButton1:hover, #classButton2:hover, #classButton3:hover {
     background-color: #4CAF50;
     color: white;
     transition: 0.3s all;
 
 }
-#classButtons:active {
+#classButton1:active, #classButton2:active, #classButton3:active {
     background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
@@ -269,7 +290,7 @@ else{
     }
 
     #submit:hover {
-        background-color: #4CAF50;
+        background-color: #45a049;
         color: white;
         transition: 0.3s all;
 
