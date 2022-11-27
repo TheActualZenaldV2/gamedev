@@ -65,7 +65,7 @@ var interval = setInterval(function() {
 let time = document.getElementById("timer").innerHTML
 
 
-let maxScore = 30;
+let maxScore = 50;
 clearInterval(timer);
 document.getElementById("endGame").innerHTML = "You win! Your score is " + score + " out of " + maxScore + ". " + " You took " + time + " seconds to complete the game. Refresh the page to play again.";
 document.getElementById("list").style.display = "none";
@@ -138,7 +138,7 @@ function getRand() {
     
 
       let total = score + tries;
-      let maxScore = 30;
+      let maxScore = 50;
       
 
         if (total == maxScore){
@@ -847,9 +847,5 @@ function getRand() {
     function myFlag() {
         document.getElementById("flag").innerHTML = flags;
     }
-    
-    
-    
-    
     
     
