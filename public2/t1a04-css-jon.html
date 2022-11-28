@@ -1,7 +1,70 @@
+<script> 
+
+
+
+    //automatically change background every 5 seconds 
+    function changeBackground() {
+    document.getElementById('mainBody').style.backgroundColor = 'red'
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'blue' }, 5000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'green' }, 10000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'yellow' }, 15000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'orange' }, 20000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'purple' }, 25000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'gray' }, 30000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'pink' }, 35000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'brown' }, 40000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'black' }, 45000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'white' }, 50000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'gray' }, 55000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'red' }, 60000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'blue' }, 65000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'green' }, 70000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'yellow' }, 75000);
+    setTimeout(function(){ document.getElementById('mainBody').style.backgroundColor = 'orange' }, 80000);
+    
+    
+    }
+    
+    
+    
+    //change the color of the text area to a random color 
+    
+    function changeColor() {
+        var x = Math.floor(Math.random() * 256);
+        var y = Math.floor(Math.random() * 256);
+        var z = Math.floor(Math.random() * 256);
+        var bgColor = "rgb(" + x + "," + y + "," + z + ")";
+        document.getElementById("textarea").style.backgroundColor = bgColor;
+        changeTextColor();
+    }
+    
+    //change the color of the text in the text area to a random color
+    function changeTextColor() {
+        var x = Math.floor(Math.random() * 256);
+        var y = Math.floor(Math.random() * 256);
+        var z = Math.floor(Math.random() * 256);
+        var bgColor = "rgb(" + x + "," + y + "," + z + ")";
+        document.getElementById("textarea").style.color = bgColor;
+        
+    }
+    
+    
+    </script>
+
+    
+
 <body id=mainBody> 
 Version 0.0.1 
 <br> 
 
+
+<h1 id="mark">
+    I deserve a high mark because i do javascript for this site 111!!!!!1!!!1
+</h1>
+<h2> oh and i changed the scrollbar </h2>
+
+
+<br> <br> <br> 
 <h1>
  T1 A04 CSS BY THE MOST AMAZING JONATHAN
 </h1>
@@ -41,6 +104,7 @@ document.getElementById('bold01').style.color = 'blue'
 
 <br>
 <br>
+<hr> 
 
 
 <input type="button" value="change background color" onClick="{
@@ -57,16 +121,38 @@ document.getElementById('mainBody').style.backgroundColor = 'red'
 <input type="button" value="reset background color" onClick="{
 document.getElementById('mainBody').style.backgroundColor = 'gray' 
 }">
+<br> 
+<br> 
+
+<hr>
 
 
+<input type="button" value="change font" onClick="{
+document.getElementById('mainBody').style.fontFamily = 'Verdana, Geneva, Tahoma, sans-serif' 
+}">
+<br>
+<br>
+<input type="button" value="reset font" onClick="{
+document.getElementById('mainBody').style.fontFamily = 'Arial, Helvetica, sans-serif' 
+}">
+<br>
+<br>
+<hr> 
 
 
-
-
-
+<input type="button" value="Automatically change background color" onclick="changeBackground()">
+<br>
 <br>
 
-<textarea class="textarea"> Type here and give me your credit card details please! </textarea>
+<hr> 
+
+<br> <br> <br> 
+
+<textarea id="textarea" oninput="changeColor()" placeholder="Type here to see cool things happen"></textarea> <br> <br> 
+<input type="button" value="Change Font Color" onclick="changeTextColor()"> 
+
+
+
 
 
 </body>
@@ -75,18 +161,69 @@ document.getElementById('mainBody').style.backgroundColor = 'gray'
 
 <style>
 
+    ::placeholder {
+        color: red;
+        opacity: 1; /* Firefox */
+        font-family: Arial, Helvetica, sans-serif;
+    }
+hr {
+    border: 5px solid black;
+    border-radius: 5px;
+}
+    #mark {
+        color: red;
+        font-size: 100px;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: center;
+    }
 
-body {
-  background-color: gray;
+input {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
 
-.textarea {
+input:hover {
+    background-color: #3e8e41;
+    transform: scale(1.05);
+    transition: 0.3s all;
+}
+input:active {
+    background-color: #3e8e41;
+    transform: scale(0.9);
+}
+body {
+  
+    background-color: gray;
+    
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+    font-size: 20px;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 10px;
+
+ 
+
+}
+
+#textarea {
   position: relative;
   left: 0;
   top: 0;
-  width: 200;
-  height: 50;
+  width: 400px;
+    height: 200px;
   border: 2px solid gray;
+  background-color: black;
+  color: white;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 
@@ -101,6 +238,36 @@ h1 {
   background-color: gray;
   
   
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: white;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    transition: 0.3s all;
+}
+
+
+
+::-webkit-scrollbar-track {
+    background-color: gray;
+    border: 1px solid #000000;
+    border-radius: 10px;
 }
 
 
