@@ -6,7 +6,7 @@
 
     
 
-    //choose class function, lets user choose rock, paper, or scissors
+    
    
     
 
@@ -70,7 +70,8 @@ function chooseRock() {
 
     function compare(choice, computerChoice){
         document.getElementById("submit").style.display = "none";
-        document.getElementById("newGame").style.display = "inline-block";
+        document.getElementById("newGame").style.display = "none";
+        
         gameEnd = true;
 
         //disable buttons 
@@ -82,6 +83,9 @@ function chooseRock() {
         
         
 
+        //run randomize funciton 
+        randomize();
+        document.getElementById("random").style.display = "inline-block";
 
 
         //get computer choice 
@@ -92,22 +96,26 @@ function chooseRock() {
         if (computerChoice < 0.34) {
 
 computerChoose = "Rock";
+document.getElementById("hiddenValue").value = "0"
 
 
 } else if(computerChoice <= 0.67) {
 
 computerChoose = "Paper";
+document.getElementById("hiddenValue").value = "1"
 
 
 } else {
 
 computerChoose = "Scissors";
+document.getElementById("hiddenValue").value = "2"
 
 }
-
-document.getElementById("computerChoice").innerHTML = "The computer chose: " +"<br>" + computerChoose;
-
 //display results 
+
+document.getElementById("computerChoice").innerHTML = "The computer is choosing... "
+
+ 
 
         
 if(userChoice === computerChoose){
@@ -164,14 +172,72 @@ else{
 
 }
 
+
+//* hide results until the timer is finished 
+document.getElementById("result").style.display = "none";
       
 
     }
+
+    
+    //* flip through the images of rock paper and scissors with delay of 0.5s 
+    //* and then display the result of the game
+    function randomize(){
+        
+            var random = Math.floor(Math.random() * 3);
+            
+            
+            
+
+            
+            var images = ["https://i.imgur.com/jpmpisk.png", "https://i.imgur.com/0JKFMwN.png", "https://i.imgur.com/rKCZBFz.png"];
+            document.getElementById("random").src = images[random];
+            setTimeout(randomize, 500);
+            
+
+        
+            
+        //stop the randomize function after 3 seconds
+         setTimeout(stopRandomize, 5000);
+
+            
+
+
+
+          
+            
+
+            
+        
+        
+    }
+
+   //stop randomize in 3 seconds 
+    function stopRandomize(){
+        document.getElementById("random").style.display = "none";
+        document.getElementById("newGame").style.display = "inline-block";
+        document.getElementById("result").style.display = "inline-block";
+        document.getElementById("computerChoice").innerHTML = "The computer chose: " +"<br>" + computerChoose;
+        document.getElementById("result").style.display = "inline-block";
+        document.getElementById("computerChoiceImage").style.display = "inline-block";
+
+        if(document.getElementById("hiddenValue").value == "0"){
+            document.getElementById("computerChoiceImage").src = "https://i.imgur.com/jpmpisk.png";
+        }
+        else if(document.getElementById("hiddenValue").value == "1"){
+            document.getElementById("computerChoiceImage").src = "https://i.imgur.com/0JKFMwN.png";
+        }
+        else if(document.getElementById("hiddenValue").value == "2"){
+            document.getElementById("computerChoiceImage").src = "https://i.imgur.com/rKCZBFz.png";
+        }
+    }
+
+
 </script>
 
 </html>
 <body> 
-    <h1>Rock, Paper, Scissors</h1>
+    <h1>Welcome To <br> Rock, Paper, Scissors!</h1>
    
 
 <p id="demo"></p>
@@ -189,31 +255,55 @@ else{
    <hr>
    <br> 
    <div id="computerChoice"></div> <br> <hr> 
-<div id="result"></div>
+<div id="result">
+     
+</div>
+<img id="random" src="" alt="rock" width="200" height="200"> <br> <br>
+<img id="computerChoiceImage" src="" alt="rock" width="200" height="200"> <br> <br>
+
 <br> <hr>
 
 
 
 
 
-<button id="classButton1" onclick="chooseScissors()">
-<img src="https://i.imgur.com/rKCZBFz.png" alt="rock" width="300" height="300">
-</button>
-
-<button id="classButton2" onclick="choosePaper()"> 
-<img src="https://i.imgur.com/0JKFMwN.png" alt="paper" width="300" height="300">
-
-</button>
-
 <button id="classButton3" onclick="chooseRock()">
-<img src="https://i.imgur.com/jpmpisk.png" alt="scissors" width="300" height="300">
-</button>
+    <img src="https://i.imgur.com/jpmpisk.png" alt="scissors" width="300" height="300">
+    </button>
+
+    <button id="classButton2" onclick="choosePaper()"> 
+        <img src="https://i.imgur.com/0JKFMwN.png" alt="paper" width="300" height="300">
+        
+        </button>
+
+        <button id="classButton1" onclick="chooseScissors()">
+            <img src="https://i.imgur.com/rKCZBFz.png" alt="rock" width="300" height="300">
+            </button>
+
+
+
+
+
+
+
+
 <br> 
 <button id="submit" onclick="compare()">Submit</button>
 <button id="newGame" onclick="newGame()">New Game</button>
 
+<br> <br> 
+
+<input type="hidden" id="hiddenValue" value="">
+
 
 <style>
+    #computerChoiceImage{
+        display: none;
+    }
+
+    #random{
+        display: none;
+    }
 
     #classButton1:disabled, #classButton2:disabled, #classButton3:disabled {
         opacity: 0.5;
@@ -311,6 +401,10 @@ else{
 
     }
 body {
+    
+
+
+
     background-color: #dfc5e8;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -322,6 +416,12 @@ body {
     font-weight: bold;
     text-align: center;
     margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+   
+   
+
 
 }
 
@@ -368,6 +468,7 @@ button {
 
 </style>
 </body>
+
 
 
 
