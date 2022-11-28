@@ -47,46 +47,210 @@ Make lists inside a list...
 <br> 
 
 <b> assignment </b> make a stinjky 3x4 table then do something else 
+
+<br>
+
 <table border=1>
- 
- <tr> <td> Abcd </td> <td> efgh</td> <td> efgh</td> </tr> <tr> <td> Abcd </td> <td> efgh</td> </tr>
-
-
- 
-
-
- 
- 
- 
+<tr> <td> 1 </td> <td> 2 </td> <td> 3 </td> <td> 4 </td> </tr>
+<tr> <td> 5 </td> <td> 6 </td> <td> 7 </td> <td> 8 </td> </tr>
+<tr> <td> 9 </td> <td> 10 </td> <td> 11 </td> <td> 12 </td> </tr>
 </table>
+
+
+ 
+ 
+
+
+ 
+
+
+ 
+ 
+ 
+
 
 <h2>
  woah advanced things below!!!!11!!!
 </h2>
 
-Load image and move it using buttons or something...????
-
-<image id="myImage01" src="https://pbs.twimg.com/media/EKwmS5-WsAATKGf.jpg" style="position: relative; left: 0; top:0; width: 100 height: 100; "> <br> </image>
-
-<input type="button" value="Go Left" onclick="{
-document.getElementById('myImage01').style.left = '200px'
-document.getById('myDiv01').innerHTML = 'It went left i think'
-}"> 
+<h3> Move image </h3>
 
 
-<div id="myDiv01"> ...  </div> 
+
+<input type=button value="Image Right" onclick="{
+    document.getElementById('myImage01').style.left = parseInt(document.getElementById('myImage01').style.left) + 10 + 'px'
+    document.getElementById('myDiv01').innerHTML = 'You moved the image 10 pixels to the right.'
+  }">
+
+  <input type="button" value="image left" onclick="{
+    document.getElementById('myImage01').style.left = parseInt(document.getElementById('myImage01').style.left) - 10 + 'px'
+    document.getElementById('myDiv01').innerHTML = 'You moved the image 10 pixels to the left.'
+    
+  }">
+
+    <input type="button" value="image up" onclick="{
+        document.getElementById('myImage01').style.top = parseInt(document.getElementById('myImage01').style.top) - 10 + 'px'
+        document.getElementById('myDiv01').innerHTML = 'You moved the image 10 pixels up.'
+        
+    }">
+
+    <input type="button" value="image down" onclick="{
+        document.getElementById('myImage01').style.top = parseInt(document.getElementById('myImage01').style.top) + 10 + 'px'
+        document.getElementById('myDiv01').innerHTML = 'You moved the image 10 pixels down.'
+
+        
+    }">
+
+    <input type="button" value="image reset" onclick="{
+        document.getElementById('myImage01').style.top = 0 + 'px'
+        document.getElementById('myImage01').style.left = 0 + 'px'
+        document.getElementById('myDiv01').innerHTML = 'You reset the image.'
+        
+    }">
+
+    <br> <br> <br> 
+
+
+<img id="myImage01" src="https://pbs.twimg.com/media/EKwmS5-WsAATKGf.jpg" style="position: relative; left: 0; top:0; width: 100 height: 100; "> <br> 
+
+<br> <br> <br> 
+<div id="myDiv01"> Move the image above...</div> 
+
+
 
 
 <style> 
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&display=swap');
 
+#myDiv01 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    color: #000000;
+    text-align: center;
+    background-color: pink;
+    border: 1px solid #000000;
+    padding: 10px;
+    width: 200px;
+    height: 76x;
+    
 
+    
+    
+}
+table {
+    font-family: 'Noto Sans', sans-serif;
+    border: 1px solid black;
+    border-collapse: collapse;
 
+    width: 100%;
+    margin: auto;
+
+}
 body {
-  background-color: gray;
-  font-family: 'Noto Sans', sans-serif;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+    color: #000000;
+  
+    background-color: pink;
+    border: 1px solid #000000;
+    padding: 10px;
+    
+    
+
+    
+    
  
 
  
 }
+
+
+::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: white;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    transition: 0.3s all;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: blue;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: gray;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+input {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s all;
+}
+
+input:hover {
+    background-color: black;
+    color: white;
+}
+
+input:active {
+    background-color: gray;
+    color: white;
+    
+}
+
+img {
+    width: 500px;
+    height: 500px;
+    position: relative;
+    left: 0;
+    top: 0;
+    border-radius: 1rem;
+
+}
+</style>
