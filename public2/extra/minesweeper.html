@@ -1,0 +1,464 @@
+<script>
+    //minesweeper using html and js 
+
+    //global variables
+    var board = [];
+    var mines = 20;
+    var rows = 10;
+    var cols = 10;
+    var boardSize = rows * cols;
+    var flags = 0;
+    var gameOver = false;
+    var gameWon = false;
+    var gameLost = false;
+    var time = 0;
+    var timer = null;
+    var firstClick = true;
+    var emptyCells = 30;
+
+    //create the board
+
+    function createBoard() {
+        var board = [];
+        for (var i = 0; i < rows; i++) {
+            board[i] = [];
+            for (var j = 0; j < cols; j++) {
+                board[i][j] = 0;
+            }
+        }
+        return board;
+    }
+
+    //create the mines
+
+    function createMines() {
+        var minesPlaced = 0;
+        while (minesPlaced < mines) {
+            var randomRow = Math.floor(Math.random() * rows);
+            var randomCol = Math.floor(Math.random() * cols);
+            if (board[randomRow][randomCol] !== "M") {
+                board[randomRow][randomCol] = "M";
+                minesPlaced++;
+            }
+        }
+    }
+
+    //create the numbers
+
+    function createNumbers() {
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < cols; j++) {
+                if (board[i][j] !== "M") {
+                    board[i][j] = countMines(i, j);
+                }
+            }
+        }
+    }
+
+    //create some empty cells
+
+    function createEmptyCells() {
+        while (emptyCells > 0) {
+            var randomRow = Math.floor(Math.random() * rows);
+            var randomCol = Math.floor(Math.random() * cols);
+            if (board[randomRow][randomCol] === 0) {
+                board[randomRow][randomCol] = "E";
+                emptyCells--;
+            }
+        }
+    }
+
+    //count the mines
+
+    function countMines(row, col) {
+        var count = 0;
+        if (row > 0) {
+            if (board[row - 1][col] === "M") {
+                count++;
+            }
+        }
+        if (row < rows - 1) {
+            if (board[row + 1][col] === "M") {
+                count++;
+            }
+        }
+        if (col > 0) {
+            if (board[row][col - 1] === "M") {
+                count++;
+            }
+        }
+        if (col < cols - 1) {
+            if (board[row][col + 1] === "M") {
+                count++;
+            }
+        }
+        if (row > 0 && col > 0) {
+            if (board[row - 1][col - 1] === "M") {
+                count++;
+            }
+        }
+        if (row > 0 && col < cols - 1) {
+            if (board[row - 1][col + 1] === "M") {
+                count++;
+            }
+        }
+        if (row < rows - 1 && col > 0) {
+            if (board[row + 1][col - 1] === "M") {
+                count++;
+            }
+        }
+        if (row < rows - 1 && col < cols - 1) {
+            if (board[row + 1][col + 1] === "M") {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //initalize game function
+
+    function initGame() {
+        board = createBoard();
+        createMines();
+        createNumbers();
+        gameOver = false;
+        gameWon = false;
+        gameLost = false;
+        firstClick = true;
+        flags = 0;
+        time = 0;
+        document.getElementById("timer").innerHTML = "Time: " + time;
+        document.getElementById("flags").innerHTML = "Flags: " + flags;
+        document.getElementById("gameOver").innerHTML = "";
+        document.getElementById("gameWon").innerHTML = "";
+        document.getElementById("gameLost").innerHTML = "";
+        clearInterval(timer);
+        drawBoard();
+        revealCells();
+    }
+
+    //draw the board
+
+    function drawBoard() {
+        var boardDiv = document.getElementById("board");
+        boardDiv.innerHTML = "";
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < cols; j++) {
+                var cell = document.createElement("div");
+                cell.setAttribute("id", i + "_" + j);
+                cell.setAttribute("class", "cell");
+                cell.setAttribute("oncontextmenu", "flag(" + i + "," + j + "); return false;");
+                cell.setAttribute("onclick", "reveal(" + i + "," + j + ");");
+                boardDiv.appendChild(cell);
+            }
+        }
+    }
+
+    function reveal(row, col) {
+        if (gameOver) {
+            return;
+        }
+        if (firstClick) {
+            firstClick = false;
+            timer = setInterval(function() {
+                time++;
+                document.getElementById("timer").innerHTML = "Time: " + time;
+            }, 1000);
+        }
+        var cell = document.getElementById(row + "_" + col);
+        if (cell.classList.contains("flag")) {
+            return;
+        }
+        if (board[row][col] === "M") {
+            cell.classList.add("mine");
+            gameOver = false;
+            gameLost = true;
+            document.getElementById("gameLost").innerHTML = "You Lost!";
+            clearInterval(timer);
+        } else {
+            cell.classList.add("revealed");
+            cell.innerHTML = board[row][col];
+            if (board[row][col] === 0) {
+                revealSome(row, col);
+            }
+        }
+        checkWin();
+    }
+    var revealSome = function(row, col) {
+        if (row > 0) {
+            reveal(row - 1, col);
+        }
+        if (row < rows - 1) {
+            reveal(row + 1, col);
+        }
+        if (col > 0) {
+            reveal(row, col - 1);
+        }
+        if (col < cols - 1) {
+            reveal(row, col + 1);
+        }
+        if (row > 0 && col > 0) {
+            reveal(row - 1, col - 1);
+        }
+        if (row > 0 && col < cols - 1) {
+            reveal(row - 1, col + 1);
+        }
+        if (row < rows - 1 && col > 0) {
+            reveal(row + 1, col - 1);
+        }
+        if (row < rows - 1 && col < cols - 1) {
+            reveal(row + 1, col + 1);
+        }
+    }
+    
+
+    var checkWin = function() {
+        var cells = document.getElementsByClassName("cell");
+        var count = 0;
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealed")) {
+                count++;
+            }
+        }
+        if (count === rows * cols - mines) {
+            gameOver = true;
+            gameWon = true;
+            document.getElementById("gameWon").innerHTML = "You Won!";
+            clearInterval(timer);
+        }
+    }
+
+
+   //start the game with a chunk of cells already revealed, and show if its a mine or not
+   // make revealed cells in a 4x4 grid all in the same area
+   //make mines have the .mine class
+
+    function revealCells() {
+        console.log("revealCells");
+        var cells = document.getElementsByClassName("cell");
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealed")) {
+                cells[i].classList.remove("revealed");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("mine")) {
+                cells[i].classList.remove("mine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("flag")) {
+                cells[i].classList.remove("flag");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("flaggedMine")) {
+                cells[i].classList.remove("flaggedMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("wrongMine")) {
+                cells[i].classList.remove("wrongMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("wrongFlag")) {
+                cells[i].classList.remove("wrongFlag");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealedMine")) {
+                cells[i].classList.remove("revealedMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealedMine")) {
+                cells[i].classList.remove("revealedMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealedMine")) {
+                cells[i].classList.remove("revealedMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealedMine")) {
+                cells[i].classList.remove("revealedMine");
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].classList.contains("revealedMine")) {
+                cells[i].classList.remove("revealedMine");
+            }
+
+        
+    }
+}
+
+
+
+
+ //give cells their respective .one .two .three .four .five .six .seven .eight classes
+
+ if(board[row][col] === 1) {
+            cell.classList.add("one");
+        }
+        if(board[row][col] === 2) {
+            cell.classList.add("two");
+        }
+        if(board[row][col] === 3) {
+            cell.classList.add("three");
+        }
+        if(board[row][col] === 4) {
+            cell.classList.add("four");
+        }
+        if(board[row][col] === 5) {
+            cell.classList.add("five");
+        }
+        if(board[row][col] === 6) {
+            cell.classList.add("six");
+        }
+        if(board[row][col] === 7) {
+            cell.classList.add("seven");
+        }
+        if(board[row][col] === 8) {
+            cell.classList.add("eight");
+        }
+    
+
+    </script> 
+
+    <body onload="initGame()">
+        <div id="gameOver"></div>
+        <div id="gameWon"></div>
+        <div id="gameLost"></div>
+        <div id="timer"></div>
+        <div id="flags"></div>
+        
+
+    put the cells into a table 
+
+    <table id="board"> </table>
+
+        
+        
+        <div id="buttons">
+            <button onclick="initGame()">New Game</button>
+
+        </div>
+
+    </body>
+    </html>
+
+    <style>
+
+    body {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        text-align: center;
+        padding: 5px;
+    }
+
+   
+
+    #board {
+        width: 500px;
+        height: 500px;
+        margin: 0 auto;
+        border: 1px solid #ffffff;
+        background-color: #000000;
+        padding: 5px;
+    }
+
+
+    .cell {
+        width: 20px;
+        height: 20px;
+        float: left;
+        border: 1px solid #ffffff;
+        background-color: #000000;
+        color: #ffffff;
+        text-align: center;
+        font-size: 12px;
+        padding: 5px;
+        margin: 0;
+        
+
+
+
+    }
+
+    .cell:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .cell.mine {
+        background-color: #ff0000;
+        color: #ffffff;
+    }
+
+    .cell.flag {
+        background-color: #0000ff;
+        color: #ffffff;
+    }
+
+    .cell.revealed {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .cell.revealed.mine {
+        background-color: #ff0000;
+        color: #ffffff;
+    }
+
+    .cell.revealed.zero {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .cell.revealed.one {
+        background-color: #ffffff;
+        color: #0000ff;
+    }
+
+    .cell.revealed.two {
+        background-color: #ffffff;
+        color: #00ff00;
+    }
+
+    .cell.revealed.three {
+        background-color: #ffffff;
+        color: #ff0000;
+    }
+
+    .cell.revealed.four {
+        background-color: #ffffff;
+        color: #000080;
+    }
+
+    .cell.revealed.five {
+        background-color: #ffffff;
+        color: #800000;
+    }
+
+    .cell.revealed.six {
+        background-color: #ffffff;
+        color: #008080;
+    }
+
+    button {
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 16px;
+        padding: 5px;
+        margin: 5px;
+    }
+
+
+
+    </style>
+    
