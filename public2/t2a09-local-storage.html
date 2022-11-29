@@ -25,9 +25,7 @@ function pushPin2(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -37,9 +35,7 @@ function pushPin3(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -49,9 +45,7 @@ function pushPin4(){
      if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -61,9 +55,7 @@ function pushPin5(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -73,9 +65,7 @@ function pushPin6(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -85,9 +75,7 @@ function pushPin7(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -97,9 +85,7 @@ function pushPin8(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -109,9 +95,7 @@ function pushPin9(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -121,9 +105,7 @@ function pushPin0(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
@@ -133,18 +115,11 @@ function clearPin(){
     if (pin.length == 4) {
     
     savePin();
-    //disable table 
-
-    document.getElementById("table").disabled = true;
+    
     }
 }
 
-function savePin (){
-    localStorage.setItem("myStoredPin", pin);
-    alert(pin + " \nHas been stored");
-    document.getElementById("pin").innerHTML = pin;
-   
-}
+
 
 
 var pin2 = []
@@ -280,10 +255,45 @@ function checkPin(){
         alert("Access Denied");
     }
 }
+
+function clearUserPin(){
+    pin2 = [];
+    document.getElementById("pin2").innerHTML = pin2;
+}
+
+//display the stored pin 
+function displayPin(){
+    var storedPin = localStorage.getItem("myStoredPin");
+    document.getElementById("savedPin").innerHTML = storedPin;
+
+    if(storedPin == "" || storedPin == null){
+        document.getElementById("savedPin").innerHTML = "No Pin Stored";
+    }
+}
+
+function clearPin(){
+    localStorage.removeItem("myStoredPin");
+    document.getElementById("savedPin").innerHTML = "No Pin Stored";
+}
+
+function savePin (){
+    localStorage.setItem("myStoredPin", pin);
+    document.getElementById("pin").innerHTML = "Your pin is: "  + pin;
+    document.getElementById("pin").style.color = "green";
+    document.getElementById("createPin").style.display = "none";
+    document.getElementById("controlButton").style.display = "none";
+    document.getElementById("login").style.display = "inline-block";
+
+   
+}
+
+
 </script>
-<body> 
+<body onload="displayPin()"> 
+
+    <p id="savedPin"></p>
     <p id="pin"></p>
-<table id="table">
+<table id="createPin">
     <tr>
         <td><button onclick="pushPin1()">1</button></td>
         <td><button onclick="pushPin2()">2</button></td>
@@ -305,12 +315,12 @@ function checkPin(){
         
 </table>
 
-<button onclick="clearPin()">Clear</button></td>
-<button onclick="savePin()">Save Pin</button></td>
-
+<input type="button" id="controlButton" value="Clear Selection" onclick="clearPin()"></button></td>
+<input type="button" id="controlButton" value="Save PIN" onclick="savePin()"></button></td>
+<input type="button" id="controlButton" value="Clear PIN" onclick="clearPin()"></button></td>
 <p> check pin</p>
 
-<table> 
+<table id="login"> 
     <tr>
         <td><button onclick="pushUserPin1()">1</button></td>
         <td><button onclick="pushUserPin2()">2</button></td>
@@ -327,12 +337,45 @@ function checkPin(){
         <td><button onclick="pushUserPin9()">9</button></td>
     </tr>
 
+    <input id="loginControlButton" type="button" value="Clear Selection" onclick="clearUserPin()">
+
 <p id="pin2">Pin goes here</p>
 
 
 
 
 <style>
+#loginControlButton{
+    display: none;
+    background-color: gray;
+    border-radius: 2rem;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+    #login {
+        display:none;
+
+    }
+#controlButton{
+    
+    background-color: gray;
+    border-radius: 2rem;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
 
 table, th, td {
     padding: 20px;
@@ -344,6 +387,30 @@ table, th, td {
 
 td {
     border: 2px solid black;
+}
+
+body {
+    background-image: url("http://cdn6.dissolve.com/p/D1749_53_008/D1749_53_008_0004_600.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+
+
+}
+
+button {
+    width: 100px;
+    height: 100px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
 </style>
 </body>
