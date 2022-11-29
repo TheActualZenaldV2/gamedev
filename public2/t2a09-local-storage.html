@@ -1,0 +1,373 @@
+<h2>t2a09-local-storage-name by Fred. Instructions:</h2>
+<script>
+
+function init(){
+    myStorage = localStorage.getItem("myStoredText");
+    if(myStorage  != null){
+        document.getElementById("myText1").value = myStorage 
+    }
+}
+
+function unload(){
+    localStorage.setItem("myStoredText",document.getElementById("myText1").value);
+}
+
+function storeText(){
+    localStorage.setItem("myStoredText", document.getElementById("myText1").value);
+    alert(document.getElementById("myText1").value + " \nHas been stored");
+    document.getElementById("myText1").value = "";
+}
+
+function retrieveText(){
+    document.getElementById("myText1").value = localStorage.getItem("myStoredText");
+}
+
+function clearText(){
+    localStorage.removeItem("myStoredText");
+    document.getElementById("myText1").value = "";
+}
+
+
+var pin = []
+
+
+function pushPin1(){
+    pin.push(1);
+    document.getElementById("pin").innerHTML = pin;
+
+    if (pin.length == 4) {
+    
+    savePin();
+    }
+}
+
+
+
+
+function pushPin2(){
+    pin.push(2);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin3(){
+    pin.push(3);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin4(){
+    pin.push(4);
+    document.getElementById("pin").innerHTML = pin;
+     if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin5(){
+    pin.push(5);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin6(){
+    pin.push(6);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin7(){
+    pin.push(7);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin8(){
+    pin.push(8);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin9(){
+    pin.push(9);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushPin0(){
+    pin.push(0);
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function clearPin(){
+    pin = [];
+    document.getElementById("pin").innerHTML = pin;
+    if (pin.length == 4) {
+    
+    savePin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function savePin (){
+    localStorage.setItem("myStoredPin", pin);
+    alert(pin + " \nHas been stored");
+    document.getElementById("pin").innerHTML = pin;
+   
+}
+
+
+var pin2 = []
+function pushUserPin0(){
+    pin2.push(0);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin1(){
+    pin2.push(1);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin2(){
+    pin2.push(2);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin3(){
+    pin2.push(3);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin4(){
+    pin2.push(4);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin5(){
+    pin2.push(5);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin6(){
+    pin2.push(6);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin7(){
+    pin2.push(7);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin8(){
+    pin2.push(8);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+function pushUserPin9(){
+    pin2.push(9);
+    document.getElementById("pin2").innerHTML = pin2;
+    if (pin2.length == 4) {
+    
+    checkPin();
+    //disable table 
+
+    document.getElementById("table").disabled = true;
+    }
+}
+
+
+function checkPin(){
+    var storedPin = localStorage.getItem("myStoredPin");
+    var enteredPin = document.getElementById("pin").innerHTML;
+    if (storedPin == enteredPin){
+        alert("Pin is correct");
+    }
+    else{
+        alert("Pin is incorrect");
+    }
+}
+</script>
+<body> 
+    <p id="pin"></p>
+<table id="table">
+    <tr>
+        <td><button onclick="pushPin1()">1</button></td>
+        <td><button onclick="pushPin2()">2</button></td>
+        <td><button onclick="pushPin3()">3</button></td>
+    </tr>
+    <tr>
+        <td><button onclick="pushPin4()">4</button></td>
+        <td><button onclick="pushPin5()">5</button></td>
+        <td><button onclick="pushPin6()">6</button></td>
+    </tr>
+    <tr>
+        <td><button onclick="pushPin7()">7</button></td>
+        <td><button onclick="pushPin8()">8</button></td>
+        <td><button onclick="pushPin9()">9</button></td>
+    </tr>
+    
+       
+        
+        
+</table>
+
+<button onclick="clearPin()">Clear</button></td>
+<button onclick="savePin()">Save Pin</button></td>
+
+<p> check pin</p>
+
+<table> 
+    <tr>
+        <td><button onclick="pushUserPin1()">1</button></td>
+        <td><button onclick="pushUserPin2()">2</button></td>
+        <td><button onclick="pushUserPin3()">3</button></td>
+    </tr>
+    <tr>
+        <td><button onclick="pushUserPin4()">4</button></td>
+        <td><button onclick="pushUserPin5()">5</button></td>
+        <td><button onclick="pushUserPin6()">6</button></td>
+    </tr>
+    <tr>
+        <td><button onclick="pushUserPin7()">7</button></td>
+        <td><button onclick="pushUserPin8()">8</button></td>
+        <td><button onclick="pushUserPin9()">9</button></td>
+    </tr>
+
+<p id="pin2">Pin goes here</p>
+
+
+
+
+<style>
+
+table, th, td {
+    padding: 20px;
+    border-collapse: collapse;
+    width: 100px;
+    height: 100px;
+
+}
+
+td {
+    border: 2px solid black;
+}
+</style>
+</body>
