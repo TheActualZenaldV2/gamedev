@@ -1,0 +1,204 @@
+<h2 align=center>t2a08-canvas by Fred</h2>
+You use loops and variables to make fast fancy drawings <br><br>
+//put the buttons and the canvas beside each other<br>
+
+<input type=button value=".lineTo(30,200)" onclick="{
+   myContext.beginPath();
+   myContext.lineWidth = 1;   
+   myContext.moveTo(20,10);
+   myContext.lineTo(30,200);
+   myContext.stroke();
+}">
+
+<input type=button value=".arc(95, 50, 40, 0, 2 * Math.PI)" onclick="{
+   myContext.beginPath();
+   myContext.lineWidth = 10;
+   myContext.strokeStyle = 'green';
+   myContext.arc(95, 50, 40, 0, 2 * Math.PI);
+   myContext.stroke();
+}">
+
+<input type=button value=".fillText('Hello World', 400, 100)" onclick="{
+   myContext.font = '20px Arial';
+   myContext.fillText('Hello World', 400, 100);
+   myContext.translate(400, 100);  
+   myContext.rotate(60 * Math.PI / 180); 
+   myContext.fillText('Hello World', 10, 10);
+   myContext.stroke();
+   myContext.resetTransform();  
+   //myContext.rotate(-60 * Math.PI / 180); 
+}">
+
+<input type=button value=".quadraticCurveTo(100,220,240,110)" onclick="{
+   myContext.beginPath();
+   myContext.moveTo(300,100);
+   myContext.quadraticCurveTo(100,220,240,110);
+   myContext.stroke();
+}">
+
+
+
+<input type=button value=".createLinearGradient(100, 300, 200, 400)" onclick="{
+   let myGradient = myContext.createLinearGradient(100, 300, 200, 400);
+   myGradient.addColorStop(0, 'red');
+   myGradient.addColorStop(0.5, 'blue');
+   myGradient.addColorStop(1, 'yellow');
+   myContext.fillStyle = myGradient;
+   myContext.fillRect(100, 300, 200, 400);
+   // reset fillstyle
+   myContext.fillStyle = 'black';
+}"><br><br>
+
+<input type=button value="clearRect(20, 20, 50, 50)" onclick="{
+   myContext.clearRect(20, 20, 50, 50);
+}">
+
+
+
+<input type="button" value="make rectangle" onclick="{
+   myContext.beginPath();
+   myContext.lineWidth = 10;
+   myContext.strokeStyle = 'green';
+   myContext.rect(20, 20, 150, 100);
+   myContext.stroke();
+}">
+<input type="button" value="fill rectangle" onclick="{
+   myContext.fillStyle = 'black';
+   myContext.fillRect(20, 20, 150, 100);
+   myContext.fillStyle = 'black';
+}">
+
+<input type="button" value="make triangle" onclick="{
+   myContext.beginPath();
+   myContext.lineWidth = 10;
+   myContext.strokeStyle = 'green';
+   myContext.moveTo(20, 20);
+   myContext.lineTo(170, 20);
+   myContext.lineTo(170, 120);
+   myContext.lineTo(20, 20);
+   myContext.stroke();
+  myCanvas.style.border = '5px solid black';
+  myContext.fillStyle = 'black';
+ 
+}"> 
+
+<input type="button" value="make cool shapes" onclick="{
+    myContext.beginPath();
+    myContext.lineWidth = 10;
+    myContext.strokeStyle = 'green';
+    myContext.moveTo(20, 20);
+    myContext.lineTo(170, 20);
+    myContext.lineTo(170, 120);
+    myContext.lineTo(120, 170);
+    myContext.lineTo(20, 170);
+    myContext.lineTo(20, 20);
+    myContext.stroke();
+      myCanvas.style.border = '5px solid black';
+      myContext.fillStyle = 'black';
+     
+    }"> 
+
+<input type="button" value="make circle" onclick="{
+    myContext.beginPath();
+    myContext.lineWidth = 10;
+    myContext.strokeStyle = 'green';
+    myContext.arc(95, 50, 40, 0, 2 * Math.PI);
+    myContext.stroke();
+    }">
+
+<input type="button" value="fill circle" onclick="{
+    myContext.fillStyle = 'black';
+    myContext.fill();
+    myContext.fillStyle = 'black';
+    }">
+
+<input type="button" value="make ellipse" onclick="{
+    myContext.beginPath();
+    myContext.lineWidth = 10;
+    myContext.strokeStyle = 'green';
+    myContext.ellipse(95, 50, 40, 20, 0, 0, 2 * Math.PI);
+    myContext.stroke();
+    }">
+
+<input type="button" value="fill ellipse" onclick="{
+
+    myContext.fillStyle = 'black';
+    myContext.fill();
+    myContext.fillStyle = 'black';
+    }"><br><br>
+
+
+
+<input type=button id="clear" value="Clear all" onclick="{
+    myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+ }"><br><br>
+
+
+
+
+
+<canvas id="myCoolTag" width="1000" height="600" style="border:1px solid #000000;"></canvas>
+
+<script>
+   // set up global variables
+   let myCanvas=document.getElementById('myCoolTag');
+   let myContext=myCanvas.getContext('2d');
+
+   //clear the canvas on every button click, but keep the current shape
+   function clearCanvas() {
+      myContext.clearRect(0, 0, myCanvas.width, myCanvas.height); 
+    
+    }	
+
+
+    
+</script>
+
+
+<style>
+
+    #clear {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+   body {
+      background-color: #f0f0f0;
+      border: 1px solid #000000;
+      padding: 20px;
+   }
+
+    input {
+        background-color: #f0f0f0;
+        border: 1px solid #000000;
+        padding: 10px;
+        margin: 10px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    input:hover {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    input:active {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    canvas {
+        background-color: #ffffff;
+        border: 1px solid #000000;
+        padding: 10px;
+        margin: 10px;
+    }
+    
+</style>
