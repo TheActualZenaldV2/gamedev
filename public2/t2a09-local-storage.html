@@ -1,31 +1,6 @@
 <h2>t2a09-local-storage-name by Fred. Instructions:</h2>
 <script>
 
-function init(){
-    myStorage = localStorage.getItem("myStoredText");
-    if(myStorage  != null){
-        document.getElementById("myText1").value = myStorage 
-    }
-}
-
-function unload(){
-    localStorage.setItem("myStoredText",document.getElementById("myText1").value);
-}
-
-function storeText(){
-    localStorage.setItem("myStoredText", document.getElementById("myText1").value);
-    alert(document.getElementById("myText1").value + " \nHas been stored");
-    document.getElementById("myText1").value = "";
-}
-
-function retrieveText(){
-    document.getElementById("myText1").value = localStorage.getItem("myStoredText");
-}
-
-function clearText(){
-    localStorage.removeItem("myStoredText");
-    document.getElementById("myText1").value = "";
-}
 
 
 var pin = []
@@ -294,14 +269,15 @@ function pushUserPin9(){
 }
 
 
+//if the stored pin and the user pin are the same then the user is allowed to access the page
 function checkPin(){
     var storedPin = localStorage.getItem("myStoredPin");
-    var enteredPin = document.getElementById("pin").innerHTML;
-    if (storedPin == enteredPin){
-        alert("Pin is correct");
-    }
-    else{
-        alert("Pin is incorrect");
+    var userPin = pin2;
+    if (storedPin == userPin) {
+        alert("Access Granted");
+        window.location.href = "https://www.google.com";
+    } else {
+        alert("Access Denied");
     }
 }
 </script>
