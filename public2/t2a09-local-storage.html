@@ -1,4 +1,4 @@
-<h2>t2a09-local-storage-name by Fred. Instructions:</h2>
+<h2 id="instructions"></h2>
 <script>
 
 
@@ -137,7 +137,7 @@ function pushUserPin0(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -149,7 +149,7 @@ function pushUserPin1(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -161,7 +161,7 @@ function pushUserPin2(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -173,7 +173,7 @@ function pushUserPin3(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -185,7 +185,7 @@ function pushUserPin4(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -197,7 +197,7 @@ function pushUserPin5(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -209,7 +209,7 @@ function pushUserPin6(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
    
@@ -221,7 +221,7 @@ function pushUserPin7(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -233,7 +233,7 @@ function pushUserPin8(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -245,7 +245,7 @@ function pushUserPin9(){
     document.getElementById("pin2").innerHTML = "You entered: " + pin2;
     if (pin2.length == 4) {
     
-    checkPin();
+    
     //disable table 
 
     
@@ -259,7 +259,7 @@ function checkPin(){
     var userPin = pin2;
     if (storedPin == userPin) {
         alert("Access Granted");
-        window.location.href = "https://www.google.com";
+        window.location.href = "https://www.youtube.com/watch?v=6WlI24rv__g";
     } else {
         alert("Access Denied");
         pin2 = [];
@@ -275,7 +275,7 @@ function clearUserPin(){
 //display the stored pin 
 function displayPin(){
     var storedPin = localStorage.getItem("myStoredPin");
-    document.getElementById("savedPin").innerHTML = storedPin;
+    document.getElementById("savedPin").innerHTML = "Your pin is: " + storedPin;
 
     if(storedPin == "" || storedPin == null){
         document.getElementById("savedPin").innerHTML = "No Pin Stored";
@@ -310,28 +310,46 @@ function login(){
     var storedPin = localStorage.getItem("myStoredPin");
     if(storedPin == "" || storedPin == null){
         alert("No Pin Stored");
+        document.getElementById("instructions").innerHTML = "Please create a 4 digit pin";
+        document.getElementById("loginBtn").style.display = "none";
+        document.getElementById("retry").style.display = "none";
+        document.getElementById("resetPin").style.display = "none";
+        document.getElementById("pin2").style.display = "none";
+        document.getElementById("showHide").style.display = "none";
     } else {
         document.getElementById("createPin").style.display = "none";
-        
-       
-        
         document.getElementById("login").style.display = "none";
         document.getElementById("pin").style.display = "none";
-        document.getElementById("loginControlButton").style.display = "inline-block";
-        
-        
-        
-        
         document.getElementById("login").style.display = "inline-block";
+        document.getElementById("instructions").innerHTML = "Please enter your pin";
+        document.getElementById("clearCreatedPin").style.display = "none";
+    
     }
 }
 
+function clearCreatedPin(){
+    pin = [];
+    document.getElementById("pin").innerHTML = "Your pin is: " + pin;
+
+}
+
+//function to show or hide the pin
+function toggleView(){
+    if(document.getElementById("savedPin").style.display == "none"){
+        document.getElementById("savedPin").style.display = "inline-block";
+    } else {
+        document.getElementById("savedPin").style.display = "none";
+    }
+}
 
 </script>
 <body onload="login(), displayPin()">
 
+     
+
     <p id="savedPin"></p>
-    <p id="pin"></p>
+    <p id="pin">Your Pin Is: </p>
+    <input type="button" id="clearCreatedPin" value="Clear Input" onclick="clearCreatedPin()"> 
 <table id="createPin">
     <tr>
         <td id="createPin"><button onclick="pushPin1()">1</button></td>
@@ -355,10 +373,24 @@ function login(){
 </table>
 
 
-<input type="button" id="controlButton2" value="Clear PIN" onclick="clearPin()"> <br> <br> <br> <br>    
-<input id="loginControlButton" type="button" value="Clear Selection" onclick="clearUserPin()">
+<div id="centerContainer">
+    
+<table id="buttonContainer">
+    <tr>
+        
+        
+        <td id=""><button id="resetPin" onclick="clearPin()">RESET Pin</button></td>
+        <td id=""><button id="loginBtn" onclick="checkPin()">Login</button></td> 
 
-<p id="pin2"></p> <br> <br> 
+    </tr>
+    <tr>
+        <td id=""><button id="retry" onclick="clearUserPin()">Retry Pin</button></td>
+        <td id=""> <button id="showHide" onclick="toggleView()">Toggle Pin</button></td>
+    </tr>
+</table>
+
+
+<p id="pin2">You Entered: </p> <br> <br> 
 <table id="login"> 
     <tr>
         <td id="createPin2"><button onclick="pushUserPin1()">1</button></td id="createPin">
@@ -377,6 +409,9 @@ function login(){
     </tr>
 </table>
 
+
+</div>
+
    
 
 
@@ -387,6 +422,77 @@ function login(){
 
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital@1&display=swap');
+
+
+    #clearCreatedPin{
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        margin: 0 auto;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        
+    }
+
+    #clearCreatedPin:hover{
+        background-color: #3e8e41;
+    }
+    #clearCreatedPin:active{
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+        transition: 0.3s all;
+    }
+    #buttonContainer{
+        position: relative;
+
+    }
+    #centerDiv{
+        margin: 0 auto;
+        width: 50%;
+        text-align: center;
+    }
+    #pin2{
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        color: orange;
+        background-color: aliceblue;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+        width: 200px;
+        text-align: center;
+
+
+    }
+    #savedPin {
+        text-align: center;
+        font-size: 20px;
+        color: green;
+        background-color: lightblue;
+        padding: 20px;
+        width: 200px;
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid black;
+        margin: auto;
+    }
+    #instructions {
+        font-size: 40px;
+        color: orange;
+        text-align: center;
+    }
+    #controlButton2{
+       position: relative;
+
+
+    }
+    
 
     #createPin{
     background-color: green;
@@ -404,6 +510,7 @@ function login(){
     width: 100px;
     height: 100px;
     margin: auto;
+    
         
     }
 input {
@@ -444,6 +551,9 @@ body {
     
     background-size: cover;
     color: white;
+    font-family: 'Poppins', sans-serif;
+
+
 
 
 }
@@ -484,7 +594,13 @@ button:active {
     background-color: white;
     border-radius: 2rem;
     text-align: center;
-    padding: 5px;   
+    padding: 5px; 
+    border: 1px solid black;
+    width: 200px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
 }
 </style>
 </body>
