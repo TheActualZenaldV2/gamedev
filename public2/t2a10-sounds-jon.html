@@ -1,0 +1,286 @@
+
+<script> 
+
+    //reference sounds by url 
+    var sound1 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/goat-bell-75153.mp3');
+    var sound2 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key01.mp3');
+    var sound3 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key02.mp3');
+    var sound4 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key03.mp3');
+    var sound5 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key04.mp3');
+    var sound6 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key05.mp3');
+    var sound7 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key06.mp3');
+    var sound8 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key07.mp3');
+    var sound9 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key08.mp3');
+    var sound10 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key09.mp3');
+    var sound11 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key10.mp3');
+    var sound12 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key11.mp3');
+    var sound13 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key12.mp3');
+    var sound14 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key13.mp3');
+    var sound15 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key14.mp3');
+    var sound16 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key15.mp3');
+    var sound17 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key16.mp3');
+    var sound18 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key17.mp3');
+    var sound19 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key18.mp3');
+    var sound20 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key19.mp3');
+    var sound21 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key20.mp3');
+    var sound22 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key21.mp3');
+    var sound23 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key22.mp3');
+    var sound24 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key23.mp3');
+    
+    
+  //play sound in a function, but allow for multiple sounds to be played at once and play sounds even if they are not finished playing
+
+  function playSound2() {
+  sound2.currentTime = 0;
+  sound2.play();
+}
+    function playSound3() {
+    sound3.currentTime = 0;
+    sound3.play();
+    }
+    function playSound4() {
+    sound4.currentTime = 0;
+    sound4.play();
+    }
+    function playSound5() {
+    sound5.currentTime = 0;
+    sound5.play();
+    }
+    function playSound6() {
+    sound6.currentTime = 0;
+    sound6.play();
+    }
+    function playSound7() {
+    sound7.currentTime = 0;
+    sound7.play();
+    }
+    function playSound8() {
+    sound8.currentTime = 0;
+    sound8.play();
+    }
+    function playSound9() {
+    sound9.currentTime = 0;
+    sound9.play();
+    }
+    function playSound10() {
+    sound10.currentTime = 0;
+    sound10.play();
+    }
+    function playSound11() {
+    sound11.currentTime = 0;
+    sound11.play();
+    }
+    function playSound12() {
+    sound12.currentTime = 0;
+    sound12.play();
+    }
+    function playSound13() {
+    sound13.currentTime = 0;
+    sound13.play();
+    }
+    function playSound14() {
+    sound14.currentTime = 0;
+    sound14.play();
+    }
+    function playSound15() {
+    sound15.currentTime = 0;
+    sound15.play();
+    }
+    function playSound16() {
+    sound16.currentTime = 0;
+    sound16.play();
+    }
+    function playSound17() {
+    sound17.currentTime = 0;
+    sound17.play();
+    }
+    function playSound18() {
+    sound18.currentTime = 0;
+    sound18.play();
+    }
+    function playSound19() {
+    sound19.currentTime = 0;
+    sound19.play();
+    }
+    function playSound20() {
+    sound20.currentTime = 0;
+    sound20.play();
+    }
+    function playSound21() {
+    sound21.currentTime = 0;
+    sound21.play();
+    }
+    function playSound22() {
+    sound22.currentTime = 0;
+    sound22.play();
+    }
+    function playSound23() {
+    sound23.currentTime = 0;
+    sound23.play();
+    }
+    function playSound24() {
+    sound24.currentTime = 0;
+    sound24.play();
+    }
+    function playSound1() {
+    sound1.currentTime = 0;
+    sound1.play();
+    }
+
+    function init(){
+        document.getElementById("start").style.display = "inline-block";
+        
+        //make all buttons elements invisible
+        document.body.style.backgroundColor = "black";
+
+
+        
+    }
+    
+    
+
+    //* constantly change background color to a random color every 1 second, smoothly 
+    var color = 0;
+    var color2 = 0;
+    var color3 = 0;
+    var color4 = 0;
+    var color5 = 0;
+    var color6 = 0;
+    var color7 = 0;
+    var color8 = 0;
+    var color9 = 0;
+    var color10 = 0;
+    var color11 = 0;
+    var color12 = 0;
+    var color13 = 0;
+    var color14 = 0;
+    var color15 = 0;
+    var color16 = 0;
+    var color17 = 0;
+    var color18 = 0;
+    var color19 = 0;
+    var color20 = 0;
+    var color21 = 0;
+    var color22 = 0;
+    var color23 = 0;
+    var color24 = 0;
+    
+    function changeColor() {
+      color = Math.floor(Math.random() * 255);
+      color2 = Math.floor(Math.random() * 255);
+      color3 = Math.floor(Math.random() * 255);
+      color4 = Math.floor(Math.random() * 255);
+      color5 = Math.floor(Math.random() * 255);
+      color6 = Math.floor(Math.random() * 255);
+      color7 = Math.floor(Math.random() * 255);
+      color8 = Math.floor(Math.random() * 255);
+      color9 = Math.floor(Math.random() * 255);
+      color10 = Math.floor(Math.random() * 255);
+      color11 = Math.floor(Math.random() * 255);
+      color12 = Math.floor(Math.random() * 255);
+      color13 = Math.floor(Math.random() * 255);
+      color14 = Math.floor(Math.random() * 255);
+      color15 = Math.floor(Math.random() * 255);
+      color16 = Math.floor(Math.random() * 255);
+      color17 = Math.floor(Math.random() * 255);
+      color18 = Math.floor(Math.random() * 255);
+      color19 = Math.floor(Math.random() * 255);
+      color20 = Math.floor(Math.random() * 255);
+      color21 = Math.floor(Math.random() * 255);
+      color22 = Math.floor(Math.random() * 255);
+      color23 = Math.floor(Math.random() * 255);
+      color24 = Math.floor(Math.random() * 255);
+
+
+
+        //change background color every 1 second
+        setTimeout(changeColor, 1000);
+
+        document.body.style.backgroundColor = "rgb(" + color + "," + color2 + "," + color3 + ")";
+        document.body.style.backgroundColor = "rgb(" + color4 + "," + color5 + "," + color6 + ")";
+        document.body.style.backgroundColor = "rgb(" + color7 + "," + color8 + "," + color9 + ")";
+        document.body.style.backgroundColor = "rgb(" + color10 + "," + color11 + "," + color12 + ")";
+        document.body.style.backgroundColor = "rgb(" + color13 + "," + color14 + "," + color15 + ")";
+        document.body.style.backgroundColor = "rgb(" + color16 + "," + color17 + "," + color18 + ")";
+        document.body.style.backgroundColor = "rgb(" + color19 + "," + color20 + "," + color21 + ")";
+        document.body.style.backgroundColor = "rgb(" + color22 + "," + color23 + "," + color24 + ")";
+
+
+        //add animation to the background color change
+        
+        //add more animation to the background color change
+        document.body.style.transition = "background-color 1s, color 1s";
+    }
+
+
+    
+    
+    
+    
+    </script>
+     
+    
+    
+    
+    
+    
+    <body onload="changeColor(); init();">
+        <button id="start" onclick="playSound1();"> Click me to start! </button>
+    <button id="2" type=button value="Play" onclick="playSound2()"> </button>
+    <button id="1" type=button value="Play" onclick="playSound3()"> </button>
+    <button id="3" type=button value="Play" onclick="playSound4()"> </button>
+    <button id="4" type=button value="Play" onclick="playSound5()"> </button>
+    <button id="5" type=button value="Play" onclick="playSound6()"> </button>
+    <button id="6" type=button value="Play" onclick="playSound7()"> </button>
+    <button id="7" type=button value="Play" onclick="playSound8()"> </button>
+    <button id="8" type=button value="Play" onclick="playSound9()"> </button>
+    <button id="9" type=button value="Play" onclick="playSound10()"> </button>
+    <button id="10" type=button value="Play" onclick="playSound11()"> </button>
+    <button id="11" type=button value="Play" onclick="playSound12()"> </button>
+      
+    <button id="12" type=button value="Play" onclick="playSound13()"> </button>
+    <br> 
+    <button id="13" type=button value="Play" onclick="playSound14()"> </button>
+    <button id="14" type=button value="Play" onclick="playSound15()"> </button>
+    <button id="15" type=button value="Play" onclick="playSound16()"> </button>
+    <button id="16" type=button value="Play" onclick="playSound17()"> </button>
+    <button id="17" type=button value="Play" onclick="playSound18()"> </button>
+    <button id="18" type=button value="Play" onclick="playSound19()"> </button>
+    <button id="19" type=button value="Play" onclick="playSound20()"> </button>
+    <button id="20" type=button value="Play" onclick="playSound21()"> </button>
+    <button id="21" type=button value="Play" onclick="playSound22()"> </button>
+    <button id="22" type=button value="Play" onclick="playSound23()"> </button>
+    <button id="23" type=button value="Play" onclick="playSound24()"> </button>
+    
+    
+    </body> 
+    
+    <style>
+
+
+
+        /* make id 2 look like a white piano key */
+        button {
+    
+            background-color: white;
+            width: 50px;
+            height: 200px;
+            border: 1px solid black;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+        body {
+            background-color: orange;
+        }
+
+        button:hover{
+            background-color: black;
+            transition: 0.2s all; 
+        }
+        button:active{
+            /* move button down when clicked */
+            transform: translateY(4px);
+
+        }
+    </style>
