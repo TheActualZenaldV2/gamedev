@@ -1,4 +1,5 @@
 
+
 <script> 
 
     //reference sounds by url 
@@ -26,6 +27,7 @@
     var sound22 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key21.mp3');
     var sound23 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key22.mp3');
     var sound24 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/sounds/key23.mp3');
+    var sound25 = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/lg_washer.mp3');
 
 
     
@@ -35,93 +37,75 @@
   function playSound2() {
   sound2.currentTime = 0;
   sound2.play();
-  sound2.volume = 0.5;
   
 }
     function playSound3() {
     sound3.currentTime = 0;
     sound3.play();
-    sound3.volume = 0.5;
     }
     function playSound4() {
     sound4.currentTime = 0;
     sound4.play();
-    sound4.volume = 0.5;
     }
     function playSound5() {
     sound5.currentTime = 0;
     sound5.play();
-    sound5.volume = 0.5;
     }
     function playSound6() {
     sound6.currentTime = 0;
     sound6.play();
-    sound6.volume = 0.5;
     }
     function playSound7() {
     sound7.currentTime = 0;
     sound7.play();
-    sound7.volume = 0.5;
     }
     function playSound8() {
     sound8.currentTime = 0;
     sound8.play();
-    sound8.volume = 0.5;
     }
     function playSound9() {
     sound9.currentTime = 0;
     sound9.play();
-    sound9.volume = 0.5;
     }
     function playSound10() {
     sound10.currentTime = 0;
     sound10.play();
-    sound10.volume = 0.5;
     }
     function playSound11() {
     sound11.currentTime = 0;
     sound11.play();
-    sound11.volume = 0.5;
     }
     function playSound12() {
     sound12.currentTime = 0;
     sound12.play();
-    sound12.volume = 0.5;
     }
     function playSound13() {
     sound13.currentTime = 0;
     sound13.play();
-    sound13.volume = 0.5;
     }
     function playSound14() {
     sound14.currentTime = 0;
     sound14.play();
-    sound14.volume = 0.5;
     }
     function playSound15() {
     sound15.currentTime = 0;
     sound15.play();
-    sound15.volume = 0.5;
     }
     function playSound16() {
     sound16.currentTime = 0;
     sound16.play();
-    sound16.volume = 0.5;
     }
     function playSound17() {
     sound17.currentTime = 0;
     sound17.play();
-    sound17.volume = 0.5;
     }
     function playSound18() {
     sound18.currentTime = 0;
     sound18.play();
-    sound18.volume = 0.5;
     }
     function playSound19() {
     sound19.currentTime = 0;
     sound19.play();
-    sound19.volume = 0.5;
     }
     function playSound5() {
     sound5.currentTime = 0;
@@ -207,6 +191,11 @@
     sound1.currentTime = 0;
     sound1.play();
     }
+    function playSound25() {
+    
+    sound25.play();
+    }
+
 
  
     
@@ -310,89 +299,71 @@
         sound22.pause();
         sound23.pause();
         sound24.pause();
+        sound25.pause();
     }
 
     
-    //make the sounds twice as loud 
-   function boostAudio() {
-        sound1.volume = 1;
-        sound2.volume = 1;
-        sound3.volume = 1;
-        sound4.volume = 1;
-        sound5.volume = 1;
-        sound6.volume = 1;
-        sound7.volume = 1;
-        sound8.volume = 1;
-        sound9.volume = 1;
-        sound10.volume = 1;
-        sound11.volume = 1;
-        sound12.volume = 1;
-        sound13.volume = 1;
-        sound14.volume = 1;
-        sound15.volume = 1;
-        sound16.volume = 1;
-        sound17.volume = 1;
-        sound18.volume = 1;
-        sound19.volume = 1;
-        sound20.volume = 1;
-        sound21.volume = 1;
-        sound22.volume = 1;
-        sound23.volume = 1;
-        sound24.volume = 1;
+   
+
+    //when you press the corresponding number key, play the corresponding sound
+    document.onkeydown = function(event) {
+        if (event.keyCode == 49) {
+            playSound1();
+        } else if (event.keyCode == 50) {
+            playSound2();
+        } else if (event.keyCode == 51) {
+            playSound3();
+        } else if (event.keyCode == 52) {
+            playSound4();
+        } else if (event.keyCode == 53) {
+            playSound5();
+        } else if (event.keyCode == 54) {
+            playSound6();
+        } else if (event.keyCode == 55) {
+            playSound7();
+        } else if (event.keyCode == 56) {
+            playSound8();
+        } else if (event.keyCode == 57) {
+            playSound9();
+        } else if (event.keyCode == 48) {
+            playSound10();
+        } else if (event.keyCode == 81) {
+            playSound11();
+        } else if (event.keyCode == 87) {
+            playSound12();
+        } else if (event.keyCode == 69) {
+            playSound13();
+        } else if (event.keyCode == 82) {
+            playSound14();
+        } else if (event.keyCode == 84) {
+            playSound15();
+        } else if (event.keyCode == 89) {
+            playSound16();
+        } else if (event.keyCode == 85) {
+            playSound17();
+        } else if (event.keyCode == 73) {
+            playSound18();
+        } else if (event.keyCode == 79) {
+            playSound19();
+        } else if (event.keyCode == 80) {
+            playSound20();
+        } else if (event.keyCode == 65) {
+            playSound21();
+        } else if (event.keyCode == 83) {
+            playSound22();
+        } else if (event.keyCode == 68) {
+            playSound23();
+        } else if (event.keyCode == 70) {
+            playSound24();
+        } else if (event.keyCode == 71) {
+            playSound25();
+        } else if (event.keyCode == 32) {
+            pauseAudio();
+        }
     }
 
-    //when you press the corresponding number on the keyboard, it plays the corresponding sound
-    document.addEventListener("keydown", function(event) {
-        if (event.keyCode == 65) {
-            playSound1();
-        } else if (event.keyCode == 83) {
-            playSound2();
-        } else if (event.keyCode == 68) {
-            playSound3();
-        } else if (event.keyCode == 70) {
-            playSound4();
-        } else if (event.keyCode == 71) {
-            playSound5();
-        } else if (event.keyCode == 72) {
-            playSound6();
-        } else if (event.keyCode == 74) {
-            playSound7();
-        } else if (event.keyCode == 75) {
-            playSound8();
-        } else if (event.keyCode == 76) {
-            playSound9();
-        } else if (event.keyCode == 90) {
-            playSound10();
-        } else if (event.keyCode == 88) {
-            playSound11();
-        } else if (event.keyCode == 67) {
-            playSound12();
-        } else if (event.keyCode == 86) {
-            playSound13();
-        } else if (event.keyCode == 66) {
-            playSound14();
-        } else if (event.keyCode == 78) {
-            playSound15();
-        } else if (event.keyCode == 77) {
-            playSound16();
-        } else if (event.keyCode == 81) {
-            playSound17();
-        } else if (event.keyCode == 87) {
-            playSound18();
-        } else if (event.keyCode == 69) {
-            playSound19();
-        } else if (event.keyCode == 82) {
-            playSound20();
-        } else if (event.keyCode == 84) {
-            playSound21();
-        } else if (event.keyCode == 89) {
-            playSound22();
-        } else if (event.keyCode == 85) {
-            playSound23();
-        } else if (event.keyCode == 73) {
-            playSound24();
-        }
-    });
+   
+
     
     </script>
      
@@ -401,10 +372,11 @@
     
     
     
-    <body onload="changeColor();">
+    <body onmouseover="playSound25()" onload="changeColor();">
         
         <button id="0" type=button value="Play" onclick="playSound1()"> Click me!</button>
         <button id="00" type="button" onclick="pauseAudio()">Pause All!</button>
+        <button id="000" onclick="playSound25()">CLICK ME</button> 
 
         
 
