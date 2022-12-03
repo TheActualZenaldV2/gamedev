@@ -71,56 +71,69 @@
 
     }
 
-   //make pipes move across the screen
-    //q: how should i make pipes for flapppy bird
-    //a: use a variable to keep track of the pipe's position, and only draw the pipe once
+   //make an array of pipes that will move across the screen
 
-  
-
-    //randomly draw pipes at different heights once the pipe is off the backgound, draw another pipe
-    //randomly draw pipes at different heights
-   //make pipes move across screen
-    function drawPipes() {
-      var pipe = document.getElementById("pipe");
-      var x = 100;
-        var y = 100;
-        var speed = 1;
-        var interval = setInterval(function() {
-          pipe.style.top = y + "px";
-          pipe.style.left = x + "px";
-          x += -speed;
-          if (x > 480) {
-            clearInterval(interval);
-          }
-        }, 10);
-        //if the pipe hits background, call backgroundCollision function
-        backgroundCollision();
+   function makePipes() {
     
+    var pipes = [];
+    var pipe = document.createElement("div");
+    //display the pipes
+    pipe.style.width = "50px";
+    pipe.style.height = "100px";
+    //move the pipe onto the screen
+    pipe.style.position = "absolute";
+
+    //give the div an image of a pipe
+    pipe.style.backgroundImage = "url('https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png')";
+    pipe.className = "pipe";
+    //put the pipe at the right edge of the background element 
+    pipe.style.right = "500px";
+    pipe.style.top = "100px";
+    pipes.push(pipe);
+    document.body.appendChild(pipe);
+
+    //move the pipes across the screen, create a new pipe every 1.5 seconds
+    var interval = setInterval(function() {
+      for (var i = 0; i < pipes.length; i++) {
+        var pipe = pipes[i];
+        var right = parseInt(pipe.style.right);
+        pipe.style.right = right + 1 + "px";
+      }
+    }, 10);
+
+    setInterval(function() {
+      var pipe = document.createElement("div");
+      pipe.style.backgroundImage = "url('https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png')";
+      pipe.className = "pipe";
+      pipe.style.left = "100px";
+      pipe.style.top = "100px";
+      pipes.push(pipe);
+      document.body.appendChild(pipe);
+    }, 1500);
+
+    //delete the pipes when they go off the screen, and make new one appear
+    setInterval(function() {
         
-
-    }
-    //check if the pipe is outside of the background element
-    //if it is, draw another pipe
-
-    function backgroundCollision() {
-      var pipe = document.getElementById("pipe");
-      var background = document.getElementById("background");
-      var pipePositionX = pipe.offsetLeft;
-        var pipePositionY = pipe.offsetTop;
-      var x = pipePositionX;
-      var y = pipePositionY;
-      var speed = 1;
-      var interval = setInterval(function() {
-        pipe.style.top = y + "px";
-        pipe.style.left = x + "px";
-        x += -speed;
-        if (x > 480) {
-          clearInterval(interval);
+      for (var i = 0; i < pipes.length; i++) {
+        var pipe = pipes[i];
+        var left = (pipe.style.left);
+        if (left >= 100) {
+          //delete the pipe
+            pipe.parentNode.removeChild(pipe);
+            pipes.splice(i, 1);
+            i--;
+            
         }
-      }, 10);
-      //if the pipe hits background, call backgroundCollision function
+      }
       
+      console.log(left)
+    }, 10);
+    
+
+
+
     }
+
 
 
 
@@ -137,7 +150,7 @@
 
        gravity();
        moveBird();
-       drawPipes();
+       makePipes();
     }
 </script>
 <body onload="init()">
@@ -145,7 +158,7 @@
 <div id="background">
     <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png" alt="background" id="background">
     <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/yellowbird-midflap.png" alt="bird" id="bird">
-    <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png" alt="pipe" id="pipe">
+    <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png" alt="pipe" id="">
  
 
 </div>
@@ -189,3 +202,4 @@
    
 
 </style>
+
