@@ -1,0 +1,191 @@
+<script>
+
+    //flappy bird clone without using canvas
+
+    //background image 
+    var background = document.getElementById("background");
+    //bird image
+    var bird = document.getElementById("bird");
+    //bird's position
+    var y = 100;
+    //bird's speed
+    var speed = 0;
+    //bird position
+    var x = 100;
+
+   //function to move bird on click
+   //use event listener 
+    //move bird up by 20px
+    //if bird hits top of background, stop moving
+    //if bird hits bottom of background, stop moving
+
+    function gravity() {
+      var background = document.getElementById("background");
+        var bird = document.getElementById("bird");
+        var y = 100;
+        var speed = 0;
+        var x = 100;
+        var gravity = 0.01;
+        var interval = setInterval(function() {
+          background.style.backgroundPositionY = y + "px";
+          y += speed;
+          speed += gravity;
+          bird.style.top = y + "px";
+          bird.style.left = x + "px";
+          if (y > 480) {
+            clearInterval(interval);
+          }
+        }, 10);
+    }
+
+    //on click, move the bird upwards by 20px
+    //if the bird hits the top of the canvas, it stops moving
+    //if you click on the bacmground, the bird moves up
+
+    //only ever draw one bird ever
+    function moveBird() {
+        
+      var background = document.getElementById("background");
+      var bird = document.getElementById("bird");
+      var y = 100;
+      var speed = 1;
+      var x = 100;
+      var gravity = 0.01;
+      var interval = setInterval(function() {
+        background.style.backgroundPositionY = y + "px";
+        y += speed;
+        speed += gravity;
+        bird.style.top = y + "px";
+        bird.style.left = x + "px";
+        if (y > 480) {
+          clearInterval(interval);
+        }
+      }, 10);
+
+      addEventListener("click", function() {
+        speed = -1;
+        
+      });
+
+
+
+    }
+
+   //make pipes move across the screen
+    //q: how should i make pipes for flapppy bird
+    //a: use a variable to keep track of the pipe's position, and only draw the pipe once
+
+  
+
+    //randomly draw pipes at different heights once the pipe is off the backgound, draw another pipe
+    //randomly draw pipes at different heights
+   //make pipes move across screen
+    function drawPipes() {
+      var pipe = document.getElementById("pipe");
+      var x = 100;
+        var y = 100;
+        var speed = 1;
+        var interval = setInterval(function() {
+          pipe.style.top = y + "px";
+          pipe.style.left = x + "px";
+          x += -speed;
+          if (x > 480) {
+            clearInterval(interval);
+          }
+        }, 10);
+        //if the pipe hits background, call backgroundCollision function
+        backgroundCollision();
+    
+        
+
+    }
+    //check if the pipe is outside of the background element
+    //if it is, draw another pipe
+
+    function backgroundCollision() {
+      var pipe = document.getElementById("pipe");
+      var background = document.getElementById("background");
+      var pipePositionX = pipe.offsetLeft;
+        var pipePositionY = pipe.offsetTop;
+      var x = pipePositionX;
+      var y = pipePositionY;
+      var speed = 1;
+      var interval = setInterval(function() {
+        pipe.style.top = y + "px";
+        pipe.style.left = x + "px";
+        x += -speed;
+        if (x > 480) {
+          clearInterval(interval);
+        }
+      }, 10);
+      //if the pipe hits background, call backgroundCollision function
+      
+    }
+
+
+
+
+
+
+
+
+
+    //initialise the game
+    function init() {
+        console.log("init");
+
+
+       gravity();
+       moveBird();
+       drawPipes();
+    }
+</script>
+<body onload="init()">
+  
+<div id="background">
+    <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png" alt="background" id="background">
+    <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/yellowbird-midflap.png" alt="bird" id="bird">
+    <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png" alt="pipe" id="pipe">
+ 
+
+</div>
+
+<style>
+    /* position the bird and background images */
+    #background {
+        position: relative;
+        width: 300px;
+        height: 700px;
+        margin: 0 auto;
+    }
+
+    #bird {
+        position: absolute;
+        top: 100px;
+        left: 100px;
+    }
+
+    BODY {
+        background-color: #000;
+
+    }
+
+    /* place the pipes on the background */
+    
+    #pipe {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+    
+    
+  
+
+  
+   
+
+    
+
+   
+
+</style>
