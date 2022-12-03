@@ -1,0 +1,197 @@
+<script>
+    //flappy bird type game 
+    //click to move up, with gravity pulling down
+    //pipes move across the screen
+    //if you hit a pipe, you lose
+    //if you hit the ground, you lose
+
+
+    //function to draw canvas with a background image 
+    function drawCanvas() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.getElementById("background");
+      ctx.drawImage(img, 0, 0);
+    }
+
+    //function to draw the bird
+    function drawBird() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.getElementById("bird");
+      ctx.drawImage(img, 100, 100);
+    }
+
+
+
+   
+   
+    //add gravity to the bird, so it falls straight down, slowly
+    //if the bird hits the ground, it stops falling
+   
+    function gravity() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.getElementById("bird");
+      var y = 100;
+      var x = 100;
+      var speed = 0;
+      var gravity = 0.01;
+      var interval = setInterval(function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawCanvas();
+        y += speed;
+        speed += gravity;
+        ctx.drawImage(img, x, y);
+        if (y > 480) {
+          clearInterval(interval);
+        }
+      }, 10);
+    }
+   
+
+
+    
+
+    //on click, move the bird upwards by 20px
+    //if the bird hits the top of the canvas, it stops moving
+    //only ever draw one bird ever 
+    //using a variable to keep track of the bird's position
+    //use event listeners to move the bird up and down
+
+    
+
+    //q: why does the bird flicker while moving up and down 
+    //a: because the canvas is being cleared and redrawn every time the bird moves
+
+    //q: how do I make the bird move up and down without flickering
+    //a: use a variable to keep track of the bird's position, and only draw the bird once
+
+    //use variable to keep track of the bird's position, and only draw the bird once
+
+    function moveUp() {
+        //keep track of the birds position
+        var birdPosition = 100;
+
+
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.getElementById("bird");
+      var y = 100;
+      var x = 100;
+      var speed = 0;
+      var gravity = 0.01;
+      var interval = setInterval(function() {
+        //only draw the bird once
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawCanvas();
+        y += speed;
+        speed += gravity;
+        
+        if (y > 480) {
+          clearInterval(interval);
+
+        }
+      }, 10);
+      document.addEventListener("click", function() {
+        speed = -1;
+      });
+
+      
+    }
+
+    
+   //draw multiple pipes moving across the screen
+   //call function for collision detection
+
+   function drawPipes() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.getElementById("pipe");
+      var x = 200;
+      var y = 0;
+      var interval = setInterval(function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawCanvas();
+        x += -1;
+        ctx.drawImage(img, x, y);
+        if (x > 500) {
+          clearInterval(interval);
+        }
+      }, 10);
+    
+
+      
+        
+      collisionDetection();
+
+
+     
+    }
+
+    function collisionDetection() {
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var img = document.getElementById("bird");
+        var x = 0;
+        var y = 0;
+        var interval = setInterval(function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawCanvas();
+          x += 1;
+          ctx.drawImage(img, x, y);
+          if (x > 500) {
+            clearInterval(interval);
+          }
+        }, 10);
+      }
+
+    
+    //q: why does the bird dissapear when the pipes move across the screen
+    //a: because the canvas is being cleared and redrawn every time the pipes move
+    //q: how to stop that
+    //a: use a variable to keep track of the bird's position, and only draw the bird once
+
+
+     //INITIALIZE function
+     function init() {
+      drawCanvas();
+      drawBird();
+      gravity();
+      moveUp();
+      drawPipes();
+     
+    }
+
+
+    
+    
+
+    
+   
+
+    
+    </script>
+
+    <body onload="init();">
+      <canvas id="canvas" width="300" height="700"></canvas>
+      
+      <img id="background" src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png" style="display:none">
+        <img id="bird" src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png" style="display:none">
+        <img id="pipe" src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png" style="display:none">
+
+      <style>
+        body {
+          background-color: #000000;
+        }
+        #canvas {
+          border: 1px solid #000000;
+          /* align into the center of the page */
+            margin: 0 auto;
+            display: block;
+
+        }
+
+
+      </style>
