@@ -1,6 +1,7 @@
 <body style="height: 100vh;  text-align: center;touch-action: manipulation;">
-    <canvas id="c" width="400" height="700"></canvas>
     <button id="clear high score" onclick="clearHighScore()">Clear High Score</button>
+    <canvas id="c" width="400" height="700"></canvas>
+    
 
 
     <script>
@@ -106,7 +107,21 @@
 <style>
     /*import poppins font*/
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
 
+    button{
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+        border: none;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        padding: 10px;
+        cursor: pointer;
+    }
+    
     body {
         font-family: 'Poppins', sans-serif;
         background-image: url("https://images.wallpapersden.com/image/download/mountains-sunrise-nepal-illustration_bGhnZ2eUmZqaraWkpJRnbmhnrWduaGdnZWZubGs.jpg");
@@ -147,3 +162,4 @@
         display: none;
     }
 </style>
+
