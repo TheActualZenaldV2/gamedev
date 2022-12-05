@@ -44,6 +44,12 @@
 
         localStorage.setItem("style", currentStoredStyle);
 
+        themeImage.src = "https://i.imgur.com/bKzJopC.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "blue"
+
+
+
         
        
         
@@ -76,6 +82,13 @@
 
         localStorage.setItem("style", currentStoredStyle);
 
+        themeImage.src = "https://i.imgur.com/OOkao7X.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "orange"
+
+
+
+
     }
 
     function chooseStyle3() {
@@ -100,6 +113,11 @@
 
         localStorage.setItem("style", currentStoredStyle);
 
+        themeImage.src = "https://i.imgur.com/tvsOEOY.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "purple"
+
+
 
     }
 
@@ -123,6 +141,10 @@
         document.getElementById("difficultyWrapper").style.display = "inline-block";
 
         localStorage.setItem("style", currentStoredStyle);
+        themeImage.src = "https://i.imgur.com/IlBk8c4.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "gray"
+
 
 
     }
@@ -146,6 +168,12 @@
         document.getElementById("difficultyWrapper").style.display = "inline-block";
 
         localStorage.setItem("style", currentStoredStyle);
+
+        themeImage.src = " https://i.imgur.com/LF4xkZW.png"
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "red"
+
+
 
 
     }
@@ -275,6 +303,8 @@
             document.getElementById("highScore").innerHTML = "Clear High Score";
         }
 
+
+
         //get style from local storage
         currentStoredStyle = localStorage.getItem("style");
         //set the style
@@ -288,6 +318,8 @@
             document.getElementById("clear").style.display = "none";
             
         }
+
+
         if(currentStoredStyle == "Default"){
             //disable other style buttons
             document.getElementById("chrome").disabled = true;
@@ -301,6 +333,10 @@
             document.getElementById("default").style.border = "3px solid yellow";
 
             document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+            themeImage.src = "https://i.imgur.com/bKzJopC.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "blue";
 
         }
         else if(currentStoredStyle == "Chrome"){
@@ -316,6 +352,12 @@
 
             document.getElementById("difficultyWrapper").style.display = "inline-block";
 
+            themeImage.src = "https://i.imgur.com/OOkao7X.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "orange"
+        
+
+
         }
         else if(currentStoredStyle == "Future"){
             //disable other style buttons
@@ -329,6 +371,13 @@
             document.getElementById("futuristic").style.border = "3px solid yellow";
 
             document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+            themeImage.src = "https://i.imgur.com/tvsOEOY.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "purple"
+
+           
+
 
         }
         else if(currentStoredStyle == "Space"){
@@ -345,6 +394,10 @@
 
             document.getElementById("difficultyWrapper").style.display = "inline-block";
 
+            themeImage.src = "https://i.imgur.com/IlBk8c4.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "gray"
+
         }
         else if(currentStoredStyle == "Fortnite"){
             //disable other style buttons
@@ -359,6 +412,10 @@
             document.getElementById("fortnite").style.border = "3px solid yellow";
 
             document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+            themeImage.src = " https://i.imgur.com/LF4xkZW.png"
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "red"
 
         }
         else{
@@ -406,6 +463,8 @@
         document.getElementById("clearHighScore").style.display = "inline-block";
 
         }
+
+
         else if(difficulty == "Medium"){
             document.getElementById("medium").style.backgroundColor = "green";
             document.getElementById("medium").style.borderRadius = "20%";
@@ -420,6 +479,8 @@
         document.getElementById("clear").style.display = "inline-block";
         document.getElementById("clearHighScore").style.display = "inline-block";
         }
+
+
         else if(difficulty == "Hard"){
             document.getElementById("hard").style.backgroundColor = "green";
             document.getElementById("hard").style.borderRadius = "20%";
@@ -433,7 +494,13 @@
             start.style.display = "inline-block";
         document.getElementById("clear").style.display = "inline-block";
         document.getElementById("clearHighScore").style.display = "inline-block";
+
+        themeImage.src = "https://i.imgur.com/tvsOEOY.png";
+        document.getElementById("themeWrapper").style.display = "inline-block";
+        document.getElementById("themeWrapper").style.backgroundColor = "purple"
         }
+
+
         else if(difficulty == "Impossible"){
             document.getElementById("insane").style.backgroundColor = "green";
             document.getElementById("insane").style.borderRadius = "20%";
@@ -447,6 +514,8 @@
             start.style.display = "inline-block";
         document.getElementById("clear").style.display = "inline-block";
         document.getElementById("clearHighScore").style.display = "inline-block";
+
+
         }
         else{
             difficulty = "Easy";
@@ -531,7 +600,7 @@
         }
 
         if(currentStoredStyle == "Space"){
-            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png";
+            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png"; //blue bird 
             currentStyleBackground = "https://cdn140.picsart.com/290913539007201.jpg?type=webp&to=min&r=480";
             currentStylePipeUp = "https://i.imgur.com/I4EdUsG.jpeg"; //red upwards pipe
             currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png"; //red downwards pipe
@@ -792,13 +861,16 @@ if(score > 5000){
         <button id="restartButton" onclick="location.reload()">Restart</button>
         </div>
     </div>
-        
+    <div id="themeWrapper">
+        <h1 id="themeTitle"> Your Theme Is:  </h1>
+        <img id="themeImage" src="https://i.imgur.com/bKzJopC.png">
+        </div>
     
 <div id="container">
     <div id="choicesWrapper"> <h1 id="welcome"> Welcome! Choose Theme To Start! </h1> 
         
         
-       
+        
     
 
     <button id="default" onclick="chooseStyle1()">
@@ -842,12 +914,62 @@ if(score > 5000){
     </div>
 </div>
 
+
+
     
 </body>
 
 <style>
     /*import poppins font*/
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    #themeTitle{
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        color: white;
+        text-align: center;
+        
+        
+    }
+    #themeWrapper {
+        display: none;
+        background-color: green;
+        border-radius: 10px;
+
+        position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 220px;
+    height: 550px;
+    padding: 20px;
+    place-content: center;
+
+
+        
+        
+        
+
+    }
+
+    #themeImage{
+        /* position middle left */
+       
+    width: 200px;
+    height: 500px;
+    object-fit: cover;
+        /*border radius*/
+    border-radius: 10px;
+        /*border*/
+    border: 2px solid black;
+        /*box shadow*/
+    box-shadow: 0 0 10px 0px black;
+    /* put it to the left side of the screen */
+    position: absolute;
+    left: 10%;
+
+
+    }
+
 
     #clearScore{
         font-size: 20px;
@@ -1068,7 +1190,7 @@ if(score > 5000){
 
     /*disable scrolling*/
     body {
-        overflow: hidden;
+        overflow: scroll;
     }
 
     p {
