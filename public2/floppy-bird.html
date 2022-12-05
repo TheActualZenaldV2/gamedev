@@ -1,4 +1,4 @@
-<body style="height: 100vh;  text-align: center;touch-action: manipulation;">
+<body style="height: 100vh;  text-align: center;touch-action: manipulation;" onload="getStylePreference();">
         
    
     
@@ -24,7 +24,10 @@
 
 
     function chooseStyle1() {
-        currentStyle = "default"
+        currentStyle = "Default"
+        currentStoredStyle = "Default";
+        document.getElementById("coolerWrapper").style.display = "inline-block";
+
         
         
         document.getElementById("default").style.backgroundColor = "green";
@@ -38,6 +41,9 @@
         document.getElementById("fortnite").disabled = true;
 
         document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        localStorage.setItem("style", currentStoredStyle);
+
         
        
         
@@ -50,7 +56,10 @@
     }
 
     function chooseStyle2() {
-        currentStyle = "chrome";
+        currentStyle = "Chrome";
+        currentStoredStyle = "Chrome";
+        document.getElementById("coolerWrapper").style.display = "inline-block";
+
         
         
         document.getElementById("chrome").style.backgroundColor = "green";
@@ -64,11 +73,16 @@
         document.getElementById("default").disabled = true;
         
         document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        localStorage.setItem("style", currentStoredStyle);
+
     }
 
     function chooseStyle3() {
-        currentStyle = "future";
-        
+        currentStyle = "Future";
+        currentStoredStyle = "Future";
+        document.getElementById("coolerWrapper").style.display = "inline-block";
+
         
         document.getElementById("futuristic").style.backgroundColor = "green";
         document.getElementById("futuristic").style.borderRadius = "20%";
@@ -84,10 +98,16 @@
 
         document.getElementById("difficultyWrapper").style.display = "inline-block";
 
+        localStorage.setItem("style", currentStoredStyle);
+
+
     }
 
     function chooseStyle4() {
-        currentStyle = "space";
+        currentStyle = "Space";
+        currentStoredStyle = "Space";
+        document.getElementById("coolerWrapper").style.display = "inline-block";
+
        
         
         document.getElementById("space").style.backgroundColor = "green";
@@ -102,10 +122,16 @@
 
         document.getElementById("difficultyWrapper").style.display = "inline-block";
 
+        localStorage.setItem("style", currentStoredStyle);
+
+
     }
     
     function chooseStyle5() {
-        currentStyle = "fortnite";
+        currentStyle = "Fortnite";
+        currentStoredStyle = "Fortnite";
+        document.getElementById("coolerWrapper").style.display = "inline-block";
+
        
         
         document.getElementById("fortnite").style.backgroundColor = "green";
@@ -119,16 +145,28 @@
 
         document.getElementById("difficultyWrapper").style.display = "inline-block";
 
+        localStorage.setItem("style", currentStoredStyle);
+
+
     }
 
     function clearChoice() {
+        //reset style local storage and reload
+        currentStoredStyle = "None";
+        localStorage.setItem("style", currentStoredStyle);
+        localStorage.setItem("difficulty", "None");
         location.reload();
         
 
     }
 
     function clearHighScore() {
-        localStorage.clear();
+        
+        //store text in local storage saying score cleared 
+        localStorage.setItem("highScore", "Cleared");
+        localStorage.setItem("bestScore", "0");
+        location.reload();
+        
         
     }
 
@@ -146,6 +184,10 @@
         document.getElementById("easy").style.backgroundColor = "green";
         document.getElementById("easy").style.borderRadius = "20%";
         document.getElementById("easy").style.border = "3px solid yellow";
+
+        localStorage.setItem("difficulty", difficulty);
+
+
     }
 
     function chooseDifficulty2(){
@@ -163,6 +205,9 @@
         document.getElementById("medium").style.backgroundColor = "green";
         document.getElementById("medium").style.borderRadius = "20%";
         document.getElementById("medium").style.border = "3px solid yellow";
+
+        localStorage.setItem("difficulty", difficulty);
+
 
 
     }
@@ -183,10 +228,13 @@
         document.getElementById("hard").style.borderRadius = "20%";
         document.getElementById("hard").style.border = "3px solid yellow";
 
+        localStorage.setItem("difficulty", difficulty);
+
+
     }
 
     function chooseDifficulty4(){
-        difficulty = "Insane";
+        difficulty = "Impossible";
         
         start.style.display = "inline-block";
         document.getElementById("clear").style.display = "inline-block";
@@ -200,30 +248,255 @@
         document.getElementById("insane").style.borderRadius = "20%";
         document.getElementById("insane").style.border = "3px solid yellow";
 
+        //store difficulty in local storage
+        localStorage.setItem("difficulty", difficulty);
+
     }
 
    
+    
+
+
+    function getStylePreference(){
+
+        //get item highScore from local storage, if it is "clear" then change highScore html
+        if(localStorage.getItem("highScore") == "Cleared"){
+            document.getElementById("highScore").innerHTML = "High Score Cleared";
+            //disable clear high score button
+            document.getElementById("clearHighScore").disabled = true;
+
+            //do some styling for disabled button
+            document.getElementById("clearHighScore").style.backgroundColor = "grey";
+            document.getElementById("clearHighScore").style.borderRadius = "20%";
+            document.getElementById("clearHighScore").style.border = "3px solid aqua";
+
+        }
+        if(localStorage.getItem("highScore") == "None"){
+            document.getElementById("highScore").innerHTML = "Clear High Score";
+        }
+
+        //get style from local storage
+        currentStoredStyle = localStorage.getItem("style");
+        //set the style
+
+        if(currentStoredStyle == "None") {
+            //hide the difficulty buttons
+            document.getElementById("coolerWrapper").style.display = "none";
+            //hide the start button
+            start.style.display = "none";
+            //hide the clear button
+            document.getElementById("clear").style.display = "none";
+            
+        }
+        if(currentStoredStyle == "Default"){
+            //disable other style buttons
+            document.getElementById("chrome").disabled = true;
+            document.getElementById("futuristic").disabled = true;
+            document.getElementById("space").disabled = true;
+            document.getElementById("fortnite").disabled = true;
+            //set the style
+
+            document.getElementById("default").style.backgroundColor = "green";
+            document.getElementById("default").style.borderRadius = "20%";
+            document.getElementById("default").style.border = "3px solid yellow";
+
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
+        else if(currentStoredStyle == "Chrome"){
+            //disable other style buttons
+            document.getElementById("default").disabled = true;
+            document.getElementById("futuristic").disabled = true;
+            document.getElementById("space").disabled = true;
+            document.getElementById("fortnite").disabled = true;
+            //set the style
+            document.getElementById("chrome").style.backgroundColor = "green";
+            document.getElementById("chrome").style.borderRadius = "20%";
+            document.getElementById("chrome").style.border = "3px solid yellow";
+
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
+        else if(currentStoredStyle == "Future"){
+            //disable other style buttons
+            document.getElementById("chrome").disabled = true;
+            document.getElementById("default").disabled = true;
+            document.getElementById("space").disabled = true;
+            document.getElementById("fortnite").disabled = true;
+            //set the style
+            document.getElementById("futuristic").style.backgroundColor = "green";
+            document.getElementById("futuristic").style.borderRadius = "20%";
+            document.getElementById("futuristic").style.border = "3px solid yellow";
+
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
+        else if(currentStoredStyle == "Space"){
+            //disable other style buttons
+            document.getElementById("chrome").disabled = true;
+            document.getElementById("futuristic").disabled = true;
+            document.getElementById("default").disabled = true;
+            document.getElementById("fortnite").disabled = true;
+
+
+            document.getElementById("space").style.backgroundColor = "green";
+            document.getElementById("space").style.borderRadius = "20%";
+            document.getElementById("space").style.border = "3px solid yellow";
+
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
+        else if(currentStoredStyle == "Fortnite"){
+            //disable other style buttons
+            document.getElementById("chrome").disabled = true;
+            document.getElementById("futuristic").disabled = true;
+            document.getElementById("default").disabled = true;
+            document.getElementById("space").disabled = true;
+
+
+            document.getElementById("fortnite").style.backgroundColor = "green";
+            document.getElementById("fortnite").style.borderRadius = "20%";
+            document.getElementById("fortnite").style.border = "3px solid yellow";
+
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
+        else{
+            currentStyle = "Default";
+            document.getElementById("difficultyWrapper").style.display = "inline-block";
+
+        }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //DIFFICULTY BELOW
+
+
+
+
+
+        //get difficulty from local storage
+        difficulty = localStorage.getItem("difficulty");
+        //set the difficulty
+        if(difficulty == "Easy"){
+            document.getElementById("easy").style.backgroundColor = "green";
+            document.getElementById("easy").style.borderRadius = "20%";
+            document.getElementById("easy").style.border = "3px solid yellow";
+
+            //disable other difficulty buttons
+            document.getElementById("medium").disabled = true;
+            document.getElementById("hard").disabled = true;
+            document.getElementById("insane").disabled = true;
+
+            start.style.display = "inline-block";
+        document.getElementById("clear").style.display = "inline-block";
+        document.getElementById("clearHighScore").style.display = "inline-block";
+
+        }
+        else if(difficulty == "Medium"){
+            document.getElementById("medium").style.backgroundColor = "green";
+            document.getElementById("medium").style.borderRadius = "20%";
+            document.getElementById("medium").style.border = "3px solid yellow";
+
+            //disable other difficulty buttons
+            document.getElementById("easy").disabled = true;
+            document.getElementById("hard").disabled = true;
+            document.getElementById("insane").disabled = true;
+
+            start.style.display = "inline-block";
+        document.getElementById("clear").style.display = "inline-block";
+        document.getElementById("clearHighScore").style.display = "inline-block";
+        }
+        else if(difficulty == "Hard"){
+            document.getElementById("hard").style.backgroundColor = "green";
+            document.getElementById("hard").style.borderRadius = "20%";
+            document.getElementById("hard").style.border = "3px solid yellow";
+
+            //disable other difficulty buttons
+            document.getElementById("easy").disabled = true;
+            document.getElementById("medium").disabled = true;
+            document.getElementById("insane").disabled = true;
+
+            start.style.display = "inline-block";
+        document.getElementById("clear").style.display = "inline-block";
+        document.getElementById("clearHighScore").style.display = "inline-block";
+        }
+        else if(difficulty == "Impossible"){
+            document.getElementById("insane").style.backgroundColor = "green";
+            document.getElementById("insane").style.borderRadius = "20%";
+            document.getElementById("insane").style.border = "3px solid yellow";
+
+            //disable other difficulty buttons
+            document.getElementById("easy").disabled = true;
+            document.getElementById("medium").disabled = true;
+            document.getElementById("hard").disabled = true;
+
+            start.style.display = "inline-block";
+        document.getElementById("clear").style.display = "inline-block";
+        document.getElementById("clearHighScore").style.display = "inline-block";
+        }
+        else{
+            difficulty = "Easy";
+        }
+
+
+        
+
+
+    }
 
     //CORE GAME FUNCTIONS HERE 
     
     function init(){
 
+        
+
+        
+
         //difficulty
         if(difficulty == "Easy"){
-            userDefinedInterval = "40";
-            userDefinedBirdY = "200"
+            userDefinedInterval = "26";
+            userDefinedBirdY = "200";
+            userDefinedGravity = "1.5";
+            userDefinedJumpSpeed = "15";
+            scoreMultiplier = "0.75";
+
         } else if(difficulty == "Medium"){
-            userDefinedInterval = "24";
-            userDefinedBirdY = "200"
+            userDefinedInterval = "20";
+            userDefinedBirdY = "200";
+            userDefinedGravity = "1.5";
+            userDefinedJumpSpeed = "15";
+            scoreMultiplier = "1.0";
+
+
         } else if(difficulty == "Hard"){
             userDefinedInterval = "15";
-            userDefinedBirdY = "100"
-        } else if(difficulty == "Insane"){
-            userDefinedInterval = "10";
-            userDefinedBirdY = "20"
+            userDefinedBirdY = "100";
+            userDefinedGravity = "1.5";
+            userDefinedJumpSpeed = "15";
+            scoreMultiplier = "1.5";
+
+        } else if(difficulty == "Impossible"){
+            userDefinedInterval = "12";
+            userDefinedBirdY = "20";
+            userDefinedGravity = "1.9";
+            userDefinedJumpSpeed = "20";
+            scoreMultiplier = "2";
+
+
 
             
         }
@@ -231,42 +504,45 @@
 
 
         //style the canvas, user chooses theme
-        if(currentStyle == "default"){
-            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png";
-            currentStyleBackground = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png";
-            currentStylePipeUp = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png";
+        if(currentStoredStyle == "None"){
+            document.getElementById("difficultyWrapper").style.display = "none"
+        }
+        if(currentStoredStyle == "Default"){
+            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png"; //blue bird 
+            currentStyleBackground = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png"; //night background
+            currentStylePipeUp = "https://i.imgur.com/KOSsw0R.jpeg"; //green upward pipe
             currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png";
-            currentStyleTextColor = "black";
+            currentStyleTextColor = "black"; //black font 
         }
-        if(currentStyle == "chrome"){
-            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/redbird-midflap.png";
-            currentStyleBackground = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-day.png";
-            currentStylePipeUp = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
-            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
-            currentStyleTextColor = "black";
+        if(currentStoredStyle == "Chrome"){
+            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/redbird-midflap.png"; //red bird
+            currentStyleBackground = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-day.png"; //day background
+            currentStylePipeUp = "https://i.imgur.com/I4EdUsG.jpeg"; //red upwards pipe
+            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png"; //red downwards pipe
+            currentStyleTextColor = "black"; //black font
         }
-        if(currentStyle == "future"){
-            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png";
-            currentStyleBackground = "https://images.wallpapersden.com/image/download/pixelart-night-landscape_bGtsZ22UmZqaraWkpJRmaWllrWdua2U.jpg";
-            currentStylePipeUp = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png";
-            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
+        if(currentStoredStyle == "Future"){
+            currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png";   //blue bird
+            currentStyleBackground = "https://i.imgur.com/9Uxy06d.jpeg"; //future background
+            currentStylePipeUp = "https://i.imgur.com/KOSsw0R.jpeg"; //green upwards pipe
+            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green.png"; //green downwards pipe
             currentStyleTextColor = "white";
 
         }
 
-        if(currentStyle == "space"){
+        if(currentStoredStyle == "Space"){
             currentStyleBird = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/bluebird-midflap.png";
             currentStyleBackground = "https://cdn140.picsart.com/290913539007201.jpg?type=webp&to=min&r=480";
-            currentStylePipeUp = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
-            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
-            currentStyleTextColor = "white";
+            currentStylePipeUp = "https://i.imgur.com/I4EdUsG.jpeg"; //red upwards pipe
+            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png"; //red downwards pipe
+            currentStyleTextColor = "white"; //white font
         }
 
-        if(currentStyle == "fortnite"){
-            currentStyleBird = "https://i.imgur.com/FT0lARB.png";
-            currentStyleBackground = "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/en_US/games/switch/f/fortnite-switch/hero";
-            currentStylePipeUp = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
-            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png";
+        if(currentStoredStyle == "Fortnite"){
+            currentStyleBird = "https://i.imgur.com/FT0lARB.png"; //fortnite bird
+            currentStyleBackground = "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/en_US/games/switch/f/fortnite-switch/hero"; //fortnite background
+            currentStylePipeUp = "https://i.imgur.com/I4EdUsG.jpeg"; //red upwards pipe
+            currentStylePipeDown = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-red.png"; //red downwards pipe
             currentStyleTextColor = "white";
         }
         
@@ -298,18 +574,21 @@
     var birdY = userDefinedBirdY //default 200
     var pipeGap = 200;
     var canvasSize = 700;
-    var pipeX = 400;
+    var pipeX = 700;
     var gameOver = false;
+
+    
+
     
 
     
     //on event value 32 change birdDY to 15
     document.addEventListener("keydown", function(event){
         if(event.keyCode == 32){
-            birdDY = 15;
+            birdDY = userDefinedJumpSpeed; //default 15
         }
     });
-    c.onclick = () => (birdDY = 15) //default 15, higher = more difficult
+    c.onclick = () => (birdDY = userDefinedJumpSpeed) //default 15, higher = more difficult
     //load best score
     if (localStorage.getItem("bestScore")) {
         bestScore = localStorage.getItem("bestScore");
@@ -322,7 +601,7 @@
         
         
         //gravity
-        birdY -= birdDY -= 1.5; //default 1.5, higher = more difficult
+        birdY -= birdDY -= userDefinedGravity; //default 1.5, higher = more difficult
         //draw bird
         context.drawImage(bird, birdX, birdY, birdSize * (34/24), birdSize);
         context.fillStyle = "green";
@@ -330,7 +609,18 @@
         pipeX -= 8;
         if(pipeX < -pipeWidth) {
             pipeX = canvasSize;
-            topPipeBottomY = pipeGap * Math.random();
+            //randomize the top pipe length and bottom pipe length, but keep the gap the same
+            //do not let pipe length be greater than 300
+            topPipeBottomY = Math.floor(Math.random() * 300);
+            pipeGapBottomY = topPipeBottomY + pipeGap;
+
+            
+            
+            if(score % 2 == 0){
+                topPipeBottomY = pipeGap * Math.random() + Math.random() * 400 + 100;
+                
+
+            }
         }
         //draw top pipe with image instead of a rectangle
         context.drawImage(pipeUp, pipeX, 0, pipeWidth, topPipeBottomY);
@@ -339,37 +629,43 @@
         //draw score
         context.fillStyle = currentStyleTextColor;
         //poppins font
-        context.font = "bold 30px 'Poppins', sans-serif";
+        context.font = "bold 25px 'Poppins', sans-serif";
         
-        context.fillText("Score: " + score++, 9,25);
+        //score test using scoreMultiplier variable
+        
+        context.fillText("Score: " + score++ * scoreMultiplier, 9,25);
+
         //highs core 
-        bestScore = bestScore < score ? score : bestScore;
+        //rewrite using if statement
+        if(score * scoreMultiplier > bestScore) {
+            bestScore = score * scoreMultiplier;
+            localStorage.setItem("bestScore", bestScore);
+        }
+        
         context.fillText("Best: " + bestScore, 9, 50);
         //store high score in local storage
         localStorage.setItem("bestScore", bestScore);
+
+        //if there is a new high score, display text saying so 
+        if(score * scoreMultiplier == bestScore) {
+            context.fillText("New High Score!", 9, 75);
+            newHighScore = "true"
+        }
+
         //if bird hits bottom of canvas it dies and restarts
-
-      if(birdY < topPipeBottomY || birdY > topPipeBottomY + pipeGap) {
+        if(birdY < topPipeBottomY || birdY > topPipeBottomY + pipeGap) {
         if(pipeX < birdSize * (34/24)) {
-          birdDY = 0;
-          birdY = 200;
-          pipeX = canvasSize;
-          alert("You died! Your score was " + score  + ". Your difficulty was: " + difficulty + ". Use this popup to flex on your friends!");
-          location.reload();
-          
-         
-          
-          
-          
-            
-          
-        
+            birdDY = 0;
+            birdY = 200;
+            pipeX = canvasSize;
+            finalScore = score * scoreMultiplier;
+            //stop counting score
+            score = 0;
+            //set highScore to "none"
+        localStorage.setItem("highScore", "None");
 
-        
-        
-        
-        
-        
+            endGame();
+
           
         }
       }
@@ -379,29 +675,38 @@
             birdDY = 0;
             birdY = 200;
             pipeX = canvasSize;
-            alert("You died! Your score was " + score  + ". Your difficulty was: " + difficulty + ". Use this popup to flex on your friends!");
-            location.reload();
+            finalScore = score * scoreMultiplier;
+            //stop counting score
+            score = 0;
+            //set highScore to "none"
+        localStorage.setItem("highScore", "None");
+
+            endGame();
+            
+        
+          
+           
+                
+                
+        
+            
+            //stop counting score after game over
             
         }
 
-      //if there is a new best score, display text saying so, and remove it after 2 seconds
-        if (bestScore == score) {
-            context.fillText("New Best Score!", 9, 75);
-            setTimeout(() => {
-            context.fillText("", 9, 75);
-            }, 2000);
-            
-        }
+
 
 
 
 //if score is more than 5k end the game 
 if(score > 5000){
-        alert("You win! Your score was " + score  + ". Your difficulty was: " + difficulty + ". Use this popup to flex on your friends!");
-        location.reload();
+    for(var i = 0; i < 1; i++){
+        endGame();
+        console.log("called endgame");
     }
 
-    }, interval)
+    }
+}, interval)
 
     function clearHighScore() {
         localStorage.clear();
@@ -415,11 +720,44 @@ if(score > 5000){
     
 
    
-    //if the bird hits a pipe, or goes outside the canvas it dies
+    
 
 
     }
 
+
+    //end game function
+    function endGame(){
+        interval = 0;
+        userDefinedInterval = "0";
+        console.log("Game Over");
+        console.clear();
+        clearInterval();
+        //how to put text into the console that doesnt get cleared
+        console.log("%cIgnore the errors please :D", "color: orange; font-size: 50px; font-family: 'Poppins', sans-serif;");
+
+        //delete canvas element 
+        //for loop to clear canvas once 
+        for (var i = 0; i < 1; i++) {
+        c.remove();
+        }
+
+        if(newHighScore == "true"){
+            document.getElementById("newHighScore").innerHTML = "New High Score!";
+        }
+       
+        
+        document.getElementById("endGameWrapper").style.display = "inline-block";
+        
+
+        document.getElementById("score").innerHTML = "Score: " + finalScore;
+
+        document.getElementById("bestScore").innerHTML = "High Score: " + localStorage.getItem("bestScore");
+        document.getElementById("difficulty").innerHTML = "Difficulty: " + difficulty + "<br>" + "(Score Multiplier: " + scoreMultiplier + ")";
+        document.getElementById("theme").innerHTML = "Theme: " + currentStyle;
+
+        
+    }
     
     
 
@@ -442,10 +780,25 @@ if(score > 5000){
 
 
     </script>
+
+    <div id="endGameWrapper">
+        <div id="statsWrapper">
+        <img src="https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/gameover.png" alt="game over" id="gameOver">
+        <h1 id="newHighScore"></h1>
+        <h1 id="score">Score: 0</h1>
+        <h1 id="bestScore"></h1>
+        <h1 id="difficulty"></h1>
+        <h1 id="theme"></h1>
+        <button id="restartButton" onclick="location.reload()">Restart</button>
+        </div>
+    </div>
         
     
 <div id="container">
-    <div id="choicesWrapper"> <h1 id="welcome"> Welcome! Choose Theme To Start! </h1>
+    <div id="choicesWrapper"> <h1 id="welcome"> Welcome! Choose Theme To Start! </h1> 
+        
+        
+       
     
 
     <button id="default" onclick="chooseStyle1()">
@@ -467,18 +820,20 @@ if(score > 5000){
     Fornite <br> 
     <img src="https://i.imgur.com/GO5N500.png"> </button> <br> <br> 
 
-        <div id="difficultyWrapper">
+        <div id="coolerWrapper">
+            <div id="difficultyWrapper">
     <h1> Choose Difficulty </h1>
-    <button id="easy" onclick="chooseDifficulty1()"> Easy </button> 
-    <button id="medium" onclick="chooseDifficulty2()"> Medium </button>
-    <button id="hard" onclick="chooseDifficulty3()"> Hard </button> 
-    <button id="insane" onclick="chooseDifficulty4()"> Impossible </button> <br> <br>
+    <button id="easy" onclick="chooseDifficulty1()"> Easy <p> 0.75X Score Multiplier  </p></button> 
+    <button id="medium" onclick="chooseDifficulty2()"> Medium <p> 1.0X Score Multiplier</p></button>
+    <button id="hard" onclick="chooseDifficulty3()"> Hard <p> 1.5X Score Multiplier</p></button> 
+    <button id="insane" onclick="chooseDifficulty4()"> Impossible <p> 2.0X Score Multiplier</p></button> <br> <br>
     <br> <br>
+    </div>
     </div>
     <br> <br> 
 
 
-    <button id="clearHighScore" onclick="clearHighScore()">Clear High Score</button>
+    <button id="clearHighScore" onclick="clearHighScore()"> <p id="highScore"> Clear High Score </p></button>
     <button id="clear" onclick="clearChoice()">Clear Choices </button>
     <button id="start" onclick="createCanvas()">Start</button>
     
@@ -494,6 +849,96 @@ if(score > 5000){
     /*import poppins font*/
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+    #clearScore{
+        font-size: 20px;
+        
+    }
+
+    #newHighScore {
+       
+        
+        color: green;
+        
+        font-size: 50px;
+        text-align: center;
+        /* box shadow */
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px #0ff, 0 0 100px #0ff, 0 0 150px #0ff;
+
+        
+
+    }
+
+    #endGameWrapper{
+        display: none;
+        position: absolute;
+        /* semi transparent background */
+        background-color: rgba(0, 0, 0, 0.5);
+        /* center the element horizontally */
+        left: 50%;
+        top: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        /* text shadow */
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px;
+        /* box shadow */
+        box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px;
+
+
+        
+    }
+
+    #statsWrapper {
+        background-color: rgba(255, 255, 255,0.3);
+        width: 50%;
+        height: 60%;
+        margin: auto;
+        text-align: center;
+        border-radius: 10px;
+        padding: 50px 10px;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        margin-top: 50px;
+
+    }
+
+    #restartButton {
+        color: orange;
+        background-color: black;
+        width: 200px;
+        height: 50px;
+        transition: 0.3s all;
+        border: purple 2px solid;
+    }
+    
+    #restartButton:hover {
+        color: green;
+        background-color: orange;
+        border: 3px solid yellow;
+        
+        width: 310px;
+        height: 60px;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    #restartButton:active {
+        color: black;
+        background-color: green;
+        transform: scale(0.9);
+        background: 3px solid gold;
+        
+    }
+
+    #gameOver{
+        padding-top: 50px;
+        width: 192px;
+        height: 42px;
+    }
+
     #clear {
         background-color: red;
         width: 200px;
@@ -504,7 +949,9 @@ if(score > 5000){
         display: none;
         background-color: orange;
         width: 200px;
-        height: 50px;
+        height: 75px;
+        text-align: center;
+        
     }
 
     #start {
@@ -592,7 +1039,7 @@ if(score > 5000){
         font-family: 'Poppins', sans-serif;
         background-image: url("https://i.imgur.com/50Y3cKT.jpeg");
         background-size: cover;
-        background-repeat: no-repeat;
+        
         color: white;
      }
     canvas {
@@ -617,5 +1064,17 @@ if(score > 5000){
     /* dont show scroll bar */
     body::-webkit-scrollbar {
         display: none;
+    }
+
+    /*disable scrolling*/
+    body {
+        overflow: hidden;
+    }
+
+    p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        
+        color: black;
     }
 </style>
