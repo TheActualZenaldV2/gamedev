@@ -1,4 +1,7 @@
-<body style="height: 100vh;  text-align: center;touch-action: manipulation;" onload="getStylePreference();">
+<body style="height: 100vh;  text-align: center;touch-action: manipulation;" onload="getStylePreference(); loadCanvasBackgroundImages();">
+    <img id="load" src="" style="display: none;">
+    <img id="getReady" src="" style="display: none;">
+    <img id="timer" src="" style="display: none;">
         
    
     
@@ -8,7 +11,34 @@
     <script>
 
         //all MENU FUNCTIONS HERE 
+
+        //function to load all canvas background and all bird images, and all pipes on load
+        function loadAllImages() {
+            //load all canvas background images
+            loadCanvasBackgroundImages();
+            //load all bird images
+            loadBirdImages();
+            //load all pipes
+            loadPipes();
+        }
         
+        //function to load all canvas background images
+        function loadCanvasBackgroundImages() {
+            //load all canvas background images
+            for (var i = 0; i < 5; i++) {
+
+                //q: how to change source of image using js
+                //a: https://stackoverflow.com/questions/10730362/get-img-src-using-javascript
+                document.getElementById("load").src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-night.png";
+                document.getElementById("load").src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/background-day.png";
+                document.getElementById("load").src = "https://cdn140.picsart.com/290913539007201.jpg?type=webp&to=min&r=480";
+                document.getElementById("load").src = "https://i.imgur.com/9Uxy06d.jpeg";
+                document.getElementById("load").src = "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/en_US/games/switch/f/fortnite-switch/hero";
+            }
+                
+        }
+
+
         //function to create a canvas element with the id of "c"
     function createCanvas() {
         var canvas = document.createElement("canvas");
@@ -18,11 +48,49 @@
         canvas.width = 400;
         canvas.height = 700;
         init();
+        document.getElementById("timer").style.display = "none";
+        document.getElementById("getReady").style.display = "none";
+        
+
+
+    }
+
+    function displayText1(){
+        document.getElementById("timer").src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/3.png"
+        
+    }
+    function displayText2(){
+        document.getElementById("timer").src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/2.png"
+    }
+    function displayText3(){
+        document.getElementById("timer").src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/1.png"
+    }
+
+    //function to create the canvas with a 3 second delay 
+    function createCanvasWithDelay() {
+        setTimeout(createCanvas, 3000);
+        //if timeout is 1000, display text 
+        setTimeout(displayText1, 000);
+        setTimeout(displayText2, 1000);
+        setTimeout(displayText3, 2000);
+        
         
         document.getElementById("choicesWrapper").style.display = "none";
         document.getElementById("themeWrapper").style.display = "none";
+        document.getElementById("timer").style.display = "inline-block";
+        document.getElementById("getReady").style.display = "inline-block";
+        document.getElementById("getReady").src = "";
+
+        
+
+        fullScreen();
+        //make the background while fullscreen be an image 
+        document.body.style.backgroundImage = "url('https://i.imgur.com/50Y3cKT.jpeg')";
     }
 
+    function fullScreen() {
+        document.body.webkitRequestFullscreen();
+    }
 
     function chooseStyle1() {
         currentStyle = "Default"
@@ -681,16 +749,12 @@
             pipeX = canvasSize;
             //randomize the top pipe length and bottom pipe length, but keep the gap the same
             //do not let pipe length be greater than 300
-            topPipeBottomY = Math.floor(Math.random() * 300);
+            topPipeBottomY = Math.floor(Math.random() * 550);
             pipeGapBottomY = topPipeBottomY + pipeGap;
 
             
             
-            if(score % 2 == 0){
-                topPipeBottomY = pipeGap * Math.random() + Math.random() * 400 + 100;
-                
-
-            }
+           
         }
         //draw top pipe with image instead of a rectangle
         context.drawImage(pipeUp, pipeX, 0, pipeWidth, topPipeBottomY);
@@ -733,8 +797,10 @@
             score = 0;
             //set highScore to "none"
         localStorage.setItem("highScore", "None");
+        unFullScreen();
 
             endGame();
+
 
           
         }
@@ -750,8 +816,10 @@
             score = 0;
             //set highScore to "none"
         localStorage.setItem("highScore", "None");
+        unFullScreen();
 
             endGame();
+            
             
         
           
@@ -832,7 +900,11 @@ if(score > 5000){
     
 
 
+    function unFullScreen(){
+        document.exitFullscreen();
 
+
+    }
 
 
 
@@ -908,7 +980,7 @@ if(score > 5000){
 
     <button id="clearHighScore" onclick="clearHighScore()"> <p id="highScore"> Clear High Score </p></button>
     <button id="clear" onclick="clearChoice()">Clear Choices </button>
-    <button id="start" onclick="createCanvas()">Start</button>
+    <button id="start" onclick="createCanvasWithDelay()">Start</button>
     
     
 
@@ -924,6 +996,24 @@ if(score > 5000){
     /*import poppins font*/
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+    #getReady{
+        height: 200;
+        width: 500;
+    }
+
+
+    #timer{
+        height: 108px;
+        width: 72px;
+        /* position in the middle of the screen */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+
+    }
+
     #themeTitle{
         font-family: 'Poppins', sans-serif;
         font-size: 15px;
@@ -938,7 +1028,7 @@ if(score > 5000){
         border-radius: 10px;
 
         position: absolute;
-    left: 10%;
+    left: 8%;
     top: 10%;
     width: 220px;
     height: 550px;
@@ -1162,6 +1252,7 @@ if(score > 5000){
         font-family: 'Poppins', sans-serif;
         background-image: url("https://i.imgur.com/50Y3cKT.jpeg");
         background-size: cover;
+        background-color: green;
         
         color: white;
      }
