@@ -1,0 +1,150 @@
+<body onload="createCanvas();">
+<button onclick="createCanvas()"> Start</button>
+</body>
+
+<script>
+
+    //create canvas, and add a background image to it 
+    function createCanvas() {
+        var canvas = document.createElement('canvas');
+        canvas.id = 'canvas';
+        //100% canvas width and height
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        canvas.style.position = "absolute";
+        
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext("2d");
+        var background = new Image();
+        background.src = "https://preview.redd.it/5151vamxcmlx.png?auto=webp&s=aa607e3fa1636325f5ee9969fab1889ff80f425a";
+        
+        //make the image take up the whole canvas
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+        
+
+
+
+
+        //draw the tank on top of the background
+        var tank = new Image();
+        tank.src = "https://i.imgur.com/h0PdRot.png";
+        ctx.drawImage(tank, 10, 10, 100, 100);
+
+        //move the tank around using wasd
+        document.addEventListener('keydown', function(event) {
+            if (event.key == 'd') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tank, tankX + 10, 10, 100, 100);
+                tankX += 10;
+            }
+            if (event.key == 'a') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tank, tankX - 10, 10, 100, 100);
+                tankX -= 10;
+            }
+            if (event.key == 'w') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tank, tankX, 10 - 10, 100, 100);
+            }
+            if (event.key == 's') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tank, tankX, 10 + 10, 100, 100);
+            }
+        });
+
+        //draw blocks on top of the background at random positions
+        //make the block just a square for now
+        //draw the block at a random position
+
+        //define the colour of the square
+ctx.strokeStyle = "green";
+ctx.fillStyle = "green";
+
+
+
+// Draw a square using the fillRect() method and fill it with the colour specified by the fillStyle attribute
+ctx.fillRect(200,50,50,50);
+
+
+        
+    
+
+
+        coreFunction();
+    }
+
+    function coreFunction() {
+
+        //global variables
+
+    
+    var tank = new Image();
+    tank.src = "https://i.imgur.com/h0PdRot.png"
+    var background = new Image();
+    background.src = ""
+    var food = new Image();
+    food.src = ""
+    var food2 = new Image();
+    food2.src = ""
+
+    var tankX = 10;
+    var tankDY = 0; //gravity
+    var score = 0;
+    var bestScore = 0;
+    var interval = 20; //default 20
+    var tankHeight = 324;
+    var tankWidth = 396;
+    var userHealth = 100;
+    var enemyHealth = 100;
+    var enemyX = 100;
+    var enemyY = 100;
+    var enemySize = 50;
+    var enemyWidth = 52;
+    var enemyDY = 0;
+
+    
+
+
+    
+
+    
+
+    
+        
+
+        
+        
+
+
+        
+        
+
+
+
+     
+    }
+    </script> 
+
+    <style>
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+    }
+
+    canvas {
+        display: block;
+        margin: 0 auto;
+        background-color: red;
+        
+    }
+    </style>
+
+
+
