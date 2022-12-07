@@ -31,6 +31,20 @@
         keys = [],
         bullets = [],
         shooting = false;
+    
+    //get the mouse position
+    var mouseX = 0,
+        mouseY = 0;
+    document.body.addEventListener("mousemove", function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    var blocks = [];
+    var blockX = Math.random() * canvasWidth;
+    var blockY = Math.random() * canvasHeight;
+    var randomBlockInterval = Math.random() * 2000;
+
 
     //movement
     function update() {
@@ -106,6 +120,35 @@
         ctx.arc(x, y, 10, 0, 2 * Math.PI);
         ctx.fill();
 
+
+        //(TURRET CODE)
+        //draw a turret on top of the player
+        //the turret should point in the direction of the mouse
+        //the turret is a rectangle 
+        //the turret should be 20px long and 5px wide
+        
+
+        //rotate the turret to point in the direction of the mouse
+        //the turret should be rotated around the center of the player
+        var angle = Math.atan2(mouseY - y, mouseX - x);
+        //rotate ONLY the turret, not anything else 
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        //draw the turret
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.rect(5, -2, 20, 5);
+        ctx.fill();
+        //reset the rotation and translation
+        ctx.rotate(-angle);
+        ctx.translate(-x, -y);
+
+        //(END OF TURRET CODE)
+
+
+
+
+
         //draw the bullets
         for (var i = 0; i < bullets.length; i++) {
             ctx.fillStyle = "red";
@@ -113,7 +156,53 @@
             ctx.arc(bullets[i].x, bullets[i].y, 5, 0, 2 * Math.PI);
             ctx.fill();
         }
+
+        //draw yellow blocks at random locations on the screen
+        //the blocks should be 20px by 20px
+        //the blocks should be randomly generated
+
+        //update the blocks array
+        //add a new block to the array every randomBlockInterval milliseconds
+        //the block should be at a random location on the screen
+        //the block should be 20px by 20px
+
+         //draw the blocks
+         function drawBlocks(){
+         ctx.fillStyle = "yellow";
+            ctx.beginPath();
+            ctx.rect(blockX, blockY, 20, 20);
+            ctx.fill();
+            
+
+            //update the blocks array
+            //add a new block to the array every randomBlockInterval milliseconds
+            blocks.push({
+                x: blockX,
+                y: blockY,
+                width: 20,
+                height: 20
+            });
+        }
+
+            
+
+
+
+        
+
+       
+        
+            
+            
+
+        
+
+
     }
+
+    //call the drawblocks function every 2 seconds
+
+
 
     //keyboard input
     document.body.addEventListener("keydown", function(e) {
@@ -122,6 +211,9 @@ document.body.addEventListener("keydown", function(e) {
     keys[e.keyCode] = true;
 
     //shoot when left click is pressed
+    document.body.addEventListener("mousedown", function(e) {
+        shoot();
+    });
     if (e.keyCode == 32) {
         shoot();
     }
@@ -150,20 +242,12 @@ function shoot() {
     //add the bullet to the bullets array
     bullets.push(bullet);
 
-    //set the bullet's velocity
-    if (keys[87]) {
-        //up
-        bullet.velY = -speed * 2;
-    } else if (keys[83]) {
-        //down
-        bullet.velY = speed * 2;
-    } else if (keys[68]) {
-        //right
-        bullet.velX = speed * 2;
-    } else if (keys[65]) {
-        //left
-        bullet.velX = -speed * 2;
-    }
+    //make bullets shoot in the direction of the mouse
+    var angle = Math.atan2(mouseY - y, mouseX - x);
+    bullet.velX = Math.cos(angle) * 5;
+    bullet.velY = Math.sin(angle) * 5;
+
+    
 
     //draw the player and bullets
     drawPlayer();
@@ -176,6 +260,11 @@ function shoot() {
 
     //start the game
     update();
+ 
 
    
+
+  
+
+
 </script>
