@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+
+#ban {
+        height: 100%;
+        width: 100%;
+        background-color: red;
+        color: #000;
+        border: #000 1px solid;
+        border-radius: 10px;
+        size: 200px;
+        
+
+    }
+
+
+
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      /* neon theme */
+        background: #000;
+        color: #0f0;
+        text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0, 0 0 80px #0f0, 0 0 90px #0f0, 0 0 100px #0f0, 0 0 150px #0f0;
+
+
+      
+    }
+
+    #roast-text {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    label {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    button:hover {
+      background-color: #0f0;
+      color: #000;
+      transition: 0.2s all;
+      border: #000 1px solid;
+      border-radius: 5px;
+    }
+    button:active {
+      background-color: blueviolet;
+        color: #000;
+        border: #000 1px solid;
+        border-radius: 10px;
+        
+    }
+
+  
+
+  </style>
+</head>
+<body>
+    
+  <h1>Roast Generator</h1>
+
+  <label for="name-input">Enter your name:</label>
+  <input type="text" id="name-input" />
+
+  <button onclick="generateRoast()">Roast me!</button>
+
+  <p id="roast-text"></p>
+
+  <script>
+
+let banned = false;
+
+function roast() {
+    // get the name from the input field
+    let name = document.getElementById("name-input").innerHTML
+
+    // check if the name is a variation of "Jonathan"
+    if (name.toLowerCase() === "jonathan" || name.toLowerCase() === "jon" || name.toLowerCase() === "john" || name.toLowerCase() === "johnny") {
+        banned = true;
+        displayBanned();
+        return;
+    }
+
+    function displayBanned() {
+        document.getElementById("roast-text").innerHTML = "You are banned from using this website.";
+    }
+}
+
+
+    const insults = [
+    "You're as useful as a screen door on a submarine.",
+					   "You're so ugly, you could scare the paint off a wall.",
+					   "You're a real class act, just like toilet paper.",
+					   "You have the charm of a dead slug.",
+					   "Your face is a road map of a failed marriage.",
+					   "You couldn't find your butt with both hands and a flashlight.",
+					   "You have the emotional range of a teaspoon.",
+					   "Your intelligence is as shallow as a puddle.",
+					   "You're about as useful as a chocolate teapot.",
+					   "You have the charisma of a wet sock.",
+                       "You're as graceful as a hippo on ice skates.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so ugly, you could scare the paint off a wall.",
+"You're about as useful as a screen door on a submarine.",
+"You're about as useful as a chocolate teapot.",
+"You're so clueless, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb.",
+"You're about as useful as a screen door on a submarine.",
+"Your face is a road map of a failed marriage.",
+"You're about as useful as a chocolate teapot.",
+"You're so dumb, you couldn't find your way out of a paper bag.",
+"You're about as funny as a root canal.",
+"Your intelligence is as deep as a puddle.",
+"You're about as bright as a burnt out light bulb."
+
+    ];
+  // Create an array with the items you want to display
+
+
+// Create a new array to store the items that have already been displayed
+let displayedInsults = [];
+
+// Create a function to choose an item from the original array
+function chooseItem() {
+  // Choose a random number between 0 and the length of the array
+  let randomIndex = Math.floor(Math.random() * items.length);
+
+  // Get the item at that index
+  let insults = insults[randomIndex];
+
+  // Check if the item has already been displayed
+  if (displayedInsults.includes(item)) {
+    // If it has, choose another item
+    return chooseItem();
+  } else {
+    // If it hasn't, add it to the array of displayed items
+    displayedInsults.push(item);
+    // And return the item
+    return item;
+  }
+
+
+}
+
+//generate and display the roast
+function generateRoast(){
+    
+}
+
+   
+    
+
+
+
+
+   
+  </script>
+</body>
+</html>
