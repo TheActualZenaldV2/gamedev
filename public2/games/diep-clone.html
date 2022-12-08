@@ -44,7 +44,24 @@
     var blockX = Math.random() * canvasWidth;
     var blockY = Math.random() * canvasHeight;
     var randomBlockInterval = Math.random() * 5000 + 1000;
+    var health = 100;
+    var playerDamage = 30;
 
+
+    //array to store all cubes
+let cubes = [];
+
+//initialize the cubes array with the blocks in the game
+for (let i = 0; i < blocks.length; i++) {
+    let block = blocks[i];
+    cubes.push({
+        x: block.x,
+        y: block.y,
+        width: block.width,
+        height: block.height,
+        hitPoints: 3 //initialize each cube with 3 hit points
+    });
+}
 
   
 
@@ -137,93 +154,98 @@
     }, randomBlockInterval);
 
 
-    function drawPlayer() {
-        //draw the player
-        ctx.fillStyle = "blue";
-        ctx.beginPath();
-        ctx.arc(x, y, 10, 0, 2 * Math.PI);
-        ctx.fill();
+   function drawPlayer() {
+    //draw the player
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+    ctx.fill();
 
-
-        //(TURRET CODE)
-        //draw a turret on top of the player
-        //the turret should point in the direction of the mouse
-        //the turret is a rectangle 
-        //the turret should be 20px long and 5px wide
-        
-
-        //rotate the turret to point in the direction of the mouse
-        //the turret should be rotated around the center of the player
-        var angle = Math.atan2(mouseY - y, mouseX - x);
-        //rotate ONLY the turret, not anything else 
-        ctx.translate(x, y);
-        ctx.rotate(angle);
-        //draw the turret
-        ctx.fillStyle = "black";
-        ctx.beginPath();
-        ctx.rect(5, -2, 20, 5);
-        ctx.fill();
-        //reset the rotation and translation
-        ctx.rotate(-angle);
-        ctx.translate(-x, -y);
-
-        //(END OF TURRET CODE)
-
-
-
-
-
-        //draw the bullets
-        for (var i = 0; i < bullets.length; i++) {
-            ctx.fillStyle = "red";
-            ctx.beginPath();
-            ctx.arc(bullets[i].x, bullets[i].y, 5, 0, 2 * Math.PI);
-            ctx.fill();
-        }
-
-        //update and draw the created blocks on the canvas 
+    //(TURRET CODE)
+    //draw a turret on top of the player
+    //the turret should point in the direction of the mouse
+    //the turret is a rectangle 
+    //the turret should be 20px long and 5px wide
     
-         ctx.fillStyle = "yellow";
-            ctx.beginPath();
-            ctx.rect(blockX, blockY, 20, 20);
-            ctx.fill();
-            
 
-            //update the blocks array
-            //add a new block to the array every randomBlockInterval milliseconds
-            blocks.push({
-                x: blockX,
-                y: blockY,
-                width: 20,
-                height: 20
-            });
+    //rotate the turret to point in the direction of the mouse
+    //the turret should be rotated around the center of the player
+    var angle = Math.atan2(mouseY - y, mouseX - x);
+    //rotate ONLY the turret, not anything else 
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    //draw the turret
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.rect(5, -2, 20, 5);
+    ctx.fill();
+    //reset the rotation and translation
+    ctx.rotate(-angle);
+    ctx.translate(-x, -y);
 
-            //draw every block in the array 
-            for (var i = 0; i < blocks.length; i++) {
-                ctx.fillStyle = "yellow";
-               
-                ctx.beginPath();
-                ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
-                ctx.fill();
-            }
+    //(END OF TURRET CODE)
 
-            //make the blocks rotate 
-            
 
-            //
-        
 
-        //draw yellow blocks at random locations on the screen
-        //the blocks should be 20px by 20px
-        //the blocks should be randomly generated
+    //update and draw the bullets
+    updateBullets();
+    for (var i = 0; i < bullets.length; i++) {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(bullets[i].x, bullets[i].y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+    //update and draw the created blocks on the canvas 
+
+     ctx.fillStyle = "yellow";
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, 20, 20);
+        ctx.fill();
 
         //update the blocks array
         //add a new block to the array every randomBlockInterval milliseconds
-        //the block should be at a random location on the screen
-        //the block should be 20px by 20px
+        blocks.push({
+            x: blockX,
+            y: blockY,
+            width: 20,
+            height: 20
+        });
 
-         //draw the blocks
-         
+        //draw every block in the array 
+        for (var i = 0; i < blocks.length; i++) {
+            ctx.fillStyle = "yellow";
+           
+            ctx.beginPath();
+            ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
+            ctx.fill();
+        }
+
+        function updateBullets() {
+    //make a copy of the cubes array
+    let cubesCopy = [...cubes];
+
+    for (let i = 0; i < bullets.length; i++) {
+        let bullet = bullets[i];
+
+        //check if the bullet has collided with any cubes
+        for (let j = 0; j < cubesCopy.length; j++) {
+            let cube = cubesCopy[j];
+
+            //check if the bullet and cube overlap
+            if (bullet.overlapsWith(cube)) {
+                //decrement the cube's hit points
+                cube.hitPoints--;
+
+                //if the cube's hit points reach 0, destroy the cube
+                if (cube.hitPoints === 0) {
+                    cubes.splice(cubes.indexOf(cube), 1);
+                }
+            }
+        }
+    }
+}
+         updateBullets();
 
         
 
@@ -243,28 +265,47 @@
 
     }
 
+    
+
+            
     //call the drawblocks function every 2 seconds
 
 
 
     //keyboard input
     document.body.addEventListener("keydown", function(e) {
-        //keyboard input
-document.body.addEventListener("keydown", function(e) {
     keys[e.keyCode] = true;
 
-    //shoot when left click is pressed
+    //flag to track if the left mouse button is held down
+    let isMouseDown = false;
+
+    //set up mousedown event listener
     document.body.addEventListener("mousedown", function(e) {
-        shoot();
+        //set the flag to true
+        isMouseDown = true;
     });
+
+    //set up mouseup event listener
+    document.body.addEventListener("mouseup", function(e) {
+        //set the flag to false
+        isMouseDown = false;
+    });
+
+    //set up a setInterval to continuously call shoot() as long as the mouse is held down
+    setInterval(function() {
+        if (isMouseDown) {
+            shoot();
+        }
+    }, 100); //shoot every 100 milliseconds
+
     if (e.keyCode == 32) {
         shoot();
     }
 });
-    });
-    document.body.addEventListener("keyup", function(e) {
-        keys[e.keyCode] = false;
-    });
+
+document.body.addEventListener("keyup", function(e) {
+    keys[e.keyCode] = false;
+});
 
     //shooting
     //shooting
