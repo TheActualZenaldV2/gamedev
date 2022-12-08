@@ -211,6 +211,14 @@ for (let i = 0; i < blocks.length; i++) {
             height: 20
         });
 
+        cubes.push({
+            x: blockX,
+            y: blockY,
+            width: 20,
+            height: 20,
+            
+        })
+
         //draw every block in the array 
         for (var i = 0; i < blocks.length; i++) {
             ctx.fillStyle = "yellow";
@@ -219,7 +227,17 @@ for (let i = 0; i < blocks.length; i++) {
             ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
             ctx.fill();
         }
+        //check for collisions between the player and the blocks
+        for (var i = 0; i < blocks.length; i++) {
+            //check if the player is inside the block
+            if (x > blocks[i].x && x < blocks[i].x + blocks[i].width && y > blocks[i].y && y < blocks[i].y + blocks[i].height) {
+                //if the player is inside the block, destroy the block
+                blocks.splice(i, 1);
+                console.log("player hit")
 
+            }
+        }
+var bullet = []
         //check for collisions between the cubes and the blocks
         for (var i = 0; i < cubes.length; i++) {
             for (var j = 0; j < blocks.length; j++) {
@@ -229,7 +247,15 @@ for (let i = 0; i < blocks.length; i++) {
                     cubes.splice(i, 1);
                     //if the block is hit, delete it 
                     blocks.splice(j, 1);
-                    console.log("hit")
+
+                    bullet.splice(j, 1);
+                    console.log("bullet hit")
+                    //delete the block
+                    //blocks.splice(j, 1);
+
+
+                    //q: why isnt the block being deleted when the bullet hits it?
+                    //a: because the bullet is being deleted, but the block is not
 
 
                 }
