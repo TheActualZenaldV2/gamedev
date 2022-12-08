@@ -43,7 +43,13 @@
     var blocks = [];
     var blockX = Math.random() * canvasWidth;
     var blockY = Math.random() * canvasHeight;
-    var randomBlockInterval = Math.random() * 2000;
+    var randomBlockInterval = Math.random() * 5000 + 1000;
+
+
+  
+
+
+    //call the drawblocks function every 2 seconds
 
 
     //movement
@@ -112,6 +118,24 @@
         //draw the player and bullets
         drawPlayer();
     }
+    //MAIN GAME FUNCTION\
+
+    //every 2 seconds, create a new block
+    setInterval(function() {
+        //create a new block instead of moving the old one
+        blockX = Math.random() * canvasWidth;
+        blockY = Math.random() * canvasHeight;
+       
+        //add a new block to the array every randomBlockInterval milliseconds
+        blocks.push({
+            x: blockX,
+            y: blockY,
+            width: 20,
+            height: 20
+        });
+
+    }, randomBlockInterval);
+
 
     function drawPlayer() {
         //draw the player
@@ -157,17 +181,8 @@
             ctx.fill();
         }
 
-        //draw yellow blocks at random locations on the screen
-        //the blocks should be 20px by 20px
-        //the blocks should be randomly generated
-
-        //update the blocks array
-        //add a new block to the array every randomBlockInterval milliseconds
-        //the block should be at a random location on the screen
-        //the block should be 20px by 20px
-
-         //draw the blocks
-         function drawBlocks(){
+        //update and draw the created blocks on the canvas 
+    
          ctx.fillStyle = "yellow";
             ctx.beginPath();
             ctx.rect(blockX, blockY, 20, 20);
@@ -182,7 +197,35 @@
                 width: 20,
                 height: 20
             });
-        }
+
+            //draw every block in the array 
+            for (var i = 0; i < blocks.length; i++) {
+                ctx.fillStyle = "yellow";
+               
+                ctx.beginPath();
+                ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
+                ctx.fill();
+            }
+
+            //make the blocks rotate 
+            
+
+            //
+        
+
+        //draw yellow blocks at random locations on the screen
+        //the blocks should be 20px by 20px
+        //the blocks should be randomly generated
+
+        //update the blocks array
+        //add a new block to the array every randomBlockInterval milliseconds
+        //the block should be at a random location on the screen
+        //the block should be 20px by 20px
+
+         //draw the blocks
+         
+
+        
 
             
 
@@ -261,6 +304,8 @@ function shoot() {
     //start the game
     update();
  
+
+   
 
    
 
