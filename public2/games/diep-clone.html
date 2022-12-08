@@ -29,7 +29,7 @@
         speed = 1.5,
         friction = 0.8,
         keys = [],
-        bullets = [],
+        cubes = [],
         shooting = false;
     
     //get the mouse position
@@ -39,7 +39,7 @@
         mouseX = e.clientX;
         mouseY = e.clientY;
     });
-
+    var cubes = [];
     var blocks = [];
     var blockX = Math.random() * canvasWidth;
     var blockY = Math.random() * canvasHeight;
@@ -49,7 +49,6 @@
 
 
     //array to store all cubes
-let cubes = [];
 
 //initialize the cubes array with the blocks in the game
 for (let i = 0; i < blocks.length; i++) {
@@ -122,17 +121,17 @@ for (let i = 0; i < blocks.length; i++) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         //update bullet positions
-        for (var i = 0; i < bullets.length; i++) {
-            bullets[i].x += bullets[i].velX;
-            bullets[i].y += bullets[i].velY;
+        for (var i = 0; i < cubes.length; i++) {
+            cubes[i].x += cubes[i].velX;
+            cubes[i].y += cubes[i].velY;
 
-            //delete bullets if they go off screen
-            if (bullets[i].y < 0 || bullets[i].y > canvasHeight || bullets[i].x < 0 || bullets[i].x > canvasWidth) {
-                bullets.splice(i, 1);
+            //delete cubes if they go off screen
+            if (cubes[i].y < 0 || cubes[i].y > canvasHeight || cubes[i].x < 0 || cubes[i].x > canvasWidth) {
+                cubes.splice(i, 1);
             }
         }
 
-        //draw the player and bullets
+        //draw the player and cubes
         drawPlayer();
     }
     //MAIN GAME FUNCTION\
@@ -187,12 +186,12 @@ for (let i = 0; i < blocks.length; i++) {
 
 
 
-    //update and draw the bullets
-    updateBullets();
-    for (var i = 0; i < bullets.length; i++) {
+    //update and draw the cubes
+   
+    for (var i = 0; i < cubes.length; i++) {
         ctx.fillStyle = "red";
         ctx.beginPath();
-        ctx.arc(bullets[i].x, bullets[i].y, 5, 0, 2 * Math.PI);
+        ctx.arc(cubes[i].x, cubes[i].y, 5, 0, 2 * Math.PI);
         ctx.fill();
     }
 
@@ -221,31 +220,23 @@ for (let i = 0; i < blocks.length; i++) {
             ctx.fill();
         }
 
-        function updateBullets() {
-    //make a copy of the cubes array
-    let cubesCopy = [...cubes];
+        //check for collisions between the cubes and the blocks
+        for (var i = 0; i < cubes.length; i++) {
+            for (var j = 0; j < blocks.length; j++) {
+                //check if the bullet is inside the block
+                if (cubes[i].x > blocks[j].x && cubes[i].x < blocks[j].x + blocks[j].width && cubes[i].y > blocks[j].y && cubes[i].y < blocks[j].y + blocks[j].height) {
+                    //delete the bullet
+                    cubes.splice(i, 1);
+                    //if the block is hit, delete it 
+                    blocks.splice(j, 1);
+                    console.log("hit")
 
-    for (let i = 0; i < bullets.length; i++) {
-        let bullet = bullets[i];
 
-        //check if the bullet has collided with any cubes
-        for (let j = 0; j < cubesCopy.length; j++) {
-            let cube = cubesCopy[j];
-
-            //check if the bullet and cube overlap
-            if (bullet.overlapsWith(cube)) {
-                //decrement the cube's hit points
-                cube.hitPoints--;
-
-                //if the cube's hit points reach 0, destroy the cube
-                if (cube.hitPoints === 0) {
-                    cubes.splice(cubes.indexOf(cube), 1);
                 }
             }
         }
-    }
-}
-         updateBullets();
+
+        
 
         
 
@@ -323,17 +314,17 @@ function shoot() {
         velY: 0
     };
 
-    //add the bullet to the bullets array
-    bullets.push(bullet);
+    //add the bullet to the cubes array
+    cubes.push(bullet);
 
-    //make bullets shoot in the direction of the mouse
+    //make cubes shoot in the direction of the mouse
     var angle = Math.atan2(mouseY - y, mouseX - x);
     bullet.velX = Math.cos(angle) * 5;
     bullet.velY = Math.sin(angle) * 5;
 
     
 
-    //draw the player and bullets
+    //draw the player and cubes
     drawPlayer();
 
     //reset shooting after 100ms
