@@ -161,7 +161,7 @@ function drawFPS() {
             height: 20
         });
 
-    }, Math.random() * 2000 - 1000);
+    }, 1000);
 
    
 
@@ -271,6 +271,7 @@ function drawFPS() {
 
 
    function drawPlayer() {
+
     for (var i = 0; i < cubes.length; i++) {
             for (var j = 0; j < blocks.length; j++) {
                 //check if the cube is touching the block
@@ -321,7 +322,7 @@ function drawFPS() {
     //draw the turret
     ctx.fillStyle = "gray";
     ctx.beginPath();
-    ctx.rect(25, -3,50, 12);
+    ctx.rect(23, -3,40, 12);
     ctx.fill();
     //reset the rotation and translation
     ctx.rotate(-angle);
@@ -337,7 +338,7 @@ function drawFPS() {
         ctx.fillStyle = "red";
         ctx.beginPath();
         //draw the bullets comming out of the turret
-        ctx.arc(cubes[i].x, cubes[i].y, 5, 0, 2 * Math.PI);
+        ctx.arc(cubes[i].x, cubes[i].y, 8, 0, 2*Math.PI);
         ctx.fill();
 
         //if the bullets are off the screen, delete them
@@ -371,11 +372,21 @@ function drawFPS() {
 
         //draw every block in the array 
         for (var i = 0; i < blocks.length; i++) {
-            ctx.fillStyle = "yellow";
+            ctx.fillStyle = "gray";
            
             ctx.beginPath();
-            ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
+            ctx.rect(blocks[i].x -1, blocks[i].y -1, 23, 23);
             ctx.fill();
+            //fill in with yellow
+            //draw a rectangle
+            //the rectangle should be 20px by 20px
+            //fill yellow in the middle of gray
+            //the rectangle should be centered on the block's x and y coordinates
+            ctx.fillStyle = "yellow";
+            ctx.beginPath();
+            ctx.rect(blocks[i].x + 1, blocks[i].y + 1, 18, 18);
+            ctx.fill();
+
         }
         //check for collisions between the player and the blocks
         for (var i = 0; i < blocks.length; i++) {
@@ -493,7 +504,7 @@ function shoot() {
     //reset shooting after 100ms
     setTimeout(function() {
         shooting = false;
-    }, 100);
+    }, 220);
 }
 
     //start the game
