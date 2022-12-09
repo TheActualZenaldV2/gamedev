@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <canvas id="canvas"></canvas>
 
 <style>
@@ -43,24 +44,133 @@
     var blocks = [];
     var blockX = Math.random() * canvasWidth;
     var blockY = Math.random() * canvasHeight;
-    var randomBlockInterval = Math.random() * 5000 + 1000;
+    var randomBlockInterval = Math.random() * 3000 - 1000; //default * 5000 + 1000
     var health = 100;
     var playerDamage = 30;
+    var score = 0;
+    var timer = 0;
+
+    //for every 0.1 seconds, add 0.1 to the timer
+    setInterval(function() {
+        timer += 0.1;
+        //round the timer to 1 decimal place
+        timer = Math.round(timer * 10) / 10;
+    }, 100);
 
 
-    //array to store all cubes
+// Set up the FPS counter
+var fps = 0;
+var lastTime = Date.now();
 
-//initialize the cubes array with the blocks in the game
-for (let i = 0; i < blocks.length; i++) {
-    let block = blocks[i];
-    cubes.push({
-        x: block.x,
-        y: block.y,
-        width: block.width,
-        height: block.height,
-        hitPoints: 3 //initialize each cube with 3 hit points
-    });
+
+
+function drawScore() {
+    //if the score increases, change the color to green for half a second
+    if (currentScoreColor == "black") {
+        setTimeout(function() {
+        var currentScoreColor = "green";
+        }, 500);
+    }
+
+    var currentScoreColor = "black";
+  // draw a gray rectangle for the score background
+  ctx.fillStyle = "green";
+  ctx.fillRect(0, 30, 100, 30);
+
+  // display the score, with the gray background
+  ctx.font = "bold 20px Arial";
+
+  // temporarily change the fill color to green
+  ctx.fillStyle = currentScoreColor;
+  ctx.fillText("Score: " + score, 10, 55);
+
+  
 }
+
+    
+
+
+function drawTimer() {
+    //draw a gray rectangle for the timer background
+    ctx.fillStyle = "gray";
+    ctx.fillRect(0, 60, 100, 30);
+
+    // display the timer, with the gray background
+    ctx.font = "bold 18px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Time: " + timer, 10, 85);
+}
+
+function drawFPS() {
+    var now = Date.now();
+    var delta = now - lastTime;
+    var fpsTotal = 0;
+    var fpsCount = 0;
+    var delta = now - lastTime;
+    lastTime = now;
+    fps = Math.round(1000 / delta);
+
+    // Add the current FPS to our running total
+    fpsTotal += fps;
+
+    // Increment the number of frames we've counted
+    fpsCount++;
+
+    // Calculate the average FPS
+    var avgFPS = fpsTotal / fpsCount;
+
+    // Display the FPS on the screen
+    ctx.font = "bold 20px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("FPS: " + avgFPS, 10, 20);
+///draw a background under the fps
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, 100, 30);
+
+    // Set the fill style based on the average FPS
+    if (avgFPS < 30) {
+        ctx.fillStyle = "red";
+        ctx.fillText("FPS: " + avgFPS, 10, 20);
+    } else if (avgFPS > 30 && avgFPS < 60) {
+        ctx.fillStyle = "orange";
+        ctx.fillText("FPS: " + avgFPS, 10, 20);
+    } else if (avgFPS > 60) {
+        ctx.fillStyle = "green";
+        ctx.fillText("FPS: " + avgFPS, 10, 20);
+
+        //if delta is 0, then dont draw the fps
+    } else if (delta == 0) {
+        ctx.fillStyle = "black";
+        ctx.fillText("FPS: " + avgFPS, 10, 20);
+
+    }
+}
+
+
+ //every 2 seconds, create a new block
+ setInterval(function() {
+        //create a new block instead of moving the old one
+        blockX = Math.random() * canvasWidth;
+        blockY = Math.random() * canvasHeight;
+       
+        //add a new block to the array every randomBlockInterval milliseconds
+        blocks.push({
+            x: blockX,
+            y: blockY,
+            width: 20,
+            height: 20
+        });
+
+    }, Math.random() * 2000 - 1000);
+
+   
+
+
+
+
+
+
+
 
   
 
@@ -70,7 +180,14 @@ for (let i = 0; i < blocks.length; i++) {
 
     //movement
     function update() {
+
+
+
         requestAnimationFrame(update);
+
+        
+        
+
 
         if (keys[87]) {
             if (velY > -speed) {
@@ -133,32 +250,60 @@ for (let i = 0; i < blocks.length; i++) {
 
         //draw the player and cubes
         drawPlayer();
+        drawFPS();
+        drawScore();
+        drawTimer();
+
+
+        //check for collisions between the cube arary and the blocks array
+        //only check if the cube is touching the block 
+
+        //rewrite this, adding some padding that allows the bullets to be slightly off and still count as a hit
+        //q: why am i getting error, cannot read property 'x' of undefined?
+        //a: because the cubes array is empty, so there is no cubes[i].x
+       
+
     }
+
     //MAIN GAME FUNCTION\
 
-    //every 2 seconds, create a new block
-    setInterval(function() {
-        //create a new block instead of moving the old one
-        blockX = Math.random() * canvasWidth;
-        blockY = Math.random() * canvasHeight;
-       
-        //add a new block to the array every randomBlockInterval milliseconds
-        blocks.push({
-            x: blockX,
-            y: blockY,
-            width: 20,
-            height: 20
-        });
-
-    }, randomBlockInterval);
+   
 
 
    function drawPlayer() {
+    for (var i = 0; i < cubes.length; i++) {
+            for (var j = 0; j < blocks.length; j++) {
+                //check if the cube is touching the block
+                if (cubes[i].x > blocks[j].x && cubes[i].x < blocks[j].x + blocks[j].width && cubes[i].y > blocks[j].y && cubes[i].y < blocks[j].y + blocks[j].height) {
+                    //if the cube is touching the block, destroy the block
+                    blocks.splice(j, 1);
+                    //delete the cube 
+                    cubes.splice(i, 1);
+                    //add 1 to the score
+                    score++;
+
+                }
+            }
+        }
+
+        
+   
     //draw the player
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "black";
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+    ctx.arc(x, y, 25, 0, 2 * Math.PI);
     ctx.fill();
+    //fill the player with a color
+    //draw a circle
+    //the circle should be 20px in diameter
+    //the circle should be centered on the player's x and y coordinates
+    ctx.fillStyle = "#00e1ff";
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    
+
 
     //(TURRET CODE)
     //draw a turret on top of the player
@@ -174,9 +319,9 @@ for (let i = 0; i < blocks.length; i++) {
     ctx.translate(x, y);
     ctx.rotate(angle);
     //draw the turret
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "gray";
     ctx.beginPath();
-    ctx.rect(5, -2, 20, 5);
+    ctx.rect(25, -3,50, 12);
     ctx.fill();
     //reset the rotation and translation
     ctx.rotate(-angle);
@@ -186,30 +331,35 @@ for (let i = 0; i < blocks.length; i++) {
 
 
 
-    //update and draw the cubes
+    //update and draw the bullets on the canvas
    
     for (var i = 0; i < cubes.length; i++) {
         ctx.fillStyle = "red";
         ctx.beginPath();
+        //draw the bullets comming out of the turret
         ctx.arc(cubes[i].x, cubes[i].y, 5, 0, 2 * Math.PI);
         ctx.fill();
+
+        //if the bullets are off the screen, delete them
+        if (cubes[i].y < 0 || cubes[i].y > canvasHeight || cubes[i].x < 0 || cubes[i].x > canvasWidth) {
+            cubes.splice(i, 1);
+        }
     }
 
     //update and draw the created blocks on the canvas 
-
-     ctx.fillStyle = "yellow";
+    //draw 5 blocks on the canvas
+    
+    for (var i = 0; i < blocks.length; i++) {
+        ctx.fillStyle = "yellow";
         ctx.beginPath();
-        ctx.rect(blockX, blockY, 20, 20);
+        ctx.rect(blocks[i].x, blocks[i].y, 20, 20);
         ctx.fill();
+    }
+
 
         //update the blocks array
         //add a new block to the array every randomBlockInterval milliseconds
-        blocks.push({
-            x: blockX,
-            y: blockY,
-            width: 20,
-            height: 20
-        });
+        
 
         cubes.push({
             x: blockX,
@@ -233,34 +383,20 @@ for (let i = 0; i < blocks.length; i++) {
             if (x > blocks[i].x && x < blocks[i].x + blocks[i].width && y > blocks[i].y && y < blocks[i].y + blocks[i].height) {
                 //if the player is inside the block, destroy the block
                 blocks.splice(i, 1);
-                console.log("player hit")
+                score++
+                
 
             }
         }
-var bullet = []
-        //check for collisions between the cubes and the blocks
-        for (var i = 0; i < cubes.length; i++) {
-            for (var j = 0; j < blocks.length; j++) {
-                //check if the bullet is inside the block
-                if (cubes[i].x > blocks[j].x && cubes[i].x < blocks[j].x + blocks[j].width && cubes[i].y > blocks[j].y && cubes[i].y < blocks[j].y + blocks[j].height) {
-                    //delete the bullet
-                    cubes.splice(i, 1);
-                    //if the block is hit, delete it 
-                    blocks.splice(j, 1);
-
-                    bullet.splice(j, 1);
-                    console.log("bullet hit")
-                    //delete the block
-                    //blocks.splice(j, 1);
 
 
-                    //q: why isnt the block being deleted when the bullet hits it?
-                    //a: because the bullet is being deleted, but the block is not
+        
 
+        
 
-                }
-            }
-        }
+        
+        
+       
 
         
 
@@ -312,6 +448,7 @@ var bullet = []
     setInterval(function() {
         if (isMouseDown) {
             shoot();
+           
         }
     }, 100); //shoot every 100 milliseconds
 
