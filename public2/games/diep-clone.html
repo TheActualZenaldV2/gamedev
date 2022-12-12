@@ -22,6 +22,10 @@
 
 
 <script>
+
+    //add text to the console in giant letters
+    console.log("%cIf you see errors here, ignore them. Javascript is fucking dumb", "font-size: 50px; color: blue;");
+    console.log("%cAll the code works, so it don't matter", "font-size: 25px; color: orange;");
     var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d");
 
@@ -60,6 +64,11 @@
     var score = 0;
     var timer = 0;
     var randomTankColor = "rgb(" + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")";
+    
+    setInterval(() => {
+        update();
+    }, 1);
+
     
 
 
@@ -175,15 +184,17 @@
             blockY = Math.random() * canvasHeight;
         }
 
-    }, 2000);
+    }, 1000);
     //END OF CUBE CODE
 
+
+    
     //START OF MOVEMENT CODE
     function update() {
+        
 
 
 
-    requestAnimationFrame(update);
 
         
         
@@ -248,23 +259,28 @@
             }
         }
 
-    //draw the player and cubes
-        drawPlayer();
-        drawFPS();
-        drawScore();
-        drawTimer();
+        for (var i = 0; i < cubes.length; i++) {
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+        //draw the bullets comming out of the turret
+            ctx.arc(cubes[i].x, cubes[i].y, 8, 0, 2*Math.PI);
+            ctx.fill();
+        //draw a circle
+            ctx.fillStyle = randomTankColor;
+            ctx.beginPath();
+            ctx.arc(cubes[i].x, cubes[i].y, 5, 0, 2*Math.PI);
+            ctx.fill();
+   
 
 
-      
-       
 
+        //if the bullets are off the screen, delete them
+        if (cubes[i].y < 0 || cubes[i].y > canvasHeight || cubes[i].x < 0 || cubes[i].x > canvasWidth) {
+            cubes.splice(i, 1);
+        }
     }
 
-    //MAIN GAME FUNCTION
-
-
-
-   function drawPlayer() {
+    
 
     for (var i = 0; i < cubes.length; i++) {
             for (var j = 0; j < blocks.length; j++) {
@@ -331,30 +347,10 @@
 
 
 
-    //update and draw the bullets on the canvas
-   
-        for (var i = 0; i < cubes.length; i++) {
-            ctx.fillStyle = "black";
-            ctx.beginPath();
-        //draw the bullets comming out of the turret
-            ctx.arc(cubes[i].x, cubes[i].y, 8, 0, 2*Math.PI);
-            ctx.fill();
-        //draw a circle
-            ctx.fillStyle = randomTankColor;
-            ctx.beginPath();
-            ctx.arc(cubes[i].x, cubes[i].y, 5, 0, 2*Math.PI);
-            ctx.fill();
-   
-
-
-
-        //if the bullets are off the screen, delete them
-        if (cubes[i].y < 0 || cubes[i].y > canvasHeight || cubes[i].x < 0 || cubes[i].x > canvasWidth) {
-            cubes.splice(i, 1);
-        }
-    }
     
     
+   
+
     //draw every block in the array 
         for (var i = 0; i < blocks.length; i++) {
             ctx.fillStyle = "gray";
@@ -381,6 +377,33 @@
 
             }
         }
+
+    //draw the player and cubes
+        drawFPS();
+        drawScore();
+        drawTimer();
+
+
+      
+       
+
+    }
+
+    //MAIN GAME FUNCTION
+
+
+
+   function drawPlayer() {
+    //update and draw the bullets on the canvas
+    //q: why are the bullets briefly being drawn on top of the new blocks when holding shoot? 
+    //a: because the bullets are being drawn before the blocks are being drawn
+   
+    
+
+
+        
+
+
     }
 
     
@@ -460,13 +483,9 @@
     }, 280);
 }
 
-    //start the game
-    update();
-    //on click, request for fullscreen
-    canvas.addEventListener("click", function() {
-    canvas.requestFullscreen();
-    });
     
+    
+
 
    
 
