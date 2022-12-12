@@ -120,6 +120,7 @@ function pushPin0(){
 
 function clearPin(){
     pin = [];
+
     document.getElementById("pin").innerHTML = pin;
     if (pin.length == 4) {
     
@@ -325,6 +326,7 @@ function login(){
         document.getElementById("clearCreatedPin").style.display = "none";
     
     }
+    document.getElementById("buttonContainer").style.display = "inline-block";
 }
 
 function clearCreatedPin(){
@@ -336,20 +338,32 @@ function clearCreatedPin(){
 //function to show or hide the pin
 function toggleView(){
     if(document.getElementById("savedPin").style.display == "none"){
-        document.getElementById("savedPin").style.display = "inline-block";
+        document.getElementById("savedPin").style.display = "block";
     } else {
         document.getElementById("savedPin").style.display = "none";
     }
 }
 
+function displayContainer(){
+    //if there is a stored pin, display element ID "buttonContainer"
+    //if there is no stored pin, don't display element ID "buttonContainer"
+    var storedPin = localStorage.getItem("myStoredPin");
+    if(storedPin == "" || storedPin == null){
+        document.getElementById("buttonContainer").style.display = "none";
+        document.getElementById("login").style.display = "none";
+    } else {
+        document.getElementById("buttonContainer").style.display = "inline-block";
+    }
+}
 </script>
-<body onload="login(), displayPin()">
+<body onload="login(), displayPin(), displayContainer()">
 
      
+<br>
+    <p id="savedPin"></p> <br>
+    <input type="button" id="clearCreatedPin" value="Clear Input" onclick="clearCreatedPin()"> <br> 
 
-    <p id="savedPin"></p>
-    <p id="pin">Your Pin Is: </p>
-    <input type="button" id="clearCreatedPin" value="Clear Input" onclick="clearCreatedPin()"> 
+    <h3 id="pin">Your Pin Is: </h3><br> 
 <table id="createPin">
     <tr>
         <td id="createPin"><button onclick="pushPin1()">1</button></td>
@@ -377,18 +391,18 @@ function toggleView(){
     
 <table id="buttonContainer">
     <tr>
-        
-        
-        <td id=""><button id="resetPin" onclick="clearPin()">RESET Pin</button></td>
-        <td id=""><button id="loginBtn" onclick="checkPin()">Login</button></td> 
-
+        <td id=""><button id="retry" onclick="clearUserPin()">Retry <br> Pin</button></td>
+        <td id=""> <button id="showHide" onclick="toggleView()">Show/Hide <BR>  Pin</button></td>
     </tr>
+
     <tr>
-        <td id=""><button id="retry" onclick="clearUserPin()">Retry Pin</button></td>
-        <td id=""> <button id="showHide" onclick="toggleView()">Toggle Pin</button></td>
-    </tr>
-</table>
+        <td id=""><button id="resetPin" onclick="clearPin()">RESET <br> Pin</button></td>
+        <td id="loginBtn"><button id="loginBtn" onclick="checkPin()">Click To <br> Login</button></td> 
 
+    </tr>
+    
+</table>
+<br>
 
 <p id="pin2">You Entered: </p> <br> <br> 
 <table id="login"> 
@@ -425,182 +439,84 @@ function toggleView(){
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital@1&display=swap');
 
-
-    #clearCreatedPin{
-        background-color: #4CAF50;
-        border: none;
-        color: white;
-        margin: 0 auto;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        
-    }
-
-    #clearCreatedPin:hover{
-        background-color: #3e8e41;
-    }
-    #clearCreatedPin:active{
-        background-color: #3e8e41;
-        box-shadow: 0 5px #666;
-        transform: translateY(4px);
-        transition: 0.3s all;
-    }
-    #buttonContainer{
-        position: relative;
-
-    }
-    #centerDiv{
-        margin: 0 auto;
-        width: 50%;
-        text-align: center;
-    }
-    #pin2{
-        font-family: 'Poppins', sans-serif;
-        font-size: 20px;
-        color: orange;
-        background-color: aliceblue;
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid black;
-        width: 200px;
-        text-align: center;
-
-
-    }
-    #savedPin {
-        text-align: center;
-        font-size: 20px;
-        color: green;
-        background-color: lightblue;
-        padding: 20px;
-        width: 200px;
-        text-align: center;
-        border-radius: 5px;
-        border: 1px solid black;
-        margin: auto;
-    }
-    #instructions {
-        font-size: 40px;
-        color: orange;
-        text-align: center;
-    }
-    #controlButton2{
-       position: relative;
-
-
-    }
-    
-
-    #createPin{
-    background-color: green;
-    padding: 20px;
-    border-collapse: collapse;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    }
-
-    #createPin2{
-        background-color: blue;
-        padding: 20px;
-    border-collapse: collapse;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    
-        
-    }
-input {
-    background-color: orange;
-    color: white;
-    border: none;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    position: relative;
+#buttonContainer{
+    display: none;
 }
-    #login {
-        display: none;
-
-    }
-#controlButton{
-    
-    background-color: gray;
-    border-radius: 2rem;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+* {
+    box-sizing: border-box;
 }
-
-
 
 body {
-    background-image: url("https://static.vecteezy.com/system/resources/previews/000/161/051/original/vector-metallic-speaker-grill-background.jpg");
-    
-    background-size: cover;
-    color: white;
-    font-family: 'Poppins', sans-serif;
+    font-family: Poppins;
+    padding: 20px;
+    text-align: center;
+    background-color: #dddddd; /* light gray */
 
+}
 
+h1, h2, h3, #pin, #savedPin, #pin2 {
+    display: inline-block;
+    background-color: #dddddd; /* light gray */
+    color: #333333; /* dark gray */
+    padding: 10px;
+    border-radius: 5px;
+    transition: all 0.5s;
+    border: 2px solid #0099cc; /* light blue */
+}
 
+h1:hover, h2:hover, h3:hover {
+    background-color: #eeeeee; /* lighter gray */
+    color: #0099cc; /* light blue */
+}
 
+table {
+    display: inline-block;
+    background-color: #eeeeee; /* light gray */
+    border-radius: 5px;
+    padding: 10px;
+    transition: all 0.5s;
+    border: 2px solid #9933cc; /* purple */
+}
+
+table:hover {
+    background-color: #ffffff; /* white */
+}
+
+td {
+    padding: 5px 10px;
 }
 
 button {
-    width: 100px;
-    height: 100px;
-    background-color: gray;
-    border: 2px solid white;
-    border-radius: 2rem;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
     display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #cccccc; /* light gray */
+    border-radius: 5px;
+    background-color: #eeeeee; /* light gray */
+    color: #333333; /* dark gray */
     font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+    transition: all 0.5s;
+    background-color: #cccccc;
 }
-button:hover {
-    background-color: white;
-    color: black;
-    transform: scale(0.98);
-    transition: 0.2s ease-in;
 
+button:hover {
+    background-color: #dddddd
 }
 
 button:active {
-    transform: scale(0.9);
-    background-color: green;
+    background-color: #cccccc;
 }
 
-#pin {
-    color: black;
-    font-size: 20px;
-    font-decoration: bold;
-    background-color: white;
-    border-radius: 2rem;
+#loginBtn{
+    background-color:#cccccc;
+    border: none;
     text-align: center;
-    padding: 5px; 
-    border: 1px solid black;
-    width: 200px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-
+    transition: 0.2s ease-in-out;
 }
+
+#loginBtn:hover{
+    background-color: #dddddd;
+    border: 4px solid purple;
+}
+
 </style>
 </body>
