@@ -1,0 +1,329 @@
+<body style="background-repeat:repeat; background-size: 80%" background=""> 
+<script>
+
+    
+ var up = false;
+    x = window.innerWidth / 2;
+    y = window.innerHeight - 100;
+    right = false;
+    down = false;
+    left = false;
+    
+   // Declare the shootTimer variable outside of the shoot function
+var shootTimer = null;
+
+//create a new invader every 0.5 seconds
+var invaderTimer = setInterval(function() {
+    console.log("invader")
+  // Create a new invader element
+  var invader = document.createElement("div");
+  invader.className = "invader";
+  //position the invader at a random x position, within the gamecontainer
+invader.style.left = window.innerWidth * 0.3 + 40+ Math.random() * window.innerWidth * 0.3 + "px";
+  invader.style.top = 0 + "px";
+  document.body.appendChild(invader);
+  //make the invaders move downards
+    var invaderTimer = setInterval(function() {
+        invader.style.top = invader.offsetTop + 10 + "px";
+    }, 10);
+  // Set a timeout to remove the invader after 1 second
+ //remove the invader if it reaches the bottom of the screen
+    if (invader.offsetTop > window.innerHeight) {
+        invader.remove();
+    }
+  
+ 
+}, 1500);
+
+
+
+//create a play again that reverses all the above
+function playAgain() {
+location.reload();
+}
+
+function shoot() {
+  // Create a new bullet element
+  var bullet = document.createElement("div");
+  bullet.className = "bullet";
+  bullet.style.left = x + 50 + "px";
+  bullet.style.top = y + "px";
+  document.body.appendChild(bullet);
+  //make the bullets move upwarsd
+    var bulletTimer = setInterval(function() {
+        bullet.style.top = bullet.offsetTop - 3 + "px";
+    }, 2);
+  // Set a timeout to remove the bullet after 1 second
+  setTimeout(function() {
+    bullet.remove();
+  }, 1500);
+  // Set a timeout to fire the shoot function again after 230ms
+ 
+}
+
+document.addEventListener("click", function(event) {
+  // Check if the left mouse button was clicked
+  if (event.button === 0) {
+    shoot();
+  }
+});
+
+//if mouse is being held down, shoot
+document.addEventListener("mousedown", function(event) {
+  // Check if the left mouse button was clicked
+  if (event.button === 0) {
+    shootTimer = setInterval(shoot, 230);
+  }
+});
+
+//if mouse is released, stop shooting
+document.addEventListener("mouseup", function(event) {
+  // Check if the left mouse button was clicked
+  if (event.button === 0) {
+    clearInterval(shootTimer);
+  }
+});
+
+
+
+document.addEventListener('keydown',press)
+
+
+
+function press(e){
+  
+  if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */){
+    right = true
+  }
+ 
+  if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */){
+    left = true
+  }
+}
+document.addEventListener('keyup',release)
+function release(e){
+ 
+  if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */){
+    right = false
+  }
+ 
+  if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */){
+    left = false
+  }
+}
+
+
+
+
+
+function gameLoop(){
+    //q :can you do query selector for an id?
+    //a: yes
+  var image = document.querySelector('#image')
+ 
+  if (right){
+    x = x + 2
+  }
+ 
+  if (left){
+    x = x - 2
+  }
+  image.style.left = x+'px'
+  image.style.top = y+'px'
+
+ // Get the position of the game container
+var gameContainer = document.getElementById("gameContainer");
+var containerLeft = window.innerWidth * 0.3;
+
+// Calculate the right and bottom edges of the game container
+var containerRight = containerLeft + gameContainer.offsetWidth;
+
+// Check if the player is within the boundaries of the game container
+if (x < containerLeft) {
+  x = containerLeft;
+}
+if (x > containerRight - 100) { // 100 is the width of the player
+  x = containerRight - 100;
+}
+
+//check for collision between the bullets and the invaders coming down 
+var bullets = document.querySelectorAll(".bullet");
+var invaders = document.querySelectorAll(".invader");
+bullets.forEach(function(bullet) {
+    invaders.forEach(function(invader) {
+        if (
+        bullet.offsetLeft < invader.offsetLeft + invader.offsetWidth &&
+        bullet.offsetLeft + bullet.offsetWidth > invader.offsetLeft &&
+        bullet.offsetTop < invader.offsetTop + invader.offsetHeight &&
+        bullet.offsetHeight + bullet.offsetTop > invader.offsetTop
+        ) {
+        // Remove the bullet and the invader
+        bullet.remove();
+        invader.remove();
+        }
+    });
+});
+
+//if the invaders reach the bottom of the screen, end game 
+var invaders = document.querySelectorAll(".invader");
+invaders.forEach(function(invader) {
+    if (invader.offsetTop > window.innerHeight) {
+        invader.remove();
+       gameOver();  
+        clearInterval(invaderTimer);
+    }
+});
+
+
+
+  window.requestAnimationFrame(gameLoop)
+}
+
+
+window.requestAnimationFrame(gameLoop)
+
+
+function gameOver() {
+  // Stop the shoot timer
+  clearInterval(shootTimer);
+  // Stop the invader timer
+  clearInterval(invaderTimer);
+  // Remove all bullets
+  var bullets = document.getElementsByClassName("bullet");
+  for (var i = 0; i < bullets.length; i++) {
+    bullets[i].remove();
+  }
+  // Remove all invaders
+  var invaders = document.getElementsByClassName("invader");
+  for (var i = 0; i < invaders.length; i++) {
+    invaders[i].remove();
+  }
+  // Remove the event listeners
+  document.removeEventListener("keydown", press);
+  document.removeEventListener("keyup", press);
+  document.removeEventListener("mousedown", shoot);
+  document.removeEventListener("mouseup", shoot);
+  document.removeEventListener("click", shoot);  // remove the shoot function from the click event listener
+  // Display the game over message
+  document.getElementById("gameContainer").style.display = "none";
+  document.getElementById("shooter").style.display = "none";
+  document.getElementById("gameOverContainer").style.display = "block";
+}
+
+
+
+
+</script>
+<div id="gameOverContainer" style="display:none;">
+    <h1 id=results> </h1>
+    <button onclick="playAgain()">Play Again</button>
+</div>
+
+<div id="gameContainer">
+     
+    </div>
+    <div id="image">
+        <img id="shooter" src="https://i.imgur.com/saj8jk5.png" style="position:absolute; width:100px; height:80px;">
+</div>
+
+<style>
+
+button {
+  /* Basic button styles */
+  background: #3498db;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  animation: pulse 1s ease-in-out infinite;
+
+  /* Add some hover and active styles */
+  transition: all 0.2s ease-in-out;
+  
+  &:active {
+    transform: translateY(2px);
+  }
+
+  /* Add the pulse animation */
+  
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+button:hover {
+    box-shadow: 0px 5px 10px rgba(0,0,0,10);
+    transform: translateY(-2px);
+    border: 3px solid #3498db;
+    border-radius: 2rem;
+    
+    animation-play-state: paused;
+  }
+
+  button:active {
+    transform: translateY(2px);
+    transform: scale(0.9)
+  }
+    
+    #gameOverContainer {
+        color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    .invader{
+        position: absolute;
+        width: 48;
+        height: 32px;
+        background-image: url('https://raw.githubusercontent.com/DamirSvrtan/space-invaders.rb/master/assets/images/InvaderA2.png');
+    }
+    .bullet {
+  
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    background-color: red;
+    border: 2px solid red;
+    border-radius: 50%;
+    
+    z-index: 1;
+
+    }
+    #gameContainer{
+        background-image: url('https://repository-images.githubusercontent.com/281058223/4632ed00-ca92-11ea-971d-78aec0b072fa');
+        width: 40%;
+        height: 100%;
+        /* position middle */
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-repeat: no-repeat;
+        background-size: cover;
+
+    }
+    body{
+        background-color: black;
+        user-select: none;
+        overflow: hidden;
+    }
+    #image{
+        
+  position: fixed;
+  font-size: 130px;
+}
+
+  
+</style>
+</body> 
