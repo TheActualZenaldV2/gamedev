@@ -181,6 +181,7 @@ function getRandomSafeSpot() {
     const allCoinsRef = firebase.database().ref(`coins`);
 
     allPlayersRef.on("value", (snapshot) => {
+      console.log("change");
       //Fires whenever a change occurs
       players = snapshot.val() || {};
       Object.keys(players).forEach((key) => {
