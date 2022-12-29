@@ -1,0 +1,114 @@
+<html>
+    <body onload="addPlayer();"> </body>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+  <br>
+  <button onclick="addPlayer()">Add Player</button>
+    <button onclick="clearPlayers()">Clear Players</button>
+
+  <!-- Include the Firebase JavaScript library -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+  <script>
+    // Initialize Firebase (replace with your own config)
+    const firebaseConfig = {
+  apiKey: "AIzaSyBHivxOWVnhRf9wa7twG8s17LmynmABp_o",
+  authDomain: "imagineifthisworkslmao.firebaseapp.com",
+  databaseURL: "https://imagineifthisworkslmao-default-rtdb.firebaseio.com",
+  projectId: "imagineifthisworkslmao",
+  storageBucket: "imagineifthisworkslmao.appspot.com",
+  messagingSenderId: "214964204379",
+  appId: "1:214964204379:web:ba7720fcb900f2dd72e07e",
+  measurementId: "G-HKBJ8Q8HRR"
+};
+firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the canvas and canvas context
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    var allPlayersRef = firebase.database().ref("players");
+
+    // Get a reference to the players database
+    var playersRef = firebase.database().ref("players");
+
+    // Set up listeners to draw and remove players as they are added or removed from the database
+    playersRef.on("child_added", function(snapshot) {
+      var player = snapshot.val();
+      drawPlayer(player.x, player.y, snapshot.key);
+    });
+    
+
+    function clearPlayers() {
+  // Clear the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Delete all players from the database
+  playersRef.remove();
+}
+
+
+function addPlayer() {
+  // Generate random x and y coordinates within the canvas
+  var x = Math.floor(Math.random() * canvas.width);
+  var y = Math.floor(Math.random() * canvas.height);
+
+  // Generate a unique ID for the new player
+  var newPlayerRef = playersRef.push();
+  userId = newPlayerRef.key;
+
+  // Add the new player to the database
+  newPlayerRef.set({
+    x: x,
+    y: y
+  });
+}
+
+window.onbeforeunload = function() {
+  // Clear the player from the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Delete the user's ID from the database
+  playersRef.child(userId).remove();
+  drawPlayer(x, y, snapshot.key);
+}
+
+
+
+    function drawPlayer(x, y, key) {
+        //update the canvas at 60fps
+        requestAnimationFrame(drawPlayer);
+
+      // Draw a black circle at the specified position
+      context.beginPath();
+      context.arc(x, y, 10, 0, 2 * Math.PI);
+      context.fillStyle = "black";
+      context.fill();
+
+      // Store the player's key in the canvas element so we can use it to delete the player later
+      var canvasElement = document.getElementById("myCanvas");
+      canvasElement.setAttribute("data-player-key", key);
+    }
+
+    function clearPlayer(x, y, key) {
+  // Clear the area where the player was drawn
+  context.clearRect(x - 10, y - 10, 20, 20);
+
+  // Get the player's key from the canvas element
+  var canvasElement = document.getElementById("myCanvas");
+  var playerKey = canvasElement.getAttribute("data-player-key");
+
+  // Delete the player from the database
+  playersRef.child(playerKey).remove();
+}
+
+  </script>
+</body>
+</html>
