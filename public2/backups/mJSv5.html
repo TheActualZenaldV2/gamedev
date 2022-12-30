@@ -1,0 +1,181 @@
+<html>
+    <body onload="addPlayer();"> </body>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+  <br>
+  <button onclick="addPlayer()">Add Player</button>
+    <button onclick="clearPlayers()">Clear Players</button>
+
+  <!-- Include the Firebase JavaScript library -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+  <script>
+    let playerColor = "black";
+    // Initialize Firebase (replace with your own config)
+    const firebaseConfig = {
+  apiKey: "AIzaSyBHivxOWVnhRf9wa7twG8s17LmynmABp_o",
+  authDomain: "imagineifthisworkslmao.firebaseapp.com",
+  databaseURL: "https://imagineifthisworkslmao-default-rtdb.firebaseio.com",
+  projectId: "imagineifthisworkslmao",
+  storageBucket: "imagineifthisworkslmao.appspot.com",
+  messagingSenderId: "214964204379",
+  appId: "1:214964204379:web:ba7720fcb900f2dd72e07e",
+  measurementId: "G-HKBJ8Q8HRR"
+};
+firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the canvas and canvas context
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    var allPlayersRef = firebase.database().ref("players");
+
+    // Get a reference to the players database
+    var playersRef = firebase.database().ref("players");
+
+    // Set up listeners to draw and remove players as they are added or removed from the database
+    playersRef.on("child_added", function(snapshot) {
+      var player = snapshot.val();
+      drawPlayer(player.x, player.y, snapshot.key);
+    });
+    playersRef.on("child_removed", function(snapshot) {
+  var player = snapshot.val();
+  clearPlayer(player.x, player.y, snapshot.key);
+});
+allPlayersRef.on("value", function(snapshot) {
+  // Clear the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Get the players object from the snapshot
+  var players = snapshot.val();
+
+  // Iterate through all of the players in the object
+  for (var key in players) {
+    // Get the player object
+    var player = players[key];
+
+    // Draw the player on the canvas
+    drawPlayer(player.x, player.y, key);
+  }
+});
+
+
+
+
+    
+
+    function clearPlayers() {
+  // Clear the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Delete all players from the database
+  playersRef.remove();
+}
+
+
+function addPlayer() {
+  // Generate random x and y coordinates within the canvas
+  var x = Math.floor(Math.random() * canvas.width);
+  var y = Math.floor(Math.random() * canvas.height);
+
+  // Generate a unique ID for the new player
+  var newPlayerRef = playersRef.push();
+  userId = newPlayerRef.key;
+
+  // Add the new player to the database
+  newPlayerRef.set({
+    x: x,
+    y: y
+  });
+}
+
+window.onbeforeunload = function() {
+  // Delete the user's ID from the database
+  playersRef.child(userId).remove();
+}
+
+
+
+
+
+function drawPlayer(x, y, key) {
+  // Only allow the user to move their own player
+  if (key === userId) {
+    // Update the canvas at 60fps
+    requestAnimationFrame(drawPlayer);
+  }
+
+  // Clear the previous position of the player
+  context.clearRect(x - 10, y - 10, 20, 20);
+
+  // Draw a circle at the specified position with a different color for the user's player
+  context.beginPath();
+  if (key === userId) {
+    context.arc(x, y, 10, 0, 2 * Math.PI);
+    context.fillStyle = "red";
+  } else {
+    context.arc(x, y, 10, 0, 2 * Math.PI);
+    context.fillStyle = "black";
+  }
+  context.fill();
+
+  // Store the player's key in the canvas element so we can use it to delete the player later
+  var canvasElement = document.getElementById("myCanvas");
+  canvasElement.setAttribute("data-player-key", key);
+}
+
+
+
+
+    function clearPlayer(x, y, key) {
+      // Clear the canvas
+      context.clearRect(0, 0, canvas.width, canvas.height);
+  // Clear the area where the player was drawn
+  context.clearRect(x - 10, y - 10, 20, 20);
+
+  // Get the player's key from the database
+  var playerKey = key;
+
+  // Delete the player from the database
+  playersRef.child(playerKey).remove();
+}
+
+document.addEventListener("keydown", function(event) {
+  // Get the player's current position
+  var playerRef = playersRef.child(userId);
+  playerRef.once("value", function(snapshot) {
+    var player = snapshot.val();
+    var x = player.x;
+    var y = player.y;
+
+    // Update the player's position based on the key that was pressed
+    if (event.key === "w") {
+      y -= 10;
+    } else if (event.key === "a") {
+      x -= 10;
+    } else if (event.key === "s") {
+      y += 10;
+    } else if (event.key === "d") {
+      x += 10;
+    }
+
+    // Update the player's position in the database
+    playerRef.update({
+      x: x,
+      y: y
+    });
+  });
+});
+
+
+
+  </script>
+</body>
+</html>
