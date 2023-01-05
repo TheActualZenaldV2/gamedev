@@ -10,12 +10,18 @@
     <button onclick="clearPlayers()">Clear Players</button>
 
     <div id="menu">
-      <input id="name" placeholder="Name" />
-      <button id="color" onclick="changeColor();"> 
-        
-      <div id="colorChange"> 
-        <h1> ^ </h1>
-      </div> </button>
+      <input id="name" placeholder="Name" oninput="this.setAttribute('style', 'border: 15px double green; border-radius: 30px;');" onblur="this.setAttribute('style', 'border: 15px double #5FD4FA; border-radius: 30px;');">
+
+        <div id="colorWrapper">
+            <button id="color" onclick="changeColor();"> 
+              <div id="colorChange"> 
+              </div> 
+              <h1>^</h1>
+            </button>
+        </div>
+          
+
+      
       <button id="play" onclick="playGame();">Play! </button>
     </div>
 
@@ -28,6 +34,10 @@
 
 
   <script>
+    gameStart = false;
+function changeColor() {
+  console.log("wiggles doesnt feel like making this work rn")
+}
 
     
     let playerColor = "black";
@@ -139,31 +149,47 @@ function clearPlayers() {
 
 
 
+let playGameCounter = 0;
+
+function playGame(x, y, userId) {
+  playGameCounter++;
+  if (playGameCounter == 2) {
+    console.log(x, y, userId)
+    gameStart = true;
+    document.getElementById("myCanvas").style.display = "block";
+    document.getElementById("menu").style.display = "none";
+    //disable body overflow
+    document.body.style.overflow = "hidden";
+
+    // Add the new player to the database
+    firebase.database().ref(`players/${userId}`).set({
+      x: x,
+      y: y,
+      velX: 0,
+      velY: 0,
+      mouseAngleX: mouseX,
+      mouseAngleY: mouseY,
+    });
+  }
+}
+
 function addPlayer() {
   // Generate random x and y coordinates within the canvas
   var x = Math.floor(Math.random() * canvas.width);
-  var y = Math.floor(Math.random() * canvas.height);
+   var y = Math.floor(Math.random() * canvas.height);
 
   // Generate a unique ID for the new player
   var newPlayerRef = playersRef.push();
-   userId = newPlayerRef.key;
-
-  // Add the new player to the database
-  newPlayerRef.set({
-    x: x,
-    y: y,
-    velX: 0,
-    velY: 0,
-    mouseAngleX: mouseX,
-    mouseAngleY: mouseY,
-  });
+    userId = newPlayerRef.key;
 
   const playerRef = firebase.database().ref(`players/${userId}`);
-playerRef.onDisconnect().remove();
+  playerRef.onDisconnect().remove();
 
-//clear console
-console.clear();
+  //clear console
+  console.clear();
 
+  // Call the playGame function and pass the values as arguments
+  playGame(x, y, userId);
 }
 
 
@@ -177,7 +203,10 @@ console.clear();
 
 
 
+
 function drawPlayer(x, y, key, angle) {
+
+  if(gameStart == true) {
   // Only allow the user to move their own player
   if (key === userId) {
     // Update the canvas at 60fps
@@ -254,7 +283,8 @@ function drawPlayer(x, y, key, angle) {
   // Store the player's key in the canvas element so we can use it to delete the player later
   var canvasElement = document.getElementById("myCanvas");
   canvasElement.setAttribute("data-player-key", key);
-  
+}
+
 }
 
 
@@ -299,6 +329,8 @@ document.addEventListener("keyup", function(event) {
 });
 
 function updatePlayer() {
+
+  if(gameStart == true){
   // Get the player's current position and velocity
   var playerRef = playersRef.child(userId);
   playerRef.once("value", function(snapshot) {
@@ -356,6 +388,8 @@ playerRef.update({
 });
 
   });
+}
+
 }
 
 function updateMouse() {
@@ -423,41 +457,63 @@ background-image: url("https://i.redd.it/5151vamxcmlx.png");
   }
 
   #menu {
+   
+    /* put in the middle */
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+#colorWrapper {
+  display: flex;
+  align-items: center;
+}
+
+#colorChange {
+  margin: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+#colorWrapper h1 {
+  display: inline;
+  margin-left: 5px;
+}
+
+
 
   input {
-    width: 200px;
-    height: 30px;
+    padding: 7px;
+    width: 350px;
+    
     font-size: 20px;
     margin-bottom: 10px;
+    border: 15px double #5FD4FA;
+border-radius: 30px;
+
   }
 
   
 
   input:focus{
-    outline: 0;
-    border: 5px solid lightblue;
-    width: 200px;
+    outline: none;
+    border: 15px double orange;
+
 
 
   }
+  
 
-  #colorChange {
-    margin: 5px;
-    width: 30px;
-    height: 30px;
-    background-color: red;
-    border-radius: 50%;
-    font-size: 20px;
-    
-  }
+ 
+
 </style>
