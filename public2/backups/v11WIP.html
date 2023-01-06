@@ -449,17 +449,9 @@ playerRef.update({
 }
 }
 
-// Set up an array to store the bullets
-var bullets = [];
 
-// Set up the bullet velocity
-var bulletVelocity = 5;
-
-// Get a reference to the bullets database
 var bulletsRef = firebase.database().ref("bullets");
-// Get a reference to all bullets in the database
-var allBulletsRef = firebase.database().ref("bullets");
-
+var allBulletsRef = firebase.database().ref("allBullets");
 // Set up listeners to draw and remove bullets as they are added or removed from the database
 bulletsRef.on("child_added", function(snapshot) {
   var bullet = snapshot.val();
@@ -484,65 +476,53 @@ allBulletsRef.on("value", function(snapshot) {
 });
 
 
-// Add an event listener for the click event
+
 canvas.addEventListener("click", function(event) {
-  // Get the current player's data
-  var playerRef = playersRef.child(userId);
-  playerRef.once("value", function(snapshot) {
-    var player = snapshot.val();
-   
-    var x = player.x;
-    var y = player.y;
+  // Get the x and y coordinates of the click event
+  var x = event.offsetX;
+  var y = event.offsetY;
 
-    // Calculate the angle between the player and the mouse
-    var mouseX = event.clientX;
-    var mouseY = event.clientY;
-    var angle = Math.atan2(mouseY - y, mouseX - x);
+  // Calculate the direction in which the bullet should move
+  // based on the position of the mouse cursor
+  var directionX = mouseX - x;
+  var directionY = mouseY - y;
 
-    // Create a new bullet object
-    var bullet = {
-      x: x,
-      y: y,
-      vx: bulletVelocity * Math.cos(angle).toFixed(2),
-      vy: bulletVelocity * Math.sin(angle).toFixed(2),
-    };
+  // Normalize the direction vector
+  var length = Math.sqrt(directionX * directionX + directionY * directionY);
+  directionX /= length;
+  directionY /= length;
 
-    // Add the bullet to the array
-    bullets.push(bullet);
+  // Set the velocity of the bullet
+  var velocity = 5; // pixels per frame
 
-    // Add the bullet data to the database
-    var bulletRef = playerRef.child("bullets").push();
-    bulletRef.set(bullet);
-  });
+  // Create a new bullet object
+  var bullet = {
+    x: x,
+    y: y,
+    directionX: directionX,
+    directionY: directionY,
+    velocity: velocity
+  };
+
+  // Save the bullet to the database
+  bulletsRef.push(bullet);
 });
 
-function drawBullets(bullets) {
-  
-  // Clear the canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawBullets(x, y, key) {
+  // Draw the bullet on the canvas
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.closePath();
 
-  if (gameStart == true) {
-    // Update the position of each bullet
-    for (var i = 0; i < bullets.length; i++) {
-      var bullet = bullets[i];
-      bullet.x += bullet.vx;
-      bullet.y += bullet.vy;
-    }
+  // Update the position of the bullet
+  x += bullet.directionX * bullet.velocity;
+  y += bullet.directionY * bullet.velocity;
 
-    // Set the fill style to red
-    ctx.fillStyle = "red";
-
-    // Loop through the bullets array and draw each bullet
-    for (var i = 0; i < bullets.length; i++) {
-      var bullet = bullets[i];
-
-      // Draw the bullet as a circle
-      ctx.beginPath();
-      ctx.arc(bullet.x, bullet.y, 5, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  }
+  // Save the updated position to the database
+  bulletsRef.child(key).set({ x: x, y: y });
 }
+
 
 
 // Set up a timer to update the player's position and velocity every 50 milliseconds
