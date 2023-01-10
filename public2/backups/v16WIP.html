@@ -44,14 +44,14 @@ function changeColor() {
     let playerColor = "black";
     // Initialize Firebase (replace with your own config)
     const firebaseConfig = {
-  apiKey: "AIzaSyCqcATbqZWCGL2bYsUlcE4AVPDjh0Ihpf8",
-  authDomain: "multiplayerdemo-ee607.firebaseapp.com",
-  databaseURL: "https://multiplayerdemo-ee607-default-rtdb.firebaseio.com",
-  projectId: "multiplayerdemo-ee607",
-  storageBucket: "multiplayerdemo-ee607.appspot.com",
-  messagingSenderId: "568627344570",
-  appId: "1:568627344570:web:0d0bd1ae88cae0d64fbe83",
-  measurementId: "G-0J3QLW800P"
+  apiKey: "AIzaSyBHivxOWVnhRf9wa7twG8s17LmynmABp_o",
+  authDomain: "imagineifthisworkslmao.firebaseapp.com",
+  databaseURL: "https://imagineifthisworkslmao-default-rtdb.firebaseio.com",
+  projectId: "imagineifthisworkslmao",
+  storageBucket: "imagineifthisworkslmao.appspot.com",
+  messagingSenderId: "214964204379",
+  appId: "1:214964204379:web:ba7720fcb900f2dd72e07e",
+  measurementId: "G-HKBJ8Q8HRR"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -262,7 +262,7 @@ function shoot(x, y) {
 }
 
 // Set up a timer to update the positions of the bullets at a regular interval
-setInterval(updateBulletPositions, 20); // 60 FPS
+setInterval(updateBulletPositions, 40); // 60 FPS
 console.log("canvas width: " + canvas.width + " canvas height: " + canvas.height )
 function updateBulletPositions() {
   // Get a reference to the players child node in the database
@@ -419,6 +419,9 @@ firebase.database().ref("players").on("child_added", function(playerSnapshot) {
 
 function checkCollisions() {
   if(gameStart == true) {
+    var bulletsRef = playerSnapshot.ref.child("bullets");
+    
+
   // Get a reference to the current player's node in the database
   var playerRef = firebase.database().ref("players").child(userId);
   // Get the current player's data
@@ -447,6 +450,8 @@ function checkCollisions() {
           if (distance < 50) {
             // Decrement the player's health by 13
             player.health -= 25;
+            bulletsRef.child(childSnapshot.key).remove();
+
             // If the player's health is 0 or less, remove them from the database
             if (player.health <= 0) {
               location.reload();
@@ -533,7 +538,7 @@ function updatePlayer() {
       var velX = player.velX;
       var velY = player.velY;
       var friction = 0.8;
-      var speed = 0.1
+      var speed = 1.2
 
       // Update the player's velocity based on the keys that are being pressed
       if (keys["w"]) {
@@ -635,8 +640,8 @@ playerRef.update({
 }
 
 // Set up a timer to update the player's position and velocity every 50 milliseconds
-setInterval(updatePlayer, 2);
-setInterval(updateMouse, 1);
+setInterval(updatePlayer, 20);
+setInterval(updateMouse, 100);
 
 
 
