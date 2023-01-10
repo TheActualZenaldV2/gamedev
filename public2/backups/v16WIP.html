@@ -1,0 +1,750 @@
+<html>
+    <body> </body>
+<head>
+  
+</head>
+<body>
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+  <br>
+  <button onclick="addPlayer()">Add Player</button>
+    <button onclick="clearPlayers()">Clear Players</button>
+    <button onclick="spectate()"> Spectate </button>
+    <div id="menu">
+      <img src="https://i.imgur.com/stHkmIN.png" id="tank" width="150" height="150"> 
+      <input id="name" placeholder="Username Goes Here" maxlength="15" oninput="this.setAttribute('style', 'border: 15px double green; border-radius: 30px;');" onblur="this.setAttribute('style', 'border: 15px double #5FD4FA; border-radius: 30px;');">
+
+        <div id="colorWrapper">
+            <button id="color" onclick="changeColor();"> 
+              <div id="colorChange"> 
+              </div> 
+              <h1>^</h1>
+            </button>
+        </div>
+          
+
+      
+      <button id="play" onclick="addPlayer();">Play! </button>
+    </div>
+
+  <!-- Include the Firebase JavaScript library -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+
+
+
+
+  <script>
+    gameStart = false;
+function changeColor() {
+  console.log("wiggles doesnt feel like making this work rn")
+}
+
+    
+    let playerColor = "black";
+    // Initialize Firebase (replace with your own config)
+    const firebaseConfig = {
+  apiKey: "AIzaSyCqcATbqZWCGL2bYsUlcE4AVPDjh0Ihpf8",
+  authDomain: "multiplayerdemo-ee607.firebaseapp.com",
+  databaseURL: "https://multiplayerdemo-ee607-default-rtdb.firebaseio.com",
+  projectId: "multiplayerdemo-ee607",
+  storageBucket: "multiplayerdemo-ee607.appspot.com",
+  messagingSenderId: "568627344570",
+  appId: "1:568627344570:web:0d0bd1ae88cae0d64fbe83",
+  measurementId: "G-0J3QLW800P"
+};
+firebase.initializeApp(firebaseConfig);
+
+
+
+
+
+//get the mouse position
+var mouseX = 0,
+mouseY = 0;
+
+document.body.addEventListener("mousemove", function(e) {
+mouseX = e.clientX;
+mouseY = e.clientY;
+
+let userId = null;
+
+
+
+
+});
+
+
+    // Get a reference to the canvas and canvas ctx
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var allPlayersRef = firebase.database().ref("players");
+
+    // Get a reference to the players database
+    var playersRef = firebase.database().ref("players");
+    //set canvas height to window height
+    canvas.height = window.innerHeight;
+    //set canvas width to window width
+    canvas.width = window.innerWidth;
+
+    // Set up listeners to draw and remove players as they are added or removed from the database
+    playersRef.on("child_added", function(snapshot) {
+      var player = snapshot.val();
+      drawPlayer(player.x, player.y, snapshot.key);
+    });
+    playersRef.on("child_removed", function(snapshot) {
+  var player = snapshot.val();
+  clearPlayer(player.x, player.y, snapshot.key);
+
+});
+allPlayersRef.on("value", function(snapshot) {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  
+  // Get the players object
+  var players = snapshot.val();
+
+  // Loop through the players object and draw each player
+  for (var key in players) {
+    var player = players[key];
+    var name = document.getElementById("name").value;
+    if(name.value == ""){
+    
+    name = "I'm too dumb to give myself a name"
+  }
+    drawPlayer(player.x, player.y, key, player.angle, player.Name, player.health);
+  }
+
+
+});
+
+function clearPlayers() {
+  // Get a list of all players in the database
+  playersRef.once("value", function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      var key = childSnapshot.key;
+      var player = childSnapshot.val();
+
+      // If the player is not the current user, delete them from the screen and the database
+      if (key !== userId) {
+        // Delete the player from the screen
+        ctx.clearRect(player.x - 10, player.y - 10, 20, 20);
+
+        // Delete the player from the database
+        playersRef.child(key).remove();
+      }
+    });
+  });
+}
+
+function spectate() { 
+  document.getElementById("myCanvas").style.display = "block";
+    document.getElementById("menu").style.display = "none";
+    //disable body overflow
+    document.body.style.overflow = "hidden";
+
+   
+  // Disable movement
+  document.body.removeEventListener("mousemove", function(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Set up listeners to draw and remove players as they are added or removed from the database
+  playersRef.on("child_added", function(snapshot) {
+    var player = snapshot.val();
+    drawPlayer(player.x, player.y, snapshot.key);
+  });
+  playersRef.on("child_removed", function(snapshot) {
+    var player = snapshot.val();
+    clearPlayer(player.x, player.y, snapshot.key);
+  });
+
+}
+
+
+function addPlayer() {
+  drawMap();
+  var name = document.getElementById("name").value;
+  if(name == ""){
+    
+    name = "I'm too dumb to give myself a name"
+  }
+  document.getElementById("myCanvas").style.display = "block";
+    document.getElementById("menu").style.display = "none";
+    //disable body overflow
+    document.body.style.overflow = "hidden";
+
+
+  gameStart = true;
+  // Generate random x and y coordinates within the canvas
+  var x = Math.floor(Math.random() * canvas.width);
+   var y = Math.floor(Math.random() * canvas.height);
+
+  // Generate a unique ID for the new player
+  var newPlayerRef = playersRef.push();
+    userId = newPlayerRef.key;
+
+  const playerRef = firebase.database().ref(`players/${userId}`);
+  playerRef.onDisconnect().remove();
+
+   // Add the new player to the database
+   firebase.database().ref(`players/${userId}`).set({
+      x: x,
+      y: y,
+      Name: name,
+      health: 100,
+      velX: 0,
+      velY: 0,
+      mouseAngleX: mouseX,
+      mouseAngleY: mouseY,
+    });
+
+
+  //clear console
+  console.clear();
+  
+  
+  console.log("Welcome to the game! Your player ID is: " + userId + " Your UserName Is: " + name);
+  console.log(" x: " + x, "y: " + y)
+
+  
+}
+
+canvas.addEventListener("click", function(event) {
+  var playerRef = playersRef.child(userId);
+  playerRef.once("value", function(snapshot) {
+    var player = snapshot.val();
+    var x = player.x;
+    var y = player.y;
+
+    // Call the shoot function with the desired x and y values as arguments
+    shoot(x, y);
+  });
+});
+
+function shoot(x, y) {
+  var playerRef = playersRef.child(userId);
+
+  // Get the mouse position at the time of the click
+  var mouseX = event.clientX;
+  var mouseY = event.clientY;
+  
+  // Calculate the angle between the bullet's starting position and the mouse position
+  var angle = Math.atan2(mouseY - y, mouseX - x);
+  
+  // Set the velocity of the bullet in the x and y directions based on the angle
+  var velocityX = 10 * Math.cos(angle).toFixed(4);
+  var velocityY = 10 * Math.sin(angle).toFixed(4);
+  
+  // Create a new bullet object with the starting position as its x and y values, and the calculated velocities in the x and y directions
+  var bullet = {
+    x: x,
+    y: y,
+    velocityX: velocityX,
+    velocityY: velocityY
+  };
+  
+  // Add the bullet to the "bullets" child node in the current player's node in the database
+  playerRef.child("bullets").push(bullet);
+}
+
+// Set up a timer to update the positions of the bullets at a regular interval
+setInterval(updateBulletPositions, 1000 / 60); // 60 FPS
+console.log("canvas width: " + canvas.width + " canvas height: " + canvas.height )
+function updateBulletPositions() {
+  // Get a reference to the players child node in the database
+  var playersRef = firebase.database().ref("players");
+  // Get the current list of players
+  playersRef.once("value", function(snapshot) {
+    snapshot.forEach(function(playerSnapshot) {
+      // Get a reference to the "bullets" child node in the current player's node
+      var bulletsRef = playerSnapshot.ref.child("bullets");
+      // Get the current list of bullets
+      bulletsRef.once("value", function(bulletSnapshot) {
+        bulletSnapshot.forEach(function(childSnapshot) {
+          var bullet = childSnapshot.val();
+          // Update the position of the bullet based on its velocity in the x and y directions
+          bullet.x += bullet.velocityX;
+          bullet.y += bullet.velocityY;
+          // Round the x and y values to 4 decimal places
+          bullet.x = Math.round(bullet.x * 10000) / 10000;
+          bullet.y = Math.round(bullet.y * 10000) / 10000;
+          // Update the bullet in the database with the new position
+          bulletsRef.child(childSnapshot.key).update(bullet);
+          // Check if the bullet is off the screen, and delete it from the database if it is
+          if(bullet.x > canvas.width || bullet.y > canvas.height || bullet.x < 0 || bullet.y < 0) {
+            bulletsRef.child(childSnapshot.key).remove();
+          }
+        });
+      });
+    });
+  });
+}
+
+function drawPlayer(x, y, key, angle, name, health) {
+
+  if(gameStart == true) {
+    drawMap();
+  // Only allow the user to move their own player
+  if (key === userId) {
+    // Update the canvas at 60fps
+    
+
+    // Calculate the angle between the mouse and the player
+    var angle = Math.atan2(mouseY - y, mouseX - x).toFixed(4);
+    //send the angle to the database
+    playersRef.child(userId).update({
+      angle: angle,
+    });
+  }
+
+  // Clear the previous position of the player
+  ctx.clearRect(x - 10, y - 10, 20, 20);
+
+  // Draw a circle at the specified position with a different color for the user's player
+  ctx.beginPath();
+  if (key === userId) {
+    // Draw the player
+    ctx.fillStyle = "green";
+    ctx.beginPath();
+    ctx.arc(x, y, 25, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = "white";
+    // Player fill code
+    ctx.fillStyle = "blue"
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+  } else {
+     // Draw the player
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(x, y, 25, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = "white";
+    // Player fill code
+    ctx.fillStyle = "blue"
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+  ctx.fill();
+
+  // Use the player's angle from the database to draw the turret
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  // Draw the turret
+  ctx.fillStyle = key === userId ? "green" : "red";
+  ctx.beginPath();
+  ctx.rect(23, -3, 40, 12);
+  ctx.fill();
+  // Reset the rotation and translation
+  ctx.rotate(-angle);
+  ctx.translate(-x, -y);
+  // Barrel code
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  // Draw the rectangle for the barrel
+  ctx.fillStyle = "blue";
+  ctx.beginPath();
+  ctx.rect(25, 0, 35, 6);
+  ctx.fill();
+  // Reset the rotation and translation
+  ctx.rotate(-angle);
+  ctx.translate(-x, -y);
+  ctx.fill();
+  // Get the name of the player and display it above
+  ctx.font = "20px Arial";
+  ctx.textAlign = "center";  // center the text
+  ctx.fillStyle = "white";
+  ctx.fillText(name, x, y - 30);  // update the x position to be the center of the player
+  // Calculate the width of the health bar based on the player's remaining health
+var healthBarWidth = (health / 100) * 50;
+
+
+// Draw a gray background for the health bar
+ctx.fillStyle = "gray";
+ctx.fillRect(x - 25, y + 50, 50, 10);
+
+// Set the color of the health bar based on the player's health
+if (health > 60) {
+  ctx.fillStyle = "green";
+} else if (health > 35) {
+  ctx.fillStyle = "orange";
+} else {
+  ctx.fillStyle = "red";
+}
+
+// Draw the health bar
+ctx.fillRect(x - 25, y + 50, healthBarWidth, 10);
+
+  // Listen for changes to the players child node in the database
+firebase.database().ref("players").on("child_added", function(playerSnapshot) {
+  // Get a reference to the "bullets" child node in the current player's node
+  var bulletsRef = playerSnapshot.ref.child("bullets");
+  // Listen for changes to the bullets child node in the current player's node
+  bulletsRef.on("child_added", function(bulletSnapshot) {
+    var bullet = bulletSnapshot.val();
+    // Draw the bullet on the canvas
+    ctx.beginPath();
+    ctx.arc(bullet.x, bullet.y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "black";
+    ctx.fill();
+  });
+});
+
+
+  // Store the player's key in the canvas element so we can use it to delete the player later
+  var canvasElement = document.getElementById("myCanvas");
+  canvasElement.setAttribute("data-player-key", key);
+}
+
+
+
+}
+
+
+function checkCollisions() {
+  if(gameStart == true) {
+  // Get a reference to the current player's node in the database
+  var playerRef = firebase.database().ref("players").child(userId);
+  // Get the current player's data
+  playerRef.once("value", function(playerSnapshot) {
+    var player = playerSnapshot.val();
+    // Get a reference to the players child node in the database
+    var playersRef = firebase.database().ref("players");
+    // Get the current list of players
+    playersRef.once("value", function(snapshot) {
+      snapshot.forEach(function(otherPlayerSnapshot) {
+        var otherPlayer = otherPlayerSnapshot.val();
+        // Skip the collision check if the other player is the current player
+        if (otherPlayerSnapshot.key === userId) {
+          return;
+        }
+        // Check for collisions with each bullet owned by the other player
+        for (var bulletKey in otherPlayer.bullets) {
+          var bullet = otherPlayer.bullets[bulletKey];
+          // Skip the collision check if the bullet has already collided with a player
+          if (bullet.collided) {
+            continue;
+          }
+          // Calculate the distance between the player and the bullet
+          var distance = Math.sqrt(Math.pow(player.x - bullet.x, 2) + Math.pow(player.y - bullet.y, 2));
+          // If the distance is less than 50, a collision has occurred
+          if (distance < 50) {
+            // Decrement the player's health by 13
+            player.health -= 17;
+            // If the player's health is 0 or less, remove them from the database
+            if (player.health <= 0) {
+              location.reload();
+              playersRef.child(playerSnapshot.key).remove();
+            } else {
+              // Update the player's health in the database
+              playersRef.child(playerSnapshot.key).update({
+                health: player.health
+              });
+            }
+            // Set the collided flag for the bullet to true
+            otherPlayer.bullets[bulletKey].collided = true;
+            // Update the bullet in the database with the new collided flag
+            playersRef.child(otherPlayerSnapshot.key).child("bullets").child(bulletKey).update({
+              collided: true
+            });
+            break;
+          }
+
+          
+        }
+      });
+    });
+  });
+}
+}
+
+// Check for collisions every 1000 milliseconds
+setInterval(checkCollisions, 10);
+
+    function clearPlayer(x, y, key) {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Clear the area where the player was drawn
+  ctx.clearRect(x - 10, y - 10, 20, 20);
+
+  // Get the player's key from the database
+  var playerKey = key;
+
+  // Delete the player from the database
+  playersRef.child(playerKey).remove();
+}
+
+// Set up an object to store the state of the keys
+var keys = {};
+
+// Add event listeners to update the keys object when a key is pressed or released
+document.addEventListener("keydown", function(event) {
+  keys[event.key] = true;
+});
+document.addEventListener("keyup", function(event) {
+  keys[event.key] = false;
+  velX = 0;
+  velY = 0;
+});
+
+// Set up an object to store the state of the keys
+var keys = {};
+
+// Add event listeners to update the keys object when a key is pressed or released
+document.addEventListener("keydown", function(event) {
+  keys[event.key] = true;
+});
+document.addEventListener("keyup", function(event) {
+  keys[event.key] = false;
+});
+
+function updatePlayer() {
+  if(gameStart == true){
+    // Get the width and height of the blocks
+    var rectWidth = 1000;
+    var rectHeight = 50;
+
+    // Calculate the x and y position of the blocks
+    var rectX = canvas.width / 2 - rectWidth / 2;
+    var rectY = canvas.height / 2 - rectHeight / 2;
+
+    // Get the player's current position and velocity
+    var playerRef = playersRef.child(userId);
+    playerRef.once("value", function(snapshot) {
+      var player = snapshot.val();
+      var x = player.x;
+      var y = player.y;
+      var velX = player.velX;
+      var velY = player.velY;
+      var friction = 0.8;
+      var speed = 0.1
+
+      // Update the player's velocity based on the keys that are being pressed
+      if (keys["w"]) {
+        velY--;
+      }
+      if (keys["a"]) {
+        velX--;
+      }
+      if (keys["s"]) {
+        velY++;
+      }
+      if (keys["d"]) {
+        velX++;
+      }
+
+      // If no keys are being pressed, set the velocity to 0
+      if (!keys["w"] && !keys["a"] && !keys["s"] && !keys["d"]) {
+        velX = 0;
+        velY = 0;
+      }
+
+      // Apply friction to the player's position
+      x += velX * friction;
+      y += velY * friction;
+
+      if (Math.abs(velX) > speed) {
+        velX = speed * Math.sign(velX);
+      }
+      if (Math.abs(velY) > speed) {
+        velY = speed * Math.sign(velY);
+      }
+
+      // Calculate the player's intended position
+      var newX = x + velX * friction.toFixed(2);
+      var newY = y + velY * friction.toFixed(2);
+
+      // Check if the player is going off the screen
+      if (newX < 50) {
+        // Set the player's position to the left edge of the screen
+        newX = 50;
+      } else if (newX + 50 > canvas.width) {
+        // Set the player's position to the right edge of the screen
+        newX = canvas.width - 50;
+      }
+      if (newY < 50) {
+        // Set the player's position to the top edge of the screen
+        newY = 50;
+      } else if (newY + 50 > canvas.height) {
+        // Set the player's position to the bottom edge of the screen
+        newY = canvas.height - 50;
+      }
+
+      // Check if the player's position is within the boundaries of the blocks
+      if (newX > rectX && newX < rectX + rectWidth && newY > rectY && newY < rectY + rectHeight) {
+        // If the player is within the boundaries of the blocks, stop them from moving
+        newX = x;
+        newY = y;
+      }
+
+      // Round the player's position to one decimal
+      newX = newX.toFixed(1);
+      newY = newY.toFixed(1);
+      // Check if the player's position is within the boundaries of the blocks
+if (newX > rectX && newX < rectX + rectWidth && newY > rectY && newY < rectY + rectHeight) {
+// If the player is within the boundaries of the blocks, stop them from moving
+newX = x;
+newY = y;
+}
+
+// Round the player's position to one decimal
+newX = Math.round(newX);
+newY = Math.round(newY);
+
+// Update the player's position and velocity in the database
+playerRef.update({
+x: newX,
+y: newY,
+velX: velX,
+velY: velY
+});
+});
+}
+}
+
+
+function updateMouse() {
+
+  if(gameStart == true){
+  // Get the player's reference in the database
+var playerRef = playersRef.child(userId);
+
+// Update the player's mouse position in the database
+playerRef.update({
+  mouseAngleX: mouseX,
+  mouseAngleY: mouseY
+});
+
+}
+}
+
+// Set up a timer to update the player's position and velocity every 50 milliseconds
+setInterval(updatePlayer, 2);
+setInterval(updateMouse, 1);
+
+
+
+
+function drawMap() {
+  
+ // Set the width and height of the rectangle
+var rectWidth = 1000;
+var rectHeight = 50;
+innerRecHeight = 30
+innerRecWidth = 980
+
+// Calculate the x and y position of the rectangle
+var rectX = canvas.width / 2 - rectWidth / 2;
+var rectY = canvas.height / 2 - rectHeight / 2;
+
+var innerRectX = canvas.width / 2 - innerRecWidth / 2;
+var innerRectY = canvas.height / 2 - innerRecHeight / 2;
+
+// Draw the rectangle on the canvas
+ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+ctx.fillStyle = "black"; // Set the fill color to red
+ctx.fillRect(rectX, rectY, rectWidth, rectHeight); // Draw the rectangle
+ctx.fillStyle = "gray"
+ctx.fillRect(innerRectX, innerRectY, innerRecWidth, innerRecHeight);
+
+
+}
+
+
+
+
+
+  </script>
+</body>
+</html>
+
+<style>
+  /* import poppins theme */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  canvas {
+display: none;
+border:1px solid #000;
+width: 100%;
+height: 100%;
+background-image: url("https://i.redd.it/5151vamxcmlx.png");
+cursor: crosshair;
+}
+  body {
+    background-image:  url('https://diep.io/53d1a8f40094fcab8b4c.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+
+  }
+
+  #menu {
+   
+    /* put in the middle */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+#colorWrapper {
+  display: flex;
+  align-items: center;
+}
+
+#colorChange {
+  margin: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+#colorWrapper h1 {
+  display: inline;
+  margin-left: 5px;
+}
+
+
+
+  input {
+    padding: 7px;
+    width: 350px;
+    
+    font-size: 20px;
+    margin-bottom: 10px;
+    border: 15px double #5FD4FA;
+border-radius: 30px;
+
+  }
+
+  
+
+  input:focus{
+    outline: none;
+    border: 15px double orange;
+
+
+
+  }
+  
+
+ 
+
+</style>
