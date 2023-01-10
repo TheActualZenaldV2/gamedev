@@ -44,15 +44,16 @@ function changeColor() {
     let playerColor = "black";
     // Initialize Firebase (replace with your own config)
     const firebaseConfig = {
-  apiKey: "AIzaSyCqcATbqZWCGL2bYsUlcE4AVPDjh0Ihpf8",
-  authDomain: "multiplayerdemo-ee607.firebaseapp.com",
-  databaseURL: "https://multiplayerdemo-ee607-default-rtdb.firebaseio.com",
-  projectId: "multiplayerdemo-ee607",
-  storageBucket: "multiplayerdemo-ee607.appspot.com",
-  messagingSenderId: "568627344570",
-  appId: "1:568627344570:web:0d0bd1ae88cae0d64fbe83",
-  measurementId: "G-0J3QLW800P"
+  apiKey: "AIzaSyBHivxOWVnhRf9wa7twG8s17LmynmABp_o",
+  authDomain: "imagineifthisworkslmao.firebaseapp.com",
+  databaseURL: "https://imagineifthisworkslmao-default-rtdb.firebaseio.com",
+  projectId: "imagineifthisworkslmao",
+  storageBucket: "imagineifthisworkslmao.appspot.com",
+  messagingSenderId: "214964204379",
+  appId: "1:214964204379:web:ba7720fcb900f2dd72e07e",
+  measurementId: "G-HKBJ8Q8HRR"
 };
+
 firebase.initializeApp(firebaseConfig);
 
 
@@ -212,17 +213,27 @@ function addPlayer() {
   
 }
 
-canvas.addEventListener("click", function(event) {
-  var playerRef = playersRef.child(userId);
-  playerRef.once("value", function(snapshot) {
-    var player = snapshot.val();
-    var x = player.x;
-    var y = player.y;
+let lastShot = Date.now();
 
-    // Call the shoot function with the desired x and y values as arguments
-    shoot(x, y);
-  });
+canvas.addEventListener("click", function(event) {
+  var currentTime = Date.now();
+  var timeSinceLastShot = currentTime - lastShot;
+
+  if (timeSinceLastShot > 900) {
+    var playerRef = playersRef.child(userId);
+    playerRef.once("value", function(snapshot) {
+      var player = snapshot.val();
+      var x = player.x;
+      var y = player.y;
+
+      // Call the shoot function with the desired x and y values as arguments
+      shoot(x, y);
+      
+      lastShot = Date.now();
+    });
+  }
 });
+
 
 function shoot(x, y) {
   var playerRef = playersRef.child(userId);
@@ -435,7 +446,7 @@ function checkCollisions() {
           // If the distance is less than 50, a collision has occurred
           if (distance < 50) {
             // Decrement the player's health by 13
-            player.health -= 17;
+            player.health -= 23;
             // If the player's health is 0 or less, remove them from the database
             if (player.health <= 0) {
               location.reload();
