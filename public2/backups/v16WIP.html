@@ -246,8 +246,8 @@ function shoot(x, y) {
   var angle = Math.atan2(mouseY - y, mouseX - x);
   
   // Set the velocity of the bullet in the x and y directions based on the angle
-  var velocityX = 20 * Math.cos(angle).toFixed(4);
-  var velocityY = 20 * Math.sin(angle).toFixed(4);
+  var velocityX = 30 * Math.cos(angle).toFixed(4);
+  var velocityY = 30 * Math.sin(angle).toFixed(4);
   
   // Create a new bullet object with the starting position as its x and y values, and the calculated velocities in the x and y directions
   var bullet = {
@@ -419,7 +419,6 @@ firebase.database().ref("players").on("child_added", function(playerSnapshot) {
 
 function checkCollisions() {
   if(gameStart == true) {
-    var bulletsRef = playerSnapshot.ref.child("bullets");
     
 
   // Get a reference to the current player's node in the database
@@ -450,7 +449,6 @@ function checkCollisions() {
           if (distance < 50) {
             // Decrement the player's health by 13
             player.health -= 25;
-            bulletsRef.child(childSnapshot.key).remove();
 
             // If the player's health is 0 or less, remove them from the database
             if (player.health <= 0) {
@@ -641,7 +639,7 @@ playerRef.update({
 
 // Set up a timer to update the player's position and velocity every 50 milliseconds
 setInterval(updatePlayer, 20);
-setInterval(updateMouse, 100);
+setInterval(updateMouse, 80);
 
 
 
