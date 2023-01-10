@@ -238,13 +238,11 @@ canvas.addEventListener("click", function(event) {
     var player = snapshot.val();
     var x = player.x;
     var y = player.y;
-    
 
     // Call the shoot function with the desired x and y values as arguments
     shoot(x, y);
   });
 });
-
 
 function shoot(x, y) {
   // Get the mouse position at the time of the click
@@ -255,8 +253,8 @@ function shoot(x, y) {
   var angle = Math.atan2(mouseY - y, mouseX - x);
   
   // Set the velocity of the bullet in the x and y directions based on the angle
-  var velocityX = 10 * Math.cos(angle);
-  var velocityY = 10 * Math.sin(angle);
+  var velocityX = 10 * Math.cos(angle).toFixed(4);
+  var velocityY = 10 * Math.sin(angle).toFixed(4);
   
   // Create a new bullet object with the starting position as its x and y values, and the calculated velocities in the x and y directions
   var bullet = {
@@ -270,10 +268,9 @@ function shoot(x, y) {
   firebase.database().ref("bullets").push(bullet);
 }
 
-
 // Set up a timer to update the positions of the bullets at a regular interval
 setInterval(updateBulletPositions, 1000 / 60); // 60 FPS
-
+console.log("canvas width: " + canvas.width + " canvas height: " + canvas.height )
 function updateBulletPositions() {
   // Get a reference to the "bullets" child node in the database
   var bulletsRef = firebase.database().ref("bullets");
@@ -290,7 +287,7 @@ function updateBulletPositions() {
       // Update the bullet in the database with the new position
       bulletsRef.child(childSnapshot.key).update(bullet);
       // Check if the bullet is off the screen, and delete it from the database if it is
-      if (bullet.x > canvas.width || bullet.y > canvas.height) {
+      if (bullet.x > canvas.width || bullet.y > canvas.height || bullet.x < 0 || bullet.y < 0) {
         bulletsRef.child(childSnapshot.key).remove();
       }
     });
@@ -310,7 +307,7 @@ function drawPlayer(x, y, key, angle, name) {
     
 
     // Calculate the angle between the mouse and the player
-    var angle = Math.atan2(mouseY - y, mouseX - x);
+    var angle = Math.atan2(mouseY - y, mouseX - x).toFixed(4);
     //send the angle to the database
     playersRef.child(userId).update({
       angle: angle,
@@ -396,6 +393,8 @@ function drawPlayer(x, y, key, angle, name) {
   var canvasElement = document.getElementById("myCanvas");
   canvasElement.setAttribute("data-player-key", key);
 }
+
+
 
 }
 
@@ -487,6 +486,15 @@ function updatePlayer() {
       velY = speed * Math.sign(velY);
     }
 
+      //stop the player from going off screen using canvas height and width. stop the player 50px from the edge 
+
+    
+      
+
+      
+
+
+
     // Round the player's position to one decimal
 x = Math.round(x)
 y = Math.round(y)
@@ -546,6 +554,7 @@ setInterval(updateMouse, 1);
 
 
 
+
   </script>
 </body>
 </html>
@@ -559,6 +568,7 @@ border:1px solid #000;
 width: 100%;
 height: 100%;
 background-image: url("https://i.redd.it/5151vamxcmlx.png");
+cursor: crosshair;
 }
   body {
     background-image:  url('https://diep.io/53d1a8f40094fcab8b4c.png');
