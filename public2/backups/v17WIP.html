@@ -168,7 +168,13 @@ function spectate() {
 function addPlayer() {
   drawMap();
   var name = document.getElementById("name").value;
-  if(name == ""){
+ 
+
+  if(name.length > 15){
+    name = "I am dumb";
+}
+
+if(name == ""){
     
     name = "I'm too dumb to give myself a name"
   }
@@ -177,29 +183,25 @@ function addPlayer() {
     //disable body overflow
     document.body.style.overflow = "hidden";
     var spawn = Math.floor(Math.random() * 4);
-  if (spawn == 1){
-   var spawnX = 550
-    var spawnY = 600
-    console.log("spawned at 1")
-  }
-  if (spawn == 2){
-   var spawnX = 550
-    var spawnY = 370
-    console.log("spawned at 2")
+var spawnX, spawnY;
+if (spawn == 0) {
+  spawnX = window.innerWidth / 2.5;
+  spawnY = window.innerHeight / 3;
+  console.log("spawned at 0");
+} else if (spawn == 1) {
+  spawnX = (window.innerWidth / 5) * 3;
+  spawnY = window.innerHeight / 3;
+  console.log("spawned at 1");
+} else if (spawn == 2) {
+  spawnX = window.innerWidth / 2.5;
+  spawnY = (window.innerHeight / 4.5) * 3;
+  console.log("spawned at 2");
+} else if (spawn == 3) {
+  spawnX = (window.innerWidth / 5) * 3;
+  spawnY = (window.innerHeight / 4.5) * 3;
+  console.log("spawned at 3 ");
+}
 
-  }
-  if (spawn == 3){
-   var spawnX = 800
-    var spawnY = 370
-    console.log("spawned at 3")
-
-  }
-  if (spawn == 0){
-    var spawnX = 800
-    var spawnY = 600
-    console.log("spawned at 0")
-
-  }
 
   gameStart = true;
   
@@ -336,7 +338,6 @@ function updateBulletPositions() {
 function drawPlayer(x, y, key, angle, name, health) {
 
   if(gameStart == true) {
-    drawMap();
   // Only allow the user to move their own player
   if (key === userId) {
     // Update the canvas at 60fps
@@ -407,6 +408,7 @@ function drawPlayer(x, y, key, angle, name, health) {
   ctx.fill();
   // Get the name of the player and display it above
   ctx.font = "20px Arial";
+  ctx.zIndex = 1;
   ctx.textAlign = "center";  // center the text
   ctx.fillStyle = "white";
   ctx.fillText(name, x, y - 30);  // update the x position to be the center of the player
@@ -444,6 +446,7 @@ firebase.database().ref("players").on("child_added", function(playerSnapshot) {
     ctx.fill();
   });
 });
+drawMap();
 
 //var spawnX = 550;
 //var spawnY = 600;
@@ -526,7 +529,7 @@ function checkCollisions() {
 }
 
 // Check for collisions every 1000 milliseconds
-setInterval(checkCollisions, 20);
+setInterval(checkCollisions, 10);
 
     function clearPlayer(x, y, key) {
       // Clear the canvas
