@@ -228,13 +228,13 @@ if (spawn == 0) {
       mouseAngleY: mouseY,
     });
 
+    
 
   //clear console
-  //console.clear();
+  console.clear();
   
   
   console.log("Welcome to the game! Your player ID is: " + userId + " Your UserName Is: " + name);
-  console.log(" x: " + x, "y: " + y)
 
   
 }
@@ -272,7 +272,6 @@ function shoot(x, y) {
   var mouseX = event.clientX;
   var mouseY = event.clientY;
   
-  console.log("mouseX: " + mouseX + " mouseY: " + mouseY)
   // Calculate the angle between the bullet's starting position and the mouse position
   var angle = Math.atan2(mouseY - y, mouseX - x).toFixed(3);
   
@@ -292,7 +291,6 @@ function shoot(x, y) {
 
 // Set up a timer to update the positions of the bullets at a regular interval
 setInterval(updateBulletPositions, 20); // 60 FPS
-console.log("canvas width: " + canvas.width + " canvas height: " + canvas.height )
 
 function updateBulletPositions() {
   // Get a reference to the players child node in the database
@@ -336,13 +334,13 @@ function updateBulletPositions() {
 
 
 function drawPlayer(x, y, key, angle, name, health) {
-
+  
   if(gameStart == true) {
   // Only allow the user to move their own player
   if (key === userId) {
     // Update the canvas at 60fps
     
-
+    
     // Calculate the angle between the mouse and the player
     var angle = Math.atan2(mouseY - y, mouseX - x).toFixed(4);
     //send the angle to the database
@@ -499,7 +497,7 @@ function checkCollisions() {
           // If the distance is less than 50, a collision has occurred
           if (distance < 50) {
             // Decrement the player's health by 13
-            player.health -= 25;
+            player.health -= 27;
 
             // If the player's health is 0 or less, remove them from the database
             if (player.health <= 0) {
