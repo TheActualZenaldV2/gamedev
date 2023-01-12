@@ -264,7 +264,6 @@ var y = player.y;
     });
   }
 });
-setInterval(drawPlayer, 1)
 function shoot(x, y) {
   var playerRef = playersRef.child(userId);
   
@@ -424,6 +423,15 @@ if(name == ""){
   // Calculate the width of the health bar based on the player's remaining health
 var healthBarWidth = (health / 100) * 50;
 
+let prevX = x;
+let prevY = y;
+
+if (x === undefined || isNaN(x)) {
+    x = prevX;
+}
+if (y === undefined || isNaN(y)) {
+    y = prevY;
+}
 
 // Draw a gray background for the health bar
 ctx.fillStyle = "gray";
@@ -457,6 +465,47 @@ firebase.database().ref("players").on("child_added", function(playerSnapshot) {
 });
 drawMap();
 
+// Draw the gray background
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, canvas.width / 10, 50);
+
+// Draw the X and Y positions of the bullet
+ctx.fillStyle = "white";
+ctx.font = "20px Arial";
+if (x === undefined) {
+ctx.fillText("X: " + prevX + " Y: " + y, canvas.width - canvas.width / 10, 30);
+}  else {
+ctx.fillText("X: " + x + " Y: " + y, canvas.width/25, 30);
+}
+
+
+// Draw the gray background
+ctx.fillStyle = "black";
+ctx.fillRect(canvas.width - canvas.width / 10, canvas.height - 50, canvas.width / 4, 50);
+
+// Draw the text for the server information
+ctx.fillStyle = "white";
+ctx.font = "20px Arial";
+ctx.fillText("Server:", canvas.width - canvas.width / 21, canvas.height - 30);
+ctx.fillText("US-WEST FFA", canvas.width - canvas.width / 21 , canvas.height - 10);
+
+var ping1 = Math.random() * (100)
+var ping = Math.round(ping1)
+
+
+
+// Draw the gray background
+ctx.fillStyle = "black";
+ctx.fillRect(canvas.width*0.9, canvas.height*0.005, canvas.height*0.97, canvas.width*0.025);
+// Draw the ping
+
+
+ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+
+        
+        ctx.fillText("Ping: " + ping + "ms", canvas.width*0.956, canvas.height*0.03);
+
 //var spawnX = 550;
 //var spawnY = 600;
 //draw black rectagle around spawnX
@@ -473,8 +522,19 @@ drawMap();
 }
 
 
-
 }
+
+
+
+
+
+function drawPing() {
+
+
+        
+    
+}
+
 
 
 function checkCollisions() {
@@ -703,10 +763,10 @@ let wallsAdded = false;
 
 function drawMap() {
     // Set the width and height of the rectangle
-    var rectWidth = canvas.width * 0.52;
-    var rectHeight = canvas.height * 0.05;
-    var innerRecHeight = canvas.height * 0.03;
-    var innerRecWidth = canvas.width * 0.51;
+    var rectWidth = canvas.width * 0.4
+    var rectHeight = canvas.height * 0.06
+    var innerRecHeight = canvas.height * 0.035
+    var innerRecWidth = canvas.width * 0.39;
 
     // Calculate the x and y position of the rectangle
     var rectX = canvas.width / 2 - rectWidth / 2;
@@ -729,10 +789,10 @@ function drawMap() {
     var innerRectY2 = canvas.height/2 - innerRecHeight2/2;
 
 
-    var rectWidth3 = canvas.width * 0.15;
-    var rectHeight3 = canvas.height * 0.05;
-    var innerRecHeight3 = canvas.height * 0.03;
-    var innerRecWidth3 = canvas.width * 0.145;
+    var rectWidth3 = canvas.width * 0.1;
+    var rectHeight3 = canvas.height
+    var innerRecHeight3 = canvas.height * 0.97
+    var innerRecWidth3 = canvas.width * 0.094
 
     //put it horizontally to the side 
     var rectX3 = canvas.width/10000 + canvas.width * 0.00009;
@@ -742,17 +802,17 @@ function drawMap() {
     var innerRectY3 = canvas.height/2 - innerRecHeight3/2;
 
 
-    var rectWidth4 = canvas.width * 0.15;
-    var rectHeight4 = canvas.height * 0.05;
-    var innerRecHeight4 = canvas.height * 0.03;
-    var innerRecWidth4 = canvas.width * 0.145;
+    var rectWidth4 = canvas.width * 0.1;
+    var rectHeight4 = canvas.height
+    var innerRecHeight4 = canvas.height * 0.97
+    var innerRecWidth4 = canvas.width * 0.094
 
     //put it horizontally to the side
-    var rectX4 = canvas.width - canvas.width * 0.15;
+    var rectX4 = canvas.width - canvas.width * 0.10;
     var rectY4 = canvas.height/2 - rectHeight4/2;
 
-    var innerRectX4 = canvas.width - canvas.width * 0.144;
-    var innerRectY4 = canvas.height/2 - innerRecHeight4/2;
+    var innerRectX4 = canvas.width - canvas.width * 0.094
+    var innerRectY4 = canvas.height/2.025- innerRecHeight4/2;
 
     if(!wallsAdded) {
         console.log("adding walls");
@@ -811,6 +871,8 @@ width: 100%;
 height: 100%;
 background-image: url("https://i.redd.it/5151vamxcmlx.png");
 cursor: crosshair;
+font-family: 'Poppins', sans-serif;
+ 
 }
   body {
     background-image:  url('https://i.imgur.com/Vmo8KD8.png');
