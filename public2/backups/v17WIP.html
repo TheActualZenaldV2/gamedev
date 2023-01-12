@@ -35,6 +35,8 @@
 
 
   <script>
+    let walls = [];
+
     gameStart = false;
 function changeColor() {
   console.log("wiggles doesnt feel like making this work rn")
@@ -171,7 +173,7 @@ function addPlayer() {
  
 
   if(name.length > 15){
-    name = "I am dumb";
+    name = "🤡🤡🤡🤡🤡";
 }
 
 if(name == ""){
@@ -293,49 +295,49 @@ function shoot(x, y) {
 setInterval(updateBulletPositions, 20); // 60 FPS
 
 function updateBulletPositions() {
-  // Get a reference to the players child node in the database
-  var playersRef = firebase.database().ref("players");
-  // Get the current list of players
-  playersRef.once("value", function(snapshot) {
-    snapshot.forEach(function(playerSnapshot) {
-      // Get a reference to the "bullets" child node in the current player's node
-      var bulletsRef = playerSnapshot.ref.child("bullets");
-      // Get the current list of bullets
-      bulletsRef.once("value", function(bulletSnapshot) {
-        bulletSnapshot.forEach(function(childSnapshot) {
-          var bullet = childSnapshot.val();
-          var timestamp = new Date().getTime();
-          var bulletAge = timestamp - bullet.timestamp;
-          // Calculate the velocity of the bullet based on the angle and the fixed speed
-          var velocity = 0.5; 
-          var velocityX = velocity * Math.cos(bullet.angle);
-          var velocityY = velocity * Math.sin(bullet.angle);
-
-          // Update the position of the bullet using the velocity, angle, and the current timestamp
-          bullet.x = bullet.x + velocityX * bulletAge.toFixed(3);
-          bullet.y = bullet.y + velocityY * bulletAge.toFixed(3);
-          bullet.timestamp = timestamp;
-          
-          // Update the bullet in the database with the new position
-          bulletsRef.child(childSnapshot.key).update(bullet);
-          //Check if the bullet is older than 3 seconds, if yes delete it from the database
-          if(bulletAge > 3000) {
-            bulletsRef.child(childSnapshot.key).remove();
-          }
-          // Check if the bullet is off the screen, and delete it from the database if it is
-          else if(bullet.x > canvas.width || bullet.y > canvas.height || bullet.x < 0 || bullet.y < 0) {
-            bulletsRef.child(childSnapshot.key).remove();
-          }
-        });
-      });
-    });
-  });
+    var playersRef = firebase.database().ref("players");
+    playersRef.once("value", function(snapshot) {
+        snapshot.forEach(function(playerSnapshot) {
+            var bulletsRef = playerSnapshot.ref.child("bullets");
+            bulletsRef.once("value", function(bulletSnapshot) {
+                bulletSnapshot.forEach(function(childSnapshot) {
+                    var bullet = childSnapshot.val();
+                    var timestamp = new Date().getTime();
+                    var bulletAge = timestamp - bullet.timestamp;
+                    var velocity = 0.5; 
+                    var velocityX = velocity * Math.cos(bullet.angle);
+                    var velocityY = velocity * Math.sin(bullet.angle);
+                    bullet.x = bullet.x + velocityX * bulletAge.toFixed(3);
+                    bullet.y = bullet.y + velocityY * bulletAge.toFixed(3);
+                    bullet.timestamp = timestamp;
+                    bulletsRef.child(childSnapshot.key).update(bullet);
+                    if(bulletAge > 3000) {
+                        bulletsRef.child(childSnapshot.key).remove();
+                    } else if(bullet.x > canvas.width || bullet.y > canvas.height || bullet.x < 0 || bullet.y < 0) {
+                        bulletsRef.child(childSnapshot.key).remove();
+                    } else {
+                        for (let i = 0; i < walls.length; i++) {
+  const wall = walls[i];
+  if (bullet.x > wall.x && bullet.x < wall.x + wall.width && bullet.y > wall.y && bullet.y < wall.y + wall.height) {
+    
+    bulletsRef.child(childSnapshot.key).remove();
+    
+    break;
+  }
 }
+                    }
 
+  });
+            });
+        });
+    });
+}
 
 function drawPlayer(x, y, key, angle, name, health) {
   
   if(gameStart == true) {
+    var name = document.getElementById("name").value;
+
   // Only allow the user to move their own player
   if (key === userId) {
     // Update the canvas at 60fps
@@ -404,6 +406,15 @@ function drawPlayer(x, y, key, angle, name, health) {
   ctx.rotate(-angle);
   ctx.translate(-x, -y);
   ctx.fill();
+
+  if(name.length > 15){
+    name = "🤡🤡🤡🤡🤡";
+}
+
+if(name == ""){
+    
+    name = "I'm too dumb to give myself a name"
+  }
   // Get the name of the player and display it above
   ctx.font = "20px Arial";
   ctx.zIndex = 1;
@@ -497,7 +508,7 @@ function checkCollisions() {
           // If the distance is less than 50, a collision has occurred
           if (distance < 50) {
             // Decrement the player's health by 13
-            player.health -= 27;
+            player.health -= 25;
 
             // If the player's health is 0 or less, remove them from the database
             if (player.health <= 0) {
@@ -527,7 +538,7 @@ function checkCollisions() {
 }
 
 // Check for collisions every 1000 milliseconds
-setInterval(checkCollisions, 10);
+setInterval(checkCollisions, 20);
 
     function clearPlayer(x, y, key) {
       // Clear the canvas
@@ -688,8 +699,7 @@ playerRef.update({
 // Set up a timer to update the player's position and velocity every 50 milliseconds
 setInterval(updatePlayer, 5);
 setInterval(updateMouse, 40);
-
-var walls = [];
+let wallsAdded = false;
 
 function drawMap() {
     // Set the width and height of the rectangle
@@ -705,7 +715,7 @@ function drawMap() {
     var innerRectX = canvas.width / 2 - innerRecWidth / 2;
     var innerRectY = canvas.height / 2 - innerRecHeight / 2;
 
-    walls.push({x: rectX, y: rectY, width: rectWidth, height: rectHeight});
+    
     var rectWidth2 = canvas.width * 0.03;
     var rectHeight2 = canvas.height * 0.52;
     var innerRecHeight2 = canvas.height * 0.5;
@@ -718,7 +728,6 @@ function drawMap() {
     var innerRectX2 = canvas.width/2 - innerRecWidth2/2;
     var innerRectY2 = canvas.height/2 - innerRecHeight2/2;
 
-    walls.push({x: rectX2, y: rectY2, width: rectWidth2, height: rectHeight2});
 
     var rectWidth3 = canvas.width * 0.15;
     var rectHeight3 = canvas.height * 0.05;
@@ -732,7 +741,6 @@ function drawMap() {
     var innerRectX3 = canvas.width/10000 + canvas.width * 0.0001;
     var innerRectY3 = canvas.height/2 - innerRecHeight3/2;
 
-    walls.push({x: rectX3, y: rectY3, width: rectWidth3, height: rectHeight3});
 
     var rectWidth4 = canvas.width * 0.15;
     var rectHeight4 = canvas.height * 0.05;
@@ -746,8 +754,15 @@ function drawMap() {
     var innerRectX4 = canvas.width - canvas.width * 0.144;
     var innerRectY4 = canvas.height/2 - innerRecHeight4/2;
 
+    if(!wallsAdded) {
+        console.log("adding walls");
+    walls.push({x: rectX, y: rectY, width: rectWidth, height: rectHeight});
+    walls.push({x: rectX2, y: rectY2, width: rectWidth2, height: rectHeight2});
+    walls.push({x: rectX3, y: rectY3, width: rectWidth3, height: rectHeight3});
     walls.push({x: rectX4, y: rectY4, width: rectWidth4, height: rectHeight4});
 
+    wallsAdded = true;
+  }  
     // Draw the rectangle on the canvas
     ctx.fillRect(rectX2, rectY2, rectWidth2, rectHeight2);
     ctx.fillStyle = "black"; 
