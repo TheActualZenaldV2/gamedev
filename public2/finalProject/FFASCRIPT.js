@@ -379,14 +379,7 @@ function drawPlayer(x, y, key, angle, name, health) {
   ctx.translate(-x, -y);
   ctx.fill();
 
-  if(name.length > 15){
-    name = "🤡🤡🤡🤡🤡";
-}
 
-if(name == ""){
-    
-    name = "I'm too dumb to give myself a name"
-  }
   // Get the name of the player and display it above
   ctx.font = "20px Arial";
   ctx.zIndex = 1;
