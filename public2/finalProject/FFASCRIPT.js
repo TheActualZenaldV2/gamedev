@@ -309,7 +309,6 @@ function updateBulletPositions() {
 function drawPlayer(x, y, key, angle, name, health) {
   
   if(gameStart == true) {
-    var name = document.getElementById("name").value;
 
   // Only allow the user to move their own player
   if (key === userId) {
