@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Page</title>
+
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+  apiKey: "AIzaSyDTNyohMU-6CKUe-ik65DnSCsOnC-6KzoQ",
+  authDomain: "diepclone-db438.firebaseapp.com",
+  databaseURL: "https://diepclone-db438-default-rtdb.firebaseio.com",
+  projectId: "diepclone-db438",
+  storageBucket: "diepclone-db438.appspot.com",
+  messagingSenderId: "224705209534",
+  appId: "1:224705209534:web:c2be8a4ff68f6b1570eaef",
+  measurementId: "G-6SG5T85ZX2"
+};
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Get a reference to the Firebase Realtime Database service
+      const database = firebase.database();
+
+      // Get a reference to the counter node in the database
+      const counterRef = database.ref("counter");
+
+      // Increment the counter every time the page is loaded
+      counterRef.transaction(function(currentValue) {
+        return (currentValue || 0) + 1;
+      });
+    </script>
+  </head>
+  <body>
+
+
+    <!-- Add CSS styles for the loading screen -->
+    <style>
+      /* Center the loading spinner vertically and horizontally */
+      .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      /* Add a spinning animation to the loading spinner */
+      .loader span {
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Hide the welcome message and counter by default */
+      #welcome, #counter {
+        display: none;
+      }
+    </style>
+  
+  <body>
+    <!-- Add a loading screen with a spinning animation -->
+    <div class="loader">
+      <span>Loading...</span>
+    </div>
+
+    <!-- Add a welcome message and counter -->
+    <div id="welcome">
+      <h1>Welcome to My Page</h1>
+      <p>This page has been loaded <span id="counter"></span> times.</p>
+    </div>
+   
+
+    <script>
+      // Display the current value of the counter in the web page
+        
+      counterRef.on("value", function(snapshot) {
+        document.getElementById("counter").innerHTML = snapshot.val();
+
+      });
+
+      //hide the loading screen and show the welcome message and counter after 2 seconds
+        setTimeout(function() {
+            document.querySelector(".loader").style.display = "none";
+            document.getElementById("welcome").style.display = "block";
+        }, 2000);
+    </script>
+  </body>
+</html>
