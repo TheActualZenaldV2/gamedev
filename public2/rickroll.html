@@ -19,6 +19,7 @@ body {
     font-family: 'Poppins', sans-serif;
     text-align: center;
     color: #333;
+
 }
 
       /* Hide the page content by default */
@@ -47,7 +48,26 @@ body {
         font-size: 20px;
 
       }
-  
+
+      button {
+        background: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+
+      }
+      
+        button:hover {
+            background: #555;
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+        button:active {
+            transform: scale(0.95);
+            transition: 0.3s ease-in-out;
+        }
 
 
       /* Animation for the loading spinner */
@@ -78,30 +98,52 @@ body {
       // Get a reference to the counter node in the database
       const counterRef = database.ref("counter");
 
-      // Increment the counter every time the page is loaded
-      counterRef.transaction(function(currentValue) {
-        return (currentValue || 0) + 1;
-      });
+     // Increment the counter every time the page is loaded
+counterRef.transaction(function(currentValue) {
+  if (localStorage.getItem("visited") === "true") {
+    // User has visited before, don't increase counter
+    return currentValue;
+  } else {
+    // User is visiting for the first time, increase counter and set local storage
+    localStorage.setItem("visited", "true");
+    return (currentValue || 0) + 1;
+  }
+});
 
-      // Wait for the page to fully load
+
       window.onload = function() {
-        // Get a reference to the loading spinner and the page content
-        const loading = document.getElementById("loading");
-        const pageContent = document.getElementById("page-content");
+  // Get a reference to the loading spinner and the page content
+  const loading = document.getElementById("loading");
+  const pageContent = document.getElementById("page-content");
 
-        // Hide the page content and show the loading spinner
-        pageContent.style.display = "none";
-        loading.style.display = "block";
-        number = Math.random() * 3500 + 500;
-        // Wait for 2 seconds before showing the page content
-        setTimeout(function() {
-             
-          // Hide the loading spinner and show the page content
-          loading.style.display = "none";
-          pageContent.style.display = "block";
-          document.getElementById("loading-text").style.display = "none";
-        }, number);
-      };
+  // Check if the user has visited the page before
+  const hasVisited = localStorage.getItem("hasVisited");
+
+  if (!hasVisited) {
+    // Increment the counter if the user is visiting for the first time
+    counterRef.transaction(function(currentValue) {
+      return (currentValue || 0) + 1;
+    });
+
+    // Set the "hasVisited" flag in local storage to true
+    localStorage.setItem("hasVisited", true);
+  }
+
+  // Hide the page content and show the loading spinner
+  pageContent.style.display = "none";
+  loading.style.display = "block";
+  number = Math.random() * 3500 + 500;
+  // Wait for 2 seconds before showing the page content
+  setTimeout(function() {
+       
+    // Hide the loading spinner and show the page content
+    loading.style.display = "none";
+    pageContent.style.display = "block";
+    document.getElementById("loading-text").style.display = "none";
+  }, number);
+};
+
+    
     </script>
   </head>
   <body>
@@ -112,7 +154,15 @@ body {
     <div id="page-content">
       <h1>All is not what it seems...</h1>
       <p>People Rickrolled So Far:  <span id="counter"></span> </p>
-      <img src=" https://media.tenor.com/_4YgA77ExHEAAAAd/rick-roll.gif"> 
+      <img src=" https://media.tenor.com/_4YgA77ExHEAAAAd/rick-roll.gif"> <br> 
+      <button onclick="reset()">Reset Local Storage</button> 
+        <script>
+            function reset() {
+                localStorage.clear();
+                //reload page
+                location.reload();
+            }
+        </script>
 
       <script>
         // Display the current value of the counter in the web page
