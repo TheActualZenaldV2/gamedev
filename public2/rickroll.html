@@ -1,7 +1,35 @@
 <!DOCTYPE html>
 <html>
+  <body onload="hide()">
   <head>
     <title>My Page</title>
+
+    <div id="loading"></div>
+    <div id="loading-text">Please Wait....</div>
+
+
+    <div id="container-holder">
+    <div class="container">
+      <h1>Login</h1>
+      <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username">
+  <br> 
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+  
+        <input type="button" onclick="showPage()" value="Login">
+      </form>
+    </div>
+    </div>
+
+
+
+    <div id="page-content">
+      <h1>All is not what it seems...</h1>
+      <p>People Rickrolled So Far:  <span id="counter"></span> </p>
+      <img src=" https://media.tenor.com/_4YgA77ExHEAAAAd/rick-roll.gif"> <br> 
+      <button onclick="reset()">Reset Local Storage</button> 
 
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
@@ -20,6 +48,9 @@ body {
     text-align: center;
     color: #333;
 
+}
+#container-holder {
+  display: none;
 }
 
       /* Hide the page content by default */
@@ -69,6 +100,43 @@ body {
             transition: 0.3s ease-in-out;
         }
 
+        .container {
+			margin: 150px auto;
+			max-width: 400px;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      
+		}
+		h1 {
+			text-align: center;
+			margin-top: 0;
+		}
+		input[type="text"],
+		input[type="password"] {
+			display: block;
+			margin-bottom: 20px;
+			width: 100%;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			font-size: 16px;
+			box-sizing: border-box;
+		}
+		button[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			font-size: 16px;
+			cursor: pointer;
+			width: 100%;
+		}
+		button[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
 
       /* Animation for the loading spinner */
       @keyframes spin {
@@ -132,30 +200,29 @@ counterRef.transaction(function(currentValue) {
   // Hide the page content and show the loading spinner
   pageContent.style.display = "none";
   loading.style.display = "block";
+  document.getElementById("container-holder").style.display = "none"
   number = Math.random() * 3500 + 500;
   // Wait for 2 seconds before showing the page content
   setTimeout(function() {
        
     // Hide the loading spinner and show the page content
     loading.style.display = "none";
-    pageContent.style.display = "block";
+    document.getElementById("container-holder").style.display = "block"
+    
     document.getElementById("loading-text").style.display = "none";
   }, number);
 };
 
+function showPage() {
+  document.getElementById("container-holder").style.display = "none";
+  document.getElementById("page-content").style.display = "block";
+}
     
     </script>
   </head>
-  <body>
+ 
     
-    <div id="loading"></div>
-    <div id="loading-text">Please Wait....</div>
-
-    <div id="page-content">
-      <h1>All is not what it seems...</h1>
-      <p>People Rickrolled So Far:  <span id="counter"></span> </p>
-      <img src=" https://media.tenor.com/_4YgA77ExHEAAAAd/rick-roll.gif"> <br> 
-      <button onclick="reset()">Reset Local Storage</button> 
+    
         <script>
             function reset() {
                 localStorage.clear();
@@ -169,6 +236,10 @@ counterRef.transaction(function(currentValue) {
         counterRef.on("value", function(snapshot) {
           document.getElementById("counter").innerText = snapshot.val();
         });
+
+        function hide(){
+          document.getElementById("container-holder").style.display = "none"
+        }
       </script>
     </div>
   </body>
