@@ -10,15 +10,15 @@
 
     <div id="container-holder">
     <div class="container">
-      <h1>Login</h1>
+      <h1>Login</h1> <br> 
       <form>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Enter your username">
+        <input type="text" id="username" name="username" placeholder="Enter your username"> 
   <br> 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" placeholder="Enter your password">
   
-        <input type="button" onclick="showPage()" value="Login">
+        <input type="button" id="login" onclick="showPage()" value="Login">
       </form>
     </div>
     </div>
@@ -26,10 +26,23 @@
 
 
     <div id="page-content">
-      <h1>All is not what it seems...</h1>
-      <p>People Rickrolled So Far:  <span id="counter"></span> </p>
+      <h1>Dear <span id="name"> </span> All is not what it seems...</h1>
+      <p>Unique People Rickrolled So Far:  <span id="counter"></span> <br> Note: Your Page Visit Will Only Be Recorded Once.</p>
       <img src=" https://media.tenor.com/_4YgA77ExHEAAAAd/rick-roll.gif"> <br> 
       <button onclick="reset()">Reset Local Storage</button> 
+      <input type="button" id="logout" onclick="hidePage()" value="Logout">
+      <input type="button" id="logout" onclick="mad()" value="I'm Mad">
+
+      
+    </div>
+
+    <div id="im-mad">
+      <h1> You have a skill issue. </h1>
+      <p> None of your personal information is stored or sent anywhere. <br> I'm too lazy to make that work. Please stop being mad. </p>
+      <button onclick="notMad()">I'm not mad anymore</button>
+    </div>
+
+    
 
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
@@ -80,7 +93,7 @@ body {
 
       }
 
-      button {
+      button, #logout {
         background: #333;
         color: #fff;
         border: none;
@@ -90,12 +103,12 @@ body {
 
       }
       
-        button:hover {
+        button:hover, #logout:hover {
             background: #555;
             transform: scale(1.05);
             transition: 0.3s;
         }
-        button:active {
+        button:active, #logout:active {
             transform: scale(0.95);
             transition: 0.3s ease-in-out;
         }
@@ -124,7 +137,7 @@ body {
 			font-size: 16px;
 			box-sizing: border-box;
 		}
-		button[type="submit"] {
+		#login {
 			background-color: #4CAF50;
 			color: #fff;
 			padding: 10px;
@@ -134,9 +147,12 @@ body {
 			cursor: pointer;
 			width: 100%;
 		}
-		button[type="submit"]:hover {
+		#login:hover {
 			background-color: #3e8e41;
 		}
+    #im-mad {
+      display: none;
+    }
 
       /* Animation for the loading spinner */
       @keyframes spin {
@@ -203,43 +219,83 @@ counterRef.transaction(function(currentValue) {
   document.getElementById("container-holder").style.display = "none"
   number = Math.random() * 3500 + 500;
   // Wait for 2 seconds before showing the page content
-  setTimeout(function() {
-       
-    // Hide the loading spinner and show the page content
-    loading.style.display = "none";
-    document.getElementById("container-holder").style.display = "block"
-    
-    document.getElementById("loading-text").style.display = "none";
-  }, number);
+  
 };
 
 function showPage() {
   document.getElementById("container-holder").style.display = "none";
   document.getElementById("page-content").style.display = "block";
+  document.getElementById("im-mad").style.display = "none";
+  //display name from login on page
+
+   name = document.getElementById("username").value.toUpperCase();
+
+  if(name == ""){
+     name = "BILLY"
+  }
+  document.getElementById("name").innerHTML = name + ","+ "<br>" ;
+
+  
 }
-    
+
+
+ // Display the current value of the counter in the web page
+ counterRef.on("value", function(snapshot) {
+          document.getElementById("counter").innerText = snapshot.val();
+        });
+
+        //if the counter is more than 0, show the login page
+        counterRef.on("value", function(snapshot) {
+          if (snapshot.val() > 0) {
+            document.getElementById("container-holder").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+            console.log("Number of visits: " + snapshot.val());
+
+            setTimeout(() => {
+console.clear();
+            }, 500);
+          }
+        });
+        //
+        function hide(){
+          document.getElementById("container-holder").style.display = "none";
+          document.getElementById("im-mad").style.display = "none";
+        }
+        //reset local storage 
+        function reset() {
+                localStorage.clear();
+                //reload page
+                location.reload();
+            }
+            //logout 
+        function hidePage() {
+          document.getElementById("container-holder").style.display = "none";
+          document.getElementById("page-content").style.display = "none";
+          document.getElementById("container-holder").style.display = "block"
+        }
+        
+        //im mad 
+        function mad(){
+          document.getElementById("container-holder").style.display = "none";
+          document.getElementById("page-content").style.display = "none";
+          document.getElementById("im-mad").style.display = "block"
+        }
+        //im not mad
+        function notMad(){
+          document.getElementById("container-holder").style.display = "none";
+          document.getElementById("page-content").style.display = "block";
+          document.getElementById("im-mad").style.display = "none"
+        }
     </script>
   </head>
  
     
     
-        <script>
-            function reset() {
-                localStorage.clear();
-                //reload page
-                location.reload();
-            }
-        </script>
+        
 
       <script>
-        // Display the current value of the counter in the web page
-        counterRef.on("value", function(snapshot) {
-          document.getElementById("counter").innerText = snapshot.val();
-        });
-
-        function hide(){
-          document.getElementById("container-holder").style.display = "none"
-        }
+       
       </script>
     </div>
   </body>
