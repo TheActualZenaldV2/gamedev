@@ -39,6 +39,7 @@
   
     <label for="password-input-login">Password:</label>
     <input type="password" id="password-input-login" minlength="6" required>
+    <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
     <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p>
     <button type="submit">Log In</button>
 </form>
@@ -50,7 +51,22 @@
     <p style="text-decoration: bold;"> You will be redirected shortly.</p>
 </form>
 
+<form id="reset-password"> 
+    <p style="text-align: center;"> Enter your email to reset your password. </p>
+    
+    <label for="reset-email">Email:</label>
+    <input type="email" id="reset-email" required>
+    <p> Click <a href="#" onclick="showLoginForm()"> here</a> To go back</p>
+    <button type="submit" onclick="resetPass()"> Reset Password</button>
+</form>
 
+<form id="passwordResetConfirmation"> 
+<p style="text-align: center;"> An email has been sent to <span id="user-email"> </span> <br> <br> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i>
+    <br> Please check your email to reset your password. </p>
+    <button type="submit" onclick="showLoginForm()"> Continue</button>
+
+
+</form>
 
 <button class="devTools" id="devTools1" onclick="reset()"> Reset local storage /dev testing/ </button>
 
@@ -82,6 +98,38 @@
         showLoginForm();
     }
 
+    function resetPass(){
+    var auth = firebase.auth();
+        var emailAddress = document.getElementById("reset-email").value;
+        //show loading spinner
+        showSpinner();
+        //hide reset password form
+        document.getElementById("reset-password").style.display = "none";
+
+        auth.sendPasswordResetEmail(emailAddress).then(function() {
+            // Email sent.
+            document.getElementById("passwordResetConfirmation").style.display = "block";
+            document.getElementById("user-email").innerHTML = emailAddress;
+            hideSpinner();
+        }).catch(function(error) {
+            // An error happened.
+            alert("Error: " + error.message);
+            hideSpinner();
+            //show reset password form
+            document.getElementById("reset-password").style.display = "block";
+        });
+    }
+    function hideSpinner() {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+    }
+    function showResetPassword() {
+        //hide login page
+        document.getElementById("login-form").style.display = "none";
+        //show reset password page
+        document.getElementById("reset-password").style.display = "block";
+        
+    }
     function reset() {
         localStorage.clear();
         //reload the page
@@ -102,6 +150,8 @@
         document.getElementById("login-form").style.display = "block";
         document.getElementById("account-confirmation").style.display = "none";
         document.getElementById("login-success").style.display = "none";
+        document.getElementById("passwordResetConfirmation").style.display = "none";
+        document.getElementById("reset-password").style.display = "none";
     }
 
     function showSpinner() {
@@ -237,6 +287,10 @@ loginForm.addEventListener('submit', (event) => {
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
+
+    #reset-password {
+        display: none;
+    }
     .devtools {
         display: none;
     }
