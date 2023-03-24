@@ -1,0 +1,696 @@
+<body>
+    <head>
+        <title> Demo Login by wiggles</title>
+<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    </head>
+
+
+
+    
+<div id="loading"></div>
+<span id="loading-text">Please Wait....</span>
+ 
+<form id="registration-form">
+    <p style="text-align: center;"> Welcome! Create an account to get started. </p>
+    <label for="email-input">Email:</label> 
+    <input type="email" id="email-input" required> 
+  
+    <label for="password-input">Password:</label>
+    <input type="password" id="password-input" minlength="6" required> 
+    <label for="password-input-confirm">Confirm Password:</label>
+    <input type="password" id="password-input-confirm" minlength="6" required>
+    <p id="password-text"> Password must be at least 6 characters long.</p>
+    <p> Already have an account? Click  <a href="#" onclick="showLoginForm()">here</a> to login. </p>
+
+
+  
+    <button id="continue-button" type="submit">Continue</button>
+</form>
+
+<form id="registration-form-2">
+    <p style="text-align: center;"> Welcome! Choose a username to continue. </p>
+    <label for="username-input">Username:</label>
+    <input type="text" id="username-input" placeholder="" required>
+    <p> Click <a href="#" onclick="showRegistrationForm()"> here</a> to go back.</p>
+    <button type="submit">Create Account</button>
+
+</form>
+
+
+
+
+<form id="account-confirmation" >
+    <p> Account Creation Successful! <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+    <br> 
+    <p> Thank you for creating an account! </p>
+    <button type="submit" onclick="showLoginForm()">Log In</button>
+</form>
+
+
+
+
+<form id="login-form">
+    <p style="text-align: center"> Welcome back! Login to continue. </p>
+    <label for="email-input-login">Email:</label>
+    <input type="email" id="email-input-login" required>
+  
+    <label for="password-input-login">Password:</label>
+    <input type="password" id="password-input-login" minlength="6" required>
+    <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
+    <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p>
+    <button type="submit">Log In</button>
+</form>
+
+<form id="login-success">
+    <p> Login Successful! Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+  <br> 
+  <br> 
+    <p style="text-decoration: bold;"> I dont feel like working anymore so this is all you get.</p>
+    
+    
+    <button type="submit" onclick="logout()">Log Out</button>
+</form>
+
+<form id="reset-password"> 
+    <p style="text-align: center;"> Enter your email to reset your password. </p>
+    
+    <label for="reset-email">Email:</label>
+    <input type="email" id="reset-email" required>
+    <p> Click <a href="#" onclick="showLoginForm()"> here</a> To go back</p>
+    <button type="submit" onclick="resetPass()"> Reset Password</button>
+</form>
+
+<form id="passwordResetConfirmation"> 
+<p style="text-align: center;"> An email has been sent to <span id="user-email"> </span> <br> <br> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i>
+    <br> Please check your email to reset your password. </p>
+    <button type="submit" onclick="showLoginForm()"> Continue</button>
+
+
+</form>
+
+<form id="databaseError">
+    <p style="text-align: center;"> A database error has occured. Please fill out the form below. </p>
+    <label for="databaseErrorEmail">Email:</label>
+    <input type="email" id="databaseErrorEmail" required>
+    <label for="databaseErrorUsername">Username:</label>
+    <input type="text" id="databaseErrorUsername" required>
+
+    <button type="submit"> Continue </button>
+</form>
+
+<form id="databaseErrorFixed" style="display: none;"> 
+    <p style="text-align: center;"> Thank you for your patience. Your account has been fixed. </p>
+    <br> <br> 
+    <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i> <br> 
+    <button type="submit" onclick="showLoginForm()"> Continue </button>
+</form>
+
+<button class="devTools" id="devTools1" onclick="reset()"> Reset local storage /dev testing/ </button>
+
+
+
+<script> 
+    const firebaseConfig = {
+  apiKey: "AIzaSyCqB4uXUadpU3A2_xoqxEbf2E6XotmZVN0",
+  authDomain: "fortnitelovers.firebaseapp.com",
+  databaseURL: "https://fortnitelovers-default-rtdb.firebaseio.com",
+  projectId: "fortnitelovers",
+  storageBucket: "fortnitelovers.appspot.com",
+  messagingSenderId: "775617229851",
+  appId: "1:775617229851:web:c3247b254457283958f4be",
+  measurementId: "G-KD06EG2ZPK"
+};
+
+    firebase.initializeApp(firebaseConfig);
+
+    //declare database variable
+    var database = firebase.database();
+    loggedIn = false;
+    var username;
+    var recievedData = false;
+    var sentData = false;
+    var databaseError = false;
+    var databaseErrorFixed = false;
+
+
+    const passwordInput = document.getElementById('password-input');
+  const confirmPasswordInput = document.getElementById('password-input-confirm');
+  
+  function checkPasswordsMatch() {
+    if (passwordInput.value !== confirmPasswordInput.value) {
+      confirmPasswordInput.setCustomValidity("Passwords don't match.");
+    } else {
+      confirmPasswordInput.setCustomValidity('');
+    }
+  }
+  
+  passwordInput.addEventListener('input', checkPasswordsMatch);
+  confirmPasswordInput.addEventListener('input', checkPasswordsMatch);
+    
+  
+
+    //if the user has not made an account, show the registration form
+    if (localStorage.getItem("hasMadeAccount") === null) {
+        showRegistrationForm();
+    } else {
+        //if the user has made an account, show the login form
+        showLoginForm();
+    }
+    function logout(){
+        //hide login success form
+        document.getElementById("login-success").style.display = "none";
+        //show login form
+        document.getElementById("login-form").style.display = "block";
+        //set logged in to false
+        loggedIn = false;
+        //clear username variable
+        username = "";
+        console.clear();
+        console.log("Logged out successfully.");
+
+        
+    
+    }
+  
+    const registrationForm1 = document.getElementById("registration-form");
+
+
+registrationForm1.addEventListener('submit', (event) => {
+  event.preventDefault();
+  document.getElementById("registration-form").style.display = "none";
+  document.getElementById("registration-form-2").style.display = "block";
+});
+
+    function resetPass(){
+    var auth = firebase.auth();
+        var emailAddress = document.getElementById("reset-email").value;
+        //show loading spinner
+        showSpinner();
+        //hide reset password form
+        document.getElementById("reset-password").style.display = "none";
+
+        auth.sendPasswordResetEmail(emailAddress).then(function() {
+            // Email sent.
+            document.getElementById("passwordResetConfirmation").style.display = "block";
+            document.getElementById("user-email").innerHTML = emailAddress;
+            hideSpinner();
+        }).catch(function(error) {
+            // An error happened.
+            setTimeout(() => {
+                alert("Error: " + error.message); 
+            },010);
+            
+            hideSpinner();
+            //show reset password form
+            document.getElementById("reset-password").style.display = "block";
+        });
+    }
+    function hideSpinner() {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+    }
+    function showResetPassword() {
+        //hide login page
+        document.getElementById("login-form").style.display = "none";
+        //show reset password page
+        document.getElementById("reset-password").style.display = "block";
+        
+    }
+    function reset() {
+        localStorage.clear();
+        //reload the page
+        location.reload();
+    }
+//basic functions to show and hide forms
+    function showRegistrationForm() {
+        document.getElementById("registration-form").style.display = "block";
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("account-confirmation").style.display = "none";
+        document.getElementById("login-success").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
+
+
+    }
+
+    function showLoginForm() {
+        document.getElementById("registration-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("account-confirmation").style.display = "none";
+        document.getElementById("login-success").style.display = "none";
+        document.getElementById("passwordResetConfirmation").style.display = "none";
+        document.getElementById("reset-password").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
+        document.getElementById("databaseErrorFixed").style.display = "none";
+
+        databaseError = false;
+    }
+
+    function showSpinner() {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("loading-text").style.display = "block";
+        document.getElementById("registration-form").style.display = "none";
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
+    }
+
+    function hideSpinnerAndShowRegistrationForm() {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        document.getElementById("registration-form").style.display = "block";
+        document.getElementById("login-form").style.display = "none";
+    }
+
+    function hideSpinnerAndShowLoginForm() {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        document.getElementById("registration-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+    }
+
+    function userIsLoggedIn() {
+        //the user has logged in successfully, redirect to the home page of website...
+        //currently auto directing to google.com with 1.5s delay
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+    }
+
+    //start of firebase code
+
+
+    //create a new user
+    const registrationForm = document.getElementById('registration-form-2');
+        registrationForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+
+     // show loading spinner and hide form
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("loading-text").style.display = "block";
+        document.getElementById("registration-form").style.display = "none";
+        showSpinner();
+
+        var user = firebase.auth().currentUser;
+const username = document.getElementById('username-input').value;
+
+// Query Firebase for the specified username
+database.ref('users/' + username).once('value').then((snapshot) => {
+  // If the snapshot exists, then the username already exists in the database
+  if (snapshot.exists()) {
+    setTimeout(() => {
+        
+    alert('Username already exists!');
+    }, 100);
+    //show registration form and hide spinner
+    document.getElementById("registration-form-2").style.display = "block";
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("loading-text").style.display = "none";
+
+  } else {
+    // Otherwise, create a new entry in the database with the specified username
+    database.ref('users/' + username).set({
+      id: user.uid,
+      email: email,
+      // ...
+    });
+    var sentData = true;
+  }
+  if(sentData == true){
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+        // Account creation successful
+        console.log("Account created successfully (Step 1)");
+        
+        
+        
+});
+  }
+
+        
+
+        if(sentData == true){
+            setTimeout(() => {
+           // show login form and hide spinner
+        document.getElementById("registration-form").style.display = "none";
+        document.getElementById("account-confirmation").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none"; 
+        console.log("Account data sent to database successfully (Step 2)")
+        }, 100);
+        }
+
+        //set flag in local storage to indicate that user has made an account
+        localStorage.setItem("hasMadeAccount", "true");
+       
+    })
+    .catch((error) => {
+        // Account creation failed
+
+        // show registration form and hide spinner
+        document.getElementById("registration-form").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        
+
+    const errorMessage = error.message;
+
+    // show error message after a delay of 500ms
+    setTimeout(() => {
+        alert(errorMessage);
+    }, 100);
+});
+
+setTimeout(() => {
+    console.clear();
+}, 1000);
+    
+    });
+
+//login to an existing account
+
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById('email-input-login').value;
+    const password = document.getElementById('password-input-login').value;
+
+    // show loading spinner
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("loading-text").style.display = "block";
+    document.getElementById("login-form").style.display = "none";
+
+    setTimeout(() => {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            
+
+          
+          loggedIn = true
+          const user = firebase.auth().currentUser;
+
+          //get user object:
+          var email = document.getElementById('email-input-login').value;
+    var userRef = database.ref('users');
+    userRef.orderByChild('email').equalTo(email).once('value')
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                // User with matching email found
+                var userData = snapshot.val();
+                // userData will contain an object with the user(s) that match the email
+                // In case multiple users have the same email address, userData will be an object with multiple keys
+                
+                // Retrieve the username from the user object
+                 username = Object.keys(userData)[0];
+                
+                
+                //now only console log their username 
+                console.log("User logged in successfully (Step 1)");
+                
+                document.getElementById("username-from-database").innerHTML = username;
+                
+                var recievedData = true;
+
+                if(recievedData == true){
+       // Login successful, hide loading spinner and show login form
+       document.getElementById("loading-text").style.display = "none";
+            userIsLoggedIn();
+          console.log("user logged in successfully (Step 2)");
+        }
+              
+            } else {
+                databaseError = true;
+            }
+
+                // User with matching email not found
+                if(databaseError == true){
+                    setTimeout(() => {
+                        alert("Error: User not found in database");
+                    }, 100);
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("loading-text").style.display = "none";
+                    document.getElementById("databaseError").style.display = "block";
+
+
+                }
+            
+        })
+
+        
+        .catch((error) => {
+            console.error(error);
+        });
+        
+        
+
+        })
+        .catch((error) => {
+            // Login failed, display error message
+            const errorMessage = error.message;
+            setTimeout(() => {
+                alert(errorMessage);
+            }, 100);
+            
+
+            // hide loading spinner and show login form
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
+        });
+    }, 2000);
+
+
+});
+
+//attach an event listener to the database error fix button for form submit 
+const databaseError1 = document.getElementById('databaseError');
+databaseError1.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    var user = firebase.auth().currentUser;
+//send username to firebase realtime database
+const username = document.getElementById('databaseErrorUsername').value;
+const email = document.getElementById('databaseErrorEmail').value;
+
+database.ref('users/' + username).set({
+    id: user.uid,
+    email: email,
+    
+    
+
+   
+});
+databaseErrorFix = true;
+
+//show loading spinner and hide form
+document.getElementById("loading").style.display = "block";
+document.getElementById("loading-text").style.display = "block";
+document.getElementById("databaseError").style.display = "none";
+
+if(databaseErrorFix == true){
+    setTimeout(() => {
+        //hide loading spinner and show fix success message
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        document.getElementById("databaseErrorFixed").style.display = "block";
+    }, 1000);
+}
+
+});
+
+
+    
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+    #databaseError {
+        display: none;
+    }
+    #passwordResetConfirmation {
+        display: none;
+    }
+    #registration-form-2{
+        display: none;
+    }
+    
+    #reset-password {
+        display: none;
+    }
+    .devtools {
+        display: none;
+    }
+    #login-success {
+        text-align: center;
+    }
+    #account-confirmation{
+        text-align: center;
+    }
+    .checkmark-icon {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: green;
+        font-size: 4em;
+        background-color: white;
+        border-radius: 50%;
+        padding: 3px;
+        
+    }
+    #check {
+
+        font-size: 2rem;
+    
+        
+    }
+    #password-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: .9rem;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+        margin: 0;
+        margin-bottom: 20;
+        
+    }
+    
+    /* Style the loading spinner */
+    #loading {
+        display: none;
+        margin: 0 auto;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 5px solid #ccc;
+        border-top-color: #333;
+        animation: spin 2s ease-in-out infinite;
+        position: absolute;
+        top: 50%;
+        left: 48.5%;
+        
+        
+      }
+
+      #loading-text {
+        color: white;
+        display: none;
+        /*position middle of screen*/
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        z-index: 100;
+
+      }
+      /* Animation for the loading spinner */
+      @keyframes spin {
+        to {transform: rotate(360deg);}
+      }
+    
+    body {
+        
+        font-family: 'Poppins', sans-serif;
+        background: url('https://i.imgur.com/EO23tmu.jpg') no-repeat center center fixed;
+        background-size: cover;
+        
+
+
+    }
+    
+    form {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: ;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 1000px rgb(0, 0, 0);
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        color: #000000;
+    }
+    
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+        color: #000000;
+    }
+    
+    button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: #fff;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+  
+    
+    #registration-form {
+        top: 50%;
+       
+    }
+    
+    #login-form {
+        top: 50%;
+        display: none;
+        
+    }
+    
+    #registration-form button[type="submit"] {
+        background-color: #669767;
+    }
+    
+    #registration-form button[type="submit"]:hover,
+    #login-form button[type="submit"]:hover {
+        background-color: #555;
+    }
+
+    #registration-form-2 button[type="submit"] {
+        background-color: #4CAF50;
+    }
+    
+    #registration-form-2 button[type="submit"]:hover,
+    #login-form button[type="submit"]:hover {
+        background-color: #555;
+    }
+</style>
+</body>
