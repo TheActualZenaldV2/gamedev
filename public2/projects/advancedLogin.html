@@ -35,16 +35,21 @@
     <p style="text-align: center;"> Welcome! Choose a username to continue. </p>
     <label for="username-input">Username:</label>
     <input type="text" id="username-input" placeholder="" required>
+    <label for="profile-picture">Profile Picture: (Optional) </label>
+    <input type="file" id="profile-picture" value="Choose File" accept="image/*">
+    <div style="text-align: center;">
+        <img id="preview-image" src="" alt="Image preview">
+    </div>
+
     <p> Click <a href="#" onclick="showRegistrationForm()"> here</a> to go back.</p>
     <button type="submit">Create Account</button>
-
 </form>
 
 
 
 
 <form id="account-confirmation" >
-    <p> Account Creation Successful! <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+    <p> Account Creation Successful! Welcome, <span id="username-welcome" style="font-weight: bold;"> </span>!<br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
     <br> 
     <p> Thank you for creating an account! </p>
     <button type="submit" onclick="showLoginForm()">Log In</button>
@@ -93,9 +98,8 @@
 </form>
 
 <form id="databaseError">
-    <p style="text-align: center;"> A database error has occured. Please fill out the form below. </p>
-    <label for="databaseErrorEmail">Email:</label>
-    <input type="email" id="databaseErrorEmail" required>
+    <p style="text-align: center;"> Continue Setting Up Your Account... </p>
+    
     <label for="databaseErrorUsername">Username:</label>
     <input type="text" id="databaseErrorUsername" required>
 
@@ -103,7 +107,7 @@
 </form>
 
 <form id="databaseErrorFixed" style="display: none;"> 
-    <p style="text-align: center;"> Thank you for your patience. Your account has been fixed. </p>
+    <p style="text-align: center;"> Thank you for your patience. Your account has been set-up! </p>
     <br> <br> 
     <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i> <br> 
     <button type="submit" onclick="showLoginForm()"> Continue </button>
@@ -135,6 +139,27 @@
     var sentData = false;
     var databaseError = false;
     var databaseErrorFixed = false;
+    var accountError = false;
+
+
+    const previewImage = document.getElementById('preview-image');
+    const profilePictureInput = document.getElementById('profile-picture');
+    previewImage.style.display = 'none';
+    profilePictureInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (readerEvent) => {
+                previewImage.src = readerEvent.target.result;
+            }
+            reader.readAsDataURL(file);
+            previewImage.style.display = 'block';
+            document.getElementById("profile-picture").innerHTML = "Change Profile Picture"
+        } else {
+            previewImage.src = '';
+            previewImage.style.display = 'none';
+        }
+    });
 
 
     const passwordInput = document.getElementById('password-input');
@@ -280,99 +305,96 @@ registrationForm1.addEventListener('submit', (event) => {
         document.getElementById("loading-text").style.display = "none";
     }
 
-    //start of firebase code
+   //start of firebase code
 
+const registrationForm = document.getElementById('registration-form-2');
+registrationForm.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-    //create a new user
-    const registrationForm = document.getElementById('registration-form-2');
-        registrationForm.addEventListener('submit', (event) => {
-        event.preventDefault();
+  const email = document.getElementById('email-input').value;
+  const password = document.getElementById('password-input').value;
+  const username = document.getElementById('username-input').value;
 
+  // show loading spinner and hide form
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("loading-text").style.display = "block";
+  document.getElementById("registration-form").style.display = "none";
+  showSpinner();
 
-    const email = document.getElementById('email-input').value;
-    const password = document.getElementById('password-input').value;
+  // Query Firebase for the specified username
+  database.ref('users').once('value').then((snapshot) => {
+    let existingUsernames = [];
 
-     // show loading spinner and hide form
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("loading-text").style.display = "block";
-        document.getElementById("registration-form").style.display = "none";
-        showSpinner();
+    if (snapshot.val() !== null) {
+      // Convert all existing usernames to lowercase
+      existingUsernames = Object.keys(snapshot.val()).map(username => username.toLowerCase());
+    }
 
-        var user = firebase.auth().currentUser;
-const username = document.getElementById('username-input').value;
+    // Convert input username to lowercase
+    const lowercaseUsername = username.toLowerCase();
 
-// Query Firebase for the specified username
-database.ref('users/' + username).once('value').then((snapshot) => {
-  // If the snapshot exists, then the username already exists in the database
-  if (snapshot.exists()) {
-    setTimeout(() => {
-        
-    alert('Username already exists!');
-    }, 100);
-    //show registration form and hide spinner
-    document.getElementById("registration-form-2").style.display = "block";
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("loading-text").style.display = "none";
+    // If the snapshot exists and the username already exists in the database
+    if (existingUsernames.includes(lowercaseUsername)) {
+      //highlight the username input field
 
-  } else {
-    // Otherwise, create a new entry in the database with the specified username
-    database.ref('users/' + username).set({
-      id: user.uid,
-      email: email,
-      // ...
-    });
-    var sentData = true;
-  }
-  if(sentData == true){
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        // Account creation successful
-        console.log("Account created successfully (Step 1)");
-        
-        
-        
+      setTimeout(() => {
+        alert('Username already exists!');
+
+      }, 100);
+
+      //show registration form and hide spinner
+      document.getElementById("registration-form-2").style.display = "block";
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("loading-text").style.display = "none";
+    } else {
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Account creation successful
+          console.log("Account created successfully (Step 1)");
+          document.getElementById("username-welcome").innerHTML = username;
+
+          // create a new entry in the database with the specified username
+          database.ref('users/' + username).set({
+            id: "not working rn",
+            email: email,
+            // ...
+          }).then(() => {
+            // entry creation successful
+            console.log("Account data sent to database successfully (Step 2)");
+            // show login form and hide spinner
+            document.getElementById("registration-form").style.display = "none";
+            document.getElementById("account-confirmation").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+          }).catch((error) => {
+            // entry creation failed
+            console.log("Error creating entry in database:", error);
+            // show registration form and hide spinner
+            document.getElementById("registration-form").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+          });
+        })
+        .catch((error) => {
+          // Account creation failed
+          console.log("Error creating account:", error);
+          // show registration form and hide spinner
+          document.getElementById("registration-form").style.display = "block";
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("loading-text").style.display = "none";
+
+          const errorMessage = error.message;
+          alert(errorMessage); // display an alert for all error messages
+        });
+    }
+  });
+
+  setTimeout(() => {
+    //console.clear();
+  }, 1000);
 });
-  }
 
-        
 
-        if(sentData == true){
-            setTimeout(() => {
-           // show login form and hide spinner
-        document.getElementById("registration-form").style.display = "none";
-        document.getElementById("account-confirmation").style.display = "block";
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("loading-text").style.display = "none"; 
-        console.log("Account data sent to database successfully (Step 2)")
-        }, 100);
-        }
-
-        //set flag in local storage to indicate that user has made an account
-        localStorage.setItem("hasMadeAccount", "true");
-       
-    })
-    .catch((error) => {
-        // Account creation failed
-
-        // show registration form and hide spinner
-        document.getElementById("registration-form").style.display = "block";
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("loading-text").style.display = "none";
-        
-
-    const errorMessage = error.message;
-
-    // show error message after a delay of 500ms
-    setTimeout(() => {
-        alert(errorMessage);
-    }, 100);
-});
-
-setTimeout(() => {
-    console.clear();
-}, 1000);
-    
-    });
 
 //login to an existing account
 
@@ -433,7 +455,7 @@ loginForm.addEventListener('submit', (event) => {
                 // User with matching email not found
                 if(databaseError == true){
                     setTimeout(() => {
-                        alert("Error: User not found in database");
+                        alert("Error: User not found in database. Please finish setting up your account.");
                     }, 100);
                     document.getElementById("loading").style.display = "none";
                     document.getElementById("loading-text").style.display = "none";
@@ -470,40 +492,62 @@ loginForm.addEventListener('submit', (event) => {
 
 });
 
-//attach an event listener to the database error fix button for form submit 
+// attach an event listener to the database error fix button for form submit 
 const databaseError1 = document.getElementById('databaseError');
 databaseError1.addEventListener('submit', (event) => {
     event.preventDefault();
 
     var user = firebase.auth().currentUser;
-//send username to firebase realtime database
-const username = document.getElementById('databaseErrorUsername').value;
-const email = document.getElementById('databaseErrorEmail').value;
+    // send username to firebase realtime database
+    const username = document.getElementById('databaseErrorUsername').value;
+    const email = document.getElementById('email-input-login').value;
 
-database.ref('users/' + username).set({
-    id: user.uid,
-    email: email,
-    
-    
+    // Query Firebase for the specified username
+    database.ref('users').once('value').then((snapshot) => {
+      // Convert all existing usernames to lowercase
+      const existingUsernames = Object.keys(snapshot.val() || {}).map(username => username.toLowerCase());
 
-   
-});
-databaseErrorFix = true;
+      // Convert input username to lowercase
+      const lowercaseUsername = username.toLowerCase();
 
-//show loading spinner and hide form
-document.getElementById("loading").style.display = "block";
-document.getElementById("loading-text").style.display = "block";
-document.getElementById("databaseError").style.display = "none";
+      // If the snapshot exists, then the username already exists in the database
+      if (existingUsernames.includes(lowercaseUsername)) {
+        // highlight the username input field
+        alert('Username already exists!');
+        return;
+      }
 
-if(databaseErrorFix == true){
-    setTimeout(() => {
-        //hide loading spinner and show fix success message
+      database.ref('users/' + username).set({
+        id: user.uid,
+        email: email,
+        // ...
+      }).then(() => {
+        // entry creation successful
+        console.log("Account data sent to database successfully (Step 2)");
+        // show login form and hide spinner
+        document.getElementById("databaseError").style.display = "none";
+        document.getElementById("databaseErrorFixed").style.display = "block";
+      }).catch((error) => {
+        // entry creation failed
+        console.log("Error creating entry in database:", error);
+        // show registration form and hide spinner
+        document.getElementById("databaseError").style.display = "block";
         document.getElementById("loading").style.display = "none";
         document.getElementById("loading-text").style.display = "none";
-        document.getElementById("databaseErrorFixed").style.display = "block";
-    }, 1000);
-}
+      });
+    }).catch((error) => {
+      // error querying database for existing usernames
+      console.log("Error querying database:", error);
+      // show registration form and hide spinner
+      document.getElementById("databaseError").style.display = "block";
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("loading-text").style.display = "none";
+    });
 
+    // show loading spinner and hide form
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("loading-text").style.display = "none";
+    document.getElementById("databaseError").style.display = "block";
 });
 
 
@@ -525,6 +569,11 @@ if(databaseErrorFix == true){
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
+    #preview-image {
+  width: 100px;
+  height: 100px;
+}
+
     #databaseError {
         display: none;
     }
@@ -539,7 +588,7 @@ if(databaseErrorFix == true){
         display: none;
     }
     .devtools {
-        display: none;
+        display: ;
     }
     #login-success {
         text-align: center;
