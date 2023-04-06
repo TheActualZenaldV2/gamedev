@@ -424,7 +424,7 @@ registrationForm.addEventListener('submit', (event) => {
                 });
           // create a new entry in the database with the specified username
           database.ref('users/' + username).set({
-            id: "not working rn",
+          
             email: email,
             // ...
           }).then(() => {
@@ -607,7 +607,7 @@ databaseError1.addEventListener('submit', (event) => {
       }
 
       database.ref('users/' + username).set({
-        id: user.uid,
+       
         email: email,
         // ...
       }).then(() => {
