@@ -4,6 +4,8 @@
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-storage.js"></script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     </head>
@@ -35,8 +37,8 @@
     <p style="text-align: center;"> Welcome! Choose a username to continue. </p>
     <label for="username-input">Username:</label>
     <input type="text" id="username-input" placeholder="" required>
-    <label for="profile-picture">Profile Picture: (Optional) </label>
-    <input type="file" id="profile-picture" value="Choose File" accept="image/*">
+    <label for="profile-picture">Profile Picture:</label>
+    <input type="file" id="profile-picture" accept="image/*" required>
     <div style="text-align: center;">
         <img id="preview-image" src="" alt="Image preview">
     </div>
@@ -48,9 +50,14 @@
 
 
 
+
+
+
+
 <form id="account-confirmation" >
     <p> Account Creation Successful! Welcome, <span id="username-welcome" style="font-weight: bold;"> </span>!<br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
     <br> 
+    <img id="profile-picture-from-db" src="" alt="Profile Picture">
     <p> Thank you for creating an account! </p>
     <button type="submit" onclick="showLoginForm()">Log In</button>
 </form>
@@ -73,6 +80,7 @@
 <form id="login-success">
     <p> Login Successful! Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
   <br> 
+  <img id="profile-picture-from-database" src="" alt="Profile Picture">
   <br> 
     <p style="text-decoration: bold;"> I dont feel like working anymore so this is all you get.</p>
     
@@ -118,15 +126,15 @@
 
 
 <script> 
-    const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyCqB4uXUadpU3A2_xoqxEbf2E6XotmZVN0",
   authDomain: "fortnitelovers.firebaseapp.com",
   databaseURL: "https://fortnitelovers-default-rtdb.firebaseio.com",
   projectId: "fortnitelovers",
   storageBucket: "fortnitelovers.appspot.com",
   messagingSenderId: "775617229851",
-  appId: "1:775617229851:web:c3247b254457283958f4be",
-  measurementId: "G-KD06EG2ZPK"
+  appId: "1:775617229851:web:f43a82425c9d26db58f4be",
+  measurementId: "G-3K165RJPM4"
 };
 
     firebase.initializeApp(firebaseConfig);
@@ -143,23 +151,28 @@
 
 
     const previewImage = document.getElementById('preview-image');
-    const profilePictureInput = document.getElementById('profile-picture');
-    previewImage.style.display = 'none';
-    profilePictureInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (readerEvent) => {
-                previewImage.src = readerEvent.target.result;
-            }
-            reader.readAsDataURL(file);
-            previewImage.style.display = 'block';
-            document.getElementById("profile-picture").innerHTML = "Change Profile Picture"
-        } else {
-            previewImage.src = '';
-            previewImage.style.display = 'none';
+const profilePictureInput = document.getElementById('profile-picture');
+previewImage.style.display = 'none';
+profilePictureInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const maxSize = 10 * 1024 * 1024; // 5MB in bytes
+    if (file && file.size <= maxSize) { // Check if file exists and is within the size limit
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+            previewImage.src = readerEvent.target.result;
         }
-    });
+        reader.readAsDataURL(file);
+        previewImage.style.display = 'block';
+        document.getElementById("profile-picture").innerHTML = "Change Profile Picture";
+
+    } else {
+        alert("File is too large! Please select a file that is 5MB or smaller.");
+        profilePictureInput.value = ''; // Reset the input field to clear the invalid file
+        previewImage.src = '';
+        previewImage.style.display = 'none';
+    }
+});
+
 
 
     const passwordInput = document.getElementById('password-input');
@@ -305,10 +318,14 @@ registrationForm1.addEventListener('submit', (event) => {
         document.getElementById("loading-text").style.display = "none";
     }
 
+
+
+
    //start of firebase code
 
 const registrationForm = document.getElementById('registration-form-2');
 registrationForm.addEventListener('submit', (event) => {
+   
   event.preventDefault();
 
   const email = document.getElementById('email-input').value;
@@ -352,20 +369,66 @@ registrationForm.addEventListener('submit', (event) => {
           // Account creation successful
           console.log("Account created successfully (Step 1)");
           document.getElementById("username-welcome").innerHTML = username;
-
-          // create a new entry in the database with the specified username
-          database.ref('users/' + username).set({
-            id: "not working rn",
-            email: email,
-            // ...
-          }).then(() => {
-            // entry creation successful
+            //send profile picture to database
+            var storageRef = firebase.storage().ref();
+            var file = document.getElementById("profile-picture").files[0];
+            var metadata = {
+                contentType: file.type
+            };
+            var uploadTask = storageRef.child('profilePictures/' + username).put(file, metadata);
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                function(snapshot) {
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    var progressDone = Math.round(progress);
+                    console.log('Upload is ' + progressDone + '% done');
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                }, function(error) {
+                    // A full list of error codes is available at
+                    // https://firebase.google.com/docs/storage/web/handle-errors
+                    switch (error.code) {
+                        case 'storage/unauthorized':
+                            // User doesn't have permission to access the object
+                            break;
+                        case 'storage/canceled':
+                            // User canceled the upload
+                            break;
+                        case 'storage/unknown':
+                            // Unknown error occurred, inspect error.serverResponse
+                            break;
+                    }
+                }, function() {
+                    // Upload completed successfully, now we can get the download URL
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        console.log('File available at', downloadURL);
+                        database.ref('users/' + username).update({
+                            profilePicture: downloadURL
+                        });
+                        // entry creation successful
             console.log("Account data sent to database successfully (Step 2)");
             // show login form and hide spinner
             document.getElementById("registration-form").style.display = "none";
             document.getElementById("account-confirmation").style.display = "block";
             document.getElementById("loading").style.display = "none";
             document.getElementById("loading-text").style.display = "none";
+            //show profile picture by setting its src to the downloadURL
+            document.getElementById("profile-picture-from-db").src = downloadURL;
+                    });
+                });
+          // create a new entry in the database with the specified username
+          database.ref('users/' + username).set({
+            id: "not working rn",
+            email: email,
+            // ...
+          }).then(() => {
+            // ...
           }).catch((error) => {
             // entry creation failed
             console.log("Error creating entry in database:", error);
@@ -434,19 +497,32 @@ loginForm.addEventListener('submit', (event) => {
                  username = Object.keys(userData)[0];
                 
                 
-                //now only console log their username 
+                 
                 console.log("User logged in successfully (Step 1)");
                 
                 document.getElementById("username-from-database").innerHTML = username;
-                
-                var recievedData = true;
+                var profilePictureRef = database.ref('users/' + username + '/profilePicture');
+profilePictureRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data == "" || data == null){
+        console.log("No profile picture found in database");
+        document.getElementById("profile-picture-from-database").style.display = "none";
+        userIsLoggedIn(); //later, set up a default profile picture OR option to fix this 
+    }
+    var img = new Image();
+    img.onload = function() {
+        //PRE LOAD IMAGE
+        // The image has been loaded, set the src of the img element to display it
+        document.getElementById("profile-picture-from-database").src = img.src;
+        
+        // Call userIsLoggedIn now that the image is loaded
+        userIsLoggedIn();
+        console.log("user logged in successfully (Step 2)");
+    };
+    img.src = data;
+});
 
-                if(recievedData == true){
-       // Login successful, hide loading spinner and show login form
-       document.getElementById("loading-text").style.display = "none";
-            userIsLoggedIn();
-          console.log("user logged in successfully (Step 2)");
-        }
+
               
             } else {
                 databaseError = true;
@@ -491,6 +567,19 @@ loginForm.addEventListener('submit', (event) => {
 
 
 });
+
+
+const input = document.getElementById('databaseErrorUsername');
+
+input.addEventListener('input', () => {
+  const regex = /^[a-zA-Z0-9]+$/;
+  if (!regex.test(input.value)) {
+    input.setCustomValidity('Special characters are not allowed.');
+  } else {
+    input.setCustomValidity('');
+  }
+});
+
 
 // attach an event listener to the database error fix button for form submit 
 const databaseError1 = document.getElementById('databaseError');
@@ -569,10 +658,16 @@ databaseError1.addEventListener('submit', (event) => {
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
-    #preview-image {
-  width: 100px;
-  height: 100px;
-}
+    #profile-picture-from-database, #preview-image, #profile-picture-from-db {
+        /* wip */
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 2px solid #000;
+        margin: 0 auto;
+        display: block;
+    }
+
 
     #databaseError {
         display: none;
@@ -588,7 +683,7 @@ databaseError1.addEventListener('submit', (event) => {
         display: none;
     }
     .devtools {
-        display: ;
+        display: none;
     }
     #login-success {
         text-align: center;
@@ -662,6 +757,7 @@ databaseError1.addEventListener('submit', (event) => {
         font-family: 'Poppins', sans-serif;
         background: url('https://i.imgur.com/EO23tmu.jpg') no-repeat center center fixed;
         background-size: cover;
+        color: white;
         
 
 
@@ -672,7 +768,7 @@ databaseError1.addEventListener('submit', (event) => {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: ;
+        
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 0 1000px rgb(0, 0, 0);
@@ -683,6 +779,7 @@ databaseError1.addEventListener('submit', (event) => {
         margin-bottom: 10px;
         font-size: 1.2em;
         color: #000000;
+        text-shadow: 1px 1px 10px rgba(255, 255, 255, 0.8);
     }
     
     input[type="email"],
