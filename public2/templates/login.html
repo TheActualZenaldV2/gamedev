@@ -1,30 +1,63 @@
+<body>
+    <head>
+        <title> Demo Login by wiggles</title>
+<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-storage.js"></script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    </head>
 
+
+
+    
 <div id="loading"></div>
-    <div id="loading-text">Please Wait....</div>
-
+<span id="loading-text">Please Wait....</span>
+ 
 <form id="registration-form">
     <p style="text-align: center;"> Welcome! Create an account to get started. </p>
     <label for="email-input">Email:</label> 
     <input type="email" id="email-input" required> 
   
     <label for="password-input">Password:</label>
-    <input type="password" id="password-input" minlength="" required> 
+    <input type="password" id="password-input" minlength="6" required> 
+    <label for="password-input-confirm">Confirm Password:</label>
+    <input type="password" id="password-input-confirm" minlength="6" required>
     <p id="password-text"> Password must be at least 6 characters long.</p>
     <p> Already have an account? Click  <a href="#" onclick="showLoginForm()">here</a> to login. </p>
 
 
   
+    <button id="continue-button" type="submit">Continue</button>
+</form>
+
+<form id="registration-form-2">
+    <p style="text-align: center;"> Welcome! Choose a username to continue. </p>
+    <label for="username-input">Username:</label>
+    <input type="text" id="username-input" placeholder="" required>
+    <label for="profile-picture">Profile Picture:</label>
+    <input type="file" id="profile-picture" accept="image/*" required>
+    <div style="text-align: center;">
+        <img id="preview-image" src="" alt="Image preview">
+    </div>
+
+    <p> Click <a href="#" onclick="showRegistrationForm()"> here</a> to go back.</p>
     <button type="submit">Create Account</button>
 </form>
 
 
 
 
+
+
+
+
 <form id="account-confirmation" >
-    <p> Account Creation Successful! <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+    <p> Account Creation Successful! Welcome, <span id="username-welcome" style="font-weight: bold;"> </span>!<br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
     <br> 
+    <img id="profile-picture-from-db" src="" alt="Profile Picture">
     <p> Thank you for creating an account! </p>
     <button type="submit" onclick="showLoginForm()">Log In</button>
 </form>
@@ -35,20 +68,26 @@
 <form id="login-form">
     <p style="text-align: center"> Welcome back! Login to continue. </p>
     <label for="email-input-login">Email:</label>
-    <input type="email" id="email-input-login" required>
+    <input type="email" id="email-input-login" name="email" required>
   
     <label for="password-input-login">Password:</label>
-    <input type="password" id="password-input-login" minlength="6" required>
+    <input type="password" id="password-input-login" name="password" minlength="6" required>
+    <label> Remember Me  <input type="checkbox" id="remember-me" name="remember-me" value="remember-me"> </label>
     <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
     <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p>
     <button type="submit">Log In</button>
 </form>
 
+
 <form id="login-success">
-    <p> Login Successful! <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
-    <br> 
-    <p> Thank you for logging in! </p>
-    <p style="text-decoration: bold;"> You will be redirected shortly.</p>
+    <p> Login Successful! Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+  <br> 
+  <img id="profile-picture-from-database" src="" alt="Profile Picture">
+  <br> 
+    <p style="text-decoration: bold;"> I dont feel like working anymore so this is all you get.</p>
+    
+    
+    <button type="submit" onclick="logout()">Log Out</button>
 </form>
 
 <form id="reset-password"> 
@@ -68,25 +107,89 @@
 
 </form>
 
+<form id="databaseError">
+    <p style="text-align: center;"> Continue Setting Up Your Account... </p>
+    
+    <label for="databaseErrorUsername">Username:</label>
+    <input type="text" id="databaseErrorUsername" required>
+
+    <button type="submit"> Continue </button>
+</form>
+
+<form id="databaseErrorFixed" style="display: none;"> 
+    <p style="text-align: center;"> Thank you for your patience. Your account has been set-up! </p>
+    <br> <br> 
+    <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i> <br> 
+    <button type="submit" onclick="showLoginForm()"> Continue </button>
+</form>
+
 <button class="devTools" id="devTools1" onclick="reset()"> Reset local storage /dev testing/ </button>
 
-<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+
 
 <script> 
-     const firebaseConfig = {
-    apiKey: "AIzaSyCqB4uXUadpU3A2_xoqxEbf2E6XotmZVN0",
-    authDomain: "fortnitelovers.firebaseapp.com",
-    projectId: "fortnitelovers",
-    storageBucket: "fortnitelovers.appspot.com",
-    messagingSenderId: "775617229851",
-    appId: "1:775617229851:web:f43a82425c9d26db58f4be",
-    measurementId: "G-3K165RJPM4"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCqB4uXUadpU3A2_xoqxEbf2E6XotmZVN0",
+  authDomain: "fortnitelovers.firebaseapp.com",
+  databaseURL: "https://fortnitelovers-default-rtdb.firebaseio.com",
+  projectId: "fortnitelovers",
+  storageBucket: "fortnitelovers.appspot.com",
+  messagingSenderId: "775617229851",
+  appId: "1:775617229851:web:f43a82425c9d26db58f4be",
+  measurementId: "G-3K165RJPM4"
+};
 
     firebase.initializeApp(firebaseConfig);
-    
+
+    //declare database variable
+    var database = firebase.database();
+    loggedIn = false;
+    var username;
+    var recievedData = false;
+    var sentData = false;
+    var databaseError = false;
+    var databaseErrorFixed = false;
+    var accountError = false;
+
+
+    const previewImage = document.getElementById('preview-image');
+const profilePictureInput = document.getElementById('profile-picture');
+previewImage.style.display = 'none';
+profilePictureInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const maxSize = 10 * 1024 * 1024; // 5MB in bytes
+    if (file && file.size <= maxSize) { // Check if file exists and is within the size limit
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+            previewImage.src = readerEvent.target.result;
+        }
+        reader.readAsDataURL(file);
+        previewImage.style.display = 'block';
+        document.getElementById("profile-picture").innerHTML = "Change Profile Picture";
+
+    } else {
+        alert("File is too large! Please select a file that is 5MB or smaller.");
+        profilePictureInput.value = ''; // Reset the input field to clear the invalid file
+        previewImage.src = '';
+        previewImage.style.display = 'none';
+    }
+});
+
+
+
+    const passwordInput = document.getElementById('password-input');
+  const confirmPasswordInput = document.getElementById('password-input-confirm');
+  
+  function checkPasswordsMatch() {
+    if (passwordInput.value !== confirmPasswordInput.value) {
+      confirmPasswordInput.setCustomValidity("Passwords don't match.");
+    } else {
+      confirmPasswordInput.setCustomValidity('');
+    }
+  }
+  
+  passwordInput.addEventListener('input', checkPasswordsMatch);
+  confirmPasswordInput.addEventListener('input', checkPasswordsMatch);
     
   
 
@@ -97,6 +200,34 @@
         //if the user has made an account, show the login form
         showLoginForm();
     }
+    function logout(){
+        //hide login success form
+        document.getElementById("login-success").style.display = "none";
+        //show login form
+        document.getElementById("login-form").style.display = "block";
+        //set logged in to false
+        loggedIn = false;
+        //clear username variable
+        username = "";
+        console.clear();
+        console.log("Logged out successfully.");
+
+        
+    
+    }
+
+    
+
+
+  
+    const registrationForm1 = document.getElementById("registration-form");
+
+
+registrationForm1.addEventListener('submit', (event) => {
+  event.preventDefault();
+  document.getElementById("registration-form").style.display = "none";
+  document.getElementById("registration-form-2").style.display = "block";
+});
 
     function resetPass(){
     var auth = firebase.auth();
@@ -113,7 +244,10 @@
             hideSpinner();
         }).catch(function(error) {
             // An error happened.
-            alert("Error: " + error.message);
+            setTimeout(() => {
+                alert("Error: " + error.message); 
+            },010);
+            
             hideSpinner();
             //show reset password form
             document.getElementById("reset-password").style.display = "block";
@@ -141,17 +275,22 @@
         document.getElementById("login-form").style.display = "none";
         document.getElementById("account-confirmation").style.display = "none";
         document.getElementById("login-success").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
 
 
     }
 
     function showLoginForm() {
-        document.getElementById("registration-form").style.display = "none";
         document.getElementById("login-form").style.display = "block";
+        document.getElementById("registration-form").style.display = "none";
         document.getElementById("account-confirmation").style.display = "none";
         document.getElementById("login-success").style.display = "none";
         document.getElementById("passwordResetConfirmation").style.display = "none";
         document.getElementById("reset-password").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
+        document.getElementById("databaseErrorFixed").style.display = "none";
+
+        databaseError = false;
     }
 
     function showSpinner() {
@@ -159,6 +298,7 @@
         document.getElementById("loading-text").style.display = "block";
         document.getElementById("registration-form").style.display = "none";
         document.getElementById("login-form").style.display = "none";
+        document.getElementById("registration-form-2").style.display = "none";
     }
 
     function hideSpinnerAndShowRegistrationForm() {
@@ -184,56 +324,160 @@
         document.getElementById("loading-text").style.display = "none";
     }
 
-    //start of firebase code
 
 
-    //create a new user
-    const registrationForm = document.getElementById('registration-form');
-        registrationForm.addEventListener('submit', (event) => {
-        event.preventDefault();
 
-    const email = document.getElementById('email-input').value;
-    const password = document.getElementById('password-input').value;
+   //start of firebase code
 
-     // show loading spinner and hide form
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("loading-text").style.display = "block";
-        document.getElementById("registration-form").style.display = "none";
+const registrationForm = document.getElementById('registration-form-2');
+registrationForm.addEventListener('submit', (event) => {
+   
+  event.preventDefault();
 
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        // Account creation successful
-        console.log("Account created successfully");
-        setTimeout(() => {
-           // show login form and hide spinner
-        document.getElementById("registration-form").style.display = "none";
-        document.getElementById("account-confirmation").style.display = "block";
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("loading-text").style.display = "none"; 
-        }, 100);
-        
+  const email = document.getElementById('email-input').value;
+  const password = document.getElementById('password-input').value;
+  const username = document.getElementById('username-input').value;
 
-        //set flag in local storage to indicate that user has made an account
-        localStorage.setItem("hasMadeAccount", "true");
+  // show loading spinner and hide form
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("loading-text").style.display = "block";
+  document.getElementById("registration-form").style.display = "none";
+  showSpinner();
 
-    })
-    .catch((error) => {
-        // Account creation failed
+  // Query Firebase for the specified username
+  database.ref('users').once('value').then((snapshot) => {
+    let existingUsernames = [];
 
-        // show registration form and hide spinner
-        document.getElementById("registration-form").style.display = "block";
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("loading-text").style.display = "none";
+    if (snapshot.val() !== null) {
+      // Convert all existing usernames to lowercase
+      existingUsernames = Object.keys(snapshot.val()).map(username => username.toLowerCase());
+    }
 
-    const errorMessage = error.message;
+    // Convert input username to lowercase
+    const lowercaseUsername = username.toLowerCase();
 
-    // show error message after a delay of 500ms
-    setTimeout(() => {
-        alert(errorMessage);
-    }, 100);
+    // If the snapshot exists and the username already exists in the database
+    if (existingUsernames.includes(lowercaseUsername)) {
+      //highlight the username input field
+
+      setTimeout(() => {
+        alert('Username already exists!');
+
+      }, 100);
+
+      //show registration form and hide spinner
+      document.getElementById("registration-form-2").style.display = "block";
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("loading-text").style.display = "none";
+    } else {
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Account creation successful
+          console.log("Account created successfully (Step 1)");
+          document.getElementById("username-welcome").innerHTML = username;
+            //send profile picture to database
+            var storageRef = firebase.storage().ref();
+            var file = document.getElementById("profile-picture").files[0];
+            var metadata = {
+                contentType: file.type
+            };
+            var uploadTask = storageRef.child('profilePictures/' + username).put(file, metadata);
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                function(snapshot) {
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    var progressDone = Math.round(progress);
+                    console.log('Upload is ' + progressDone + '% done');
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                }, function(error) {
+                    // A full list of error codes is available at
+                    // https://firebase.google.com/docs/storage/web/handle-errors
+                    switch (error.code) {
+                        case 'storage/unauthorized':
+                            // User doesn't have permission to access the object
+                            break;
+                        case 'storage/canceled':
+                            // User canceled the upload
+                            break;
+                        case 'storage/unknown':
+                            // Unknown error occurred, inspect error.serverResponse
+                            break;
+                    }
+                }, function() {
+    // Upload completed successfully, now we can get the download URL
+    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        console.log('File available at', downloadURL);
+        database.ref('users/' + username).update({
+            profilePicture: downloadURL
+        });
+
+        // create a new Image object
+        var image = new Image();
+
+        // attach a listener for the load event
+        image.addEventListener('load', function() {
+            // set the src attribute of the img element
+            document.getElementById("profile-picture-from-db").src = downloadURL;
+
+            // show login form and hide spinner
+            document.getElementById("registration-form").style.display = "none";
+            document.getElementById("account-confirmation").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+
+            //set local storage hasmadeaccount to true
+            localStorage.setItem("hasMadeAccount", "true");
+        });
+
+        // set the src of the Image object to the downloadURL
+        image.src = downloadURL;
+    });
+}
+
+                );
+          // create a new entry in the database with the specified username
+          database.ref('users/' + username).set({
+          
+            email: email,
+            // ...
+          }).then(() => {
+            // ...
+          }).catch((error) => {
+            // entry creation failed
+            console.log("Error creating entry in database:", error);
+            // show registration form and hide spinner
+            document.getElementById("registration-form").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading-text").style.display = "none";
+          });
+        })
+        .catch((error) => {
+          // Account creation failed
+          console.log("Error creating account:", error);
+          // show registration form and hide spinner
+          document.getElementById("registration-form").style.display = "block";
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("loading-text").style.display = "none";
+
+          const errorMessage = error.message;
+          alert(errorMessage); // display an alert for all error messages
+        });
+    }
+  });
+
+  setTimeout(() => {
+    //console.clear();
+  }, 1000);
 });
 
-});
+
 
 //login to an existing account
 
@@ -252,21 +496,87 @@ loginForm.addEventListener('submit', (event) => {
     setTimeout(() => {
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            document.getElementById("loading-text").style.display = "none";
-            userIsLoggedIn();
+            
 
+          
+          loggedIn = true
+          const user = firebase.auth().currentUser;
+
+          //get user object:
+          var email = document.getElementById('email-input-login').value;
+    var userRef = database.ref('users');
+    userRef.orderByChild('email').equalTo(email).once('value')
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                // User with matching email found
+                var userData = snapshot.val();
+                // userData will contain an object with the user(s) that match the email
+                // In case multiple users have the same email address, userData will be an object with multiple keys
+                
+                // Retrieve the username from the user object
+                 username = Object.keys(userData)[0];
+                
+                
+                 
+                console.log("User logged in successfully (Step 1)");
+                
+                document.getElementById("username-from-database").innerHTML = username;
+                var profilePictureRef = database.ref('users/' + username + '/profilePicture');
+profilePictureRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data == "" || data == null){
+        console.log("No profile picture found in database");
+        document.getElementById("profile-picture-from-database").style.display = "none";
+        userIsLoggedIn(); //later, set up a default profile picture OR option to fix this 
+    }
+    var img = new Image();
+    img.onload = function() {
+        //PRE LOAD IMAGE
+        // The image has been loaded, set the src of the img element to display it
+        document.getElementById("profile-picture-from-database").src = img.src;
+        
+        // Call userIsLoggedIn now that the image is loaded
+        userIsLoggedIn();
+        console.log("user logged in successfully (Step 2)");
+    };
+    img.src = data;
+});
+
+
+              
+            } else {
+                databaseError = true;
+            }
+
+                // User with matching email not found
+                if(databaseError == true){
+                    setTimeout(() => {
+                        alert("Error: User not found in database. Please finish setting up your account.");
+                    }, 100);
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("loading-text").style.display = "none";
+                    document.getElementById("databaseError").style.display = "block";
+
+
+                }
             
-            setTimeout(() => {
-        // Login successful, redirect to main page
-        window.location.href = 'https://www.google.com/';
-    }, 1500);
-            
+        })
+
+        
+        .catch((error) => {
+            console.error(error);
+        });
+        
+        
 
         })
         .catch((error) => {
             // Login failed, display error message
             const errorMessage = error.message;
-            alert(errorMessage);
+            setTimeout(() => {
+                alert(errorMessage);
+            }, 100);
+            
 
             // hide loading spinner and show login form
             document.getElementById("loading").style.display = "none";
@@ -274,7 +584,116 @@ loginForm.addEventListener('submit', (event) => {
             document.getElementById("login-form").style.display = "block";
         });
     }, 2000);
+
+
 });
+
+
+const input = document.getElementById('databaseErrorUsername');
+
+input.addEventListener('input', () => {
+  const regex = /^[a-zA-Z0-9]+$/;
+  if (!regex.test(input.value)) {
+    input.setCustomValidity('Special characters are not allowed.');
+  } else {
+    input.setCustomValidity('');
+  }
+});
+
+
+// attach an event listener to the database error fix button for form submit 
+const databaseError1 = document.getElementById('databaseError');
+databaseError1.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    var user = firebase.auth().currentUser;
+    // send username to firebase realtime database
+    const username = document.getElementById('databaseErrorUsername').value;
+    const email = document.getElementById('email-input-login').value;
+
+    // Query Firebase for the specified username
+    database.ref('users').once('value').then((snapshot) => {
+      // Convert all existing usernames to lowercase
+      const existingUsernames = Object.keys(snapshot.val() || {}).map(username => username.toLowerCase());
+
+      // Convert input username to lowercase
+      const lowercaseUsername = username.toLowerCase();
+
+      // If the snapshot exists, then the username already exists in the database
+      if (existingUsernames.includes(lowercaseUsername)) {
+        // highlight the username input field
+        alert('Username already exists!');
+        return;
+      }
+
+      database.ref('users/' + username).set({
+       
+        email: email,
+        // ...
+      }).then(() => {
+        // entry creation successful
+        console.log("Account data sent to database successfully (Step 2)");
+        // show login form and hide spinner
+        document.getElementById("databaseError").style.display = "none";
+        document.getElementById("databaseErrorFixed").style.display = "block";
+      }).catch((error) => {
+        // entry creation failed
+        console.log("Error creating entry in database:", error);
+        // show registration form and hide spinner
+        document.getElementById("databaseError").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+      });
+    }).catch((error) => {
+      // error querying database for existing usernames
+      console.log("Error querying database:", error);
+      // show registration form and hide spinner
+      document.getElementById("databaseError").style.display = "block";
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("loading-text").style.display = "none";
+    });
+
+    // show loading spinner and hide form
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("loading-text").style.display = "none";
+    document.getElementById("databaseError").style.display = "block";
+});
+
+
+    
+
+
+const rememberMeCheckbox = document.querySelector('#remember-me');
+
+// check if there are saved credentials in localStorage
+const savedEmail = localStorage.getItem('email');
+const savedPassword = localStorage.getItem('password');
+if (savedEmail && savedPassword) {
+  // fill in the login form with saved credentials
+  document.querySelector('#email-input-login').value = savedEmail;
+  document.querySelector('#password-input-login').value = savedPassword;
+  //check the remember me checkbox
+    rememberMeCheckbox.checked = true;
+
+  let formSubmitted = false; // add this variable to keep track of whether the form has been submitted
+//if its unchecked, clear user and password from local storage
+
+//add event lisener to the checkbox
+rememberMeCheckbox.addEventListener('change', () => {
+  if (!rememberMeCheckbox.checked) {
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+  }
+});
+
+  
+  
+}
+
+
+
+
+
 
 
 
@@ -287,7 +706,32 @@ loginForm.addEventListener('submit', (event) => {
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
+    #profile-picture-from-database, #preview-image, #profile-picture-from-db {
+        /* wip profile image css */
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid black;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.7);
+        object-fit: cover;
+        margin: 0 auto;
+        display: block;
 
+
+    }
+
+
+    #databaseError {
+        display: none;
+    }
+    #passwordResetConfirmation {
+        display: none;
+    }
+    #registration-form-2{
+        display: none;
+    }
+    
     #reset-password {
         display: none;
     }
@@ -302,7 +746,7 @@ loginForm.addEventListener('submit', (event) => {
     }
     .checkmark-icon {
         position: absolute;
-        top: 40%;
+        top: 44%;
         left: 50%;
         transform: translate(-50%, -50%);
         color: green;
@@ -310,7 +754,7 @@ loginForm.addEventListener('submit', (event) => {
         background-color: white;
         border-radius: 50%;
         padding: 3px;
-        
+        z-index: 999;
     }
     #check {
 
@@ -327,22 +771,23 @@ loginForm.addEventListener('submit', (event) => {
         
     }
     
-    /* Style the loading spinner */
     #loading {
-        display: none;
-        margin: 0 auto;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 5px solid #ccc;
-        border-top-color: #333;
-        animation: spin 2s ease-in-out infinite;
-        position: absolute;
-        top: 50%;
-        left: 48.5%;
-        
-        
-      }
+  display: none;
+  margin: 0 auto;
+  width: 50px;
+  height: 50px;
+  border-image: linear-gradient(0deg, #afd4d9 0%, #5fd8e0 100%) 1;
+        border-inline: 5px;
+  border-width: 5px;
+  border-style: solid;
+  animation: spin 2s ease-in-out infinite;
+  position: absolute;
+  top: 50%;
+  left: 48.5%;
+  background-color: #333;
+}
+
+
 
       #loading-text {
         color: white;
@@ -362,10 +807,14 @@ loginForm.addEventListener('submit', (event) => {
       }
     
     body {
-   
+        
         font-family: 'Poppins', sans-serif;
-        background: url('https://i.imgur.com/EO23tmu.jpg') no-repeat center center fixed;
+        
+        background: url('https://img.freepik.com/premium-vector/blue-purple-gradient-color-background-website-banner-poster-graphic-design-decoration_120819-1548.jpg') no-repeat center center fixed;
         background-size: cover;
+        color: black;
+        
+
 
     }
     
@@ -374,7 +823,7 @@ loginForm.addEventListener('submit', (event) => {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: ;
+        
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 0 1000px rgb(0, 0, 0);
@@ -385,10 +834,12 @@ loginForm.addEventListener('submit', (event) => {
         margin-bottom: 10px;
         font-size: 1.2em;
         color: #000000;
+        text-shadow: 1px 1px 10px rgba(255, 255, 255, 0.8);
     }
     
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"] {
         display: block;
         width: 100%;
         padding: 10px;
@@ -426,12 +877,21 @@ loginForm.addEventListener('submit', (event) => {
     }
     
     #registration-form button[type="submit"] {
-        background-color: #4CAF50;
+        background-color: #669767;
     }
     
     #registration-form button[type="submit"]:hover,
     #login-form button[type="submit"]:hover {
         background-color: #555;
     }
-</style>
 
+    #registration-form-2 button[type="submit"] {
+        background-color: #4CAF50;
+    }
+    
+    #registration-form-2 button[type="submit"]:hover,
+    #login-form button[type="submit"]:hover {
+        background-color: #555;
+    }
+</style>
+</body>
