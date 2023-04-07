@@ -406,6 +406,8 @@ registrationForm1.addEventListener('submit', (event) => {
     }
 
     function showUserNameFix(){
+        event.preventDefault();
+
         document.getElementById("login-form").style.display = "none";
         document.getElementById("login-success").style.display = "none";
         document.getElementById("databaseError").style.display = "none";
@@ -709,6 +711,7 @@ input.addEventListener('input', () => {
 
 const profileSetUp = document.getElementById('setUp-profile');
 profileSetUp.addEventListener('click', (event) => {
+    event.preventDefault();
     //show the database error form
     document.getElementById("databaseError").style.display = "block";
     //hide the login form
