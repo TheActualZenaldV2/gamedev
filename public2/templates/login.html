@@ -663,32 +663,38 @@ databaseError1.addEventListener('submit', (event) => {
     
 
 
-const rememberMeCheckbox = document.querySelector('#remember-me');
+const rememberMeCheckbox = document.getElementById('remember-me');
+const emailInput = document.querySelector('#email-input-login');
+const passwordInput2 = document.querySelector('#password-input-login');
+
 
 // check if there are saved credentials in localStorage
 const savedEmail = localStorage.getItem('email');
 const savedPassword = localStorage.getItem('password');
 if (savedEmail && savedPassword) {
   // fill in the login form with saved credentials
-  document.querySelector('#email-input-login').value = savedEmail;
-  document.querySelector('#password-input-login').value = savedPassword;
+  emailInput.value = savedEmail;
+  passwordInput2.value = savedPassword;
   //check the remember me checkbox
-    rememberMeCheckbox.checked = true;
+  rememberMeCheckbox.checked = true;
+}
 
-  let formSubmitted = false; // add this variable to keep track of whether the form has been submitted
-//if its unchecked, clear user and password from local storage
-
-//add event lisener to the checkbox
-rememberMeCheckbox.addEventListener('change', () => {
-  if (!rememberMeCheckbox.checked) {
+// add an event listener that listens for the form's submit event
+loginForm.addEventListener('submit', (event) => {
+  // check if the "Remember Me" checkbox is checked
+  if (rememberMeCheckbox.checked) {
+    // save the user's credentials to localStorage
+    localStorage.setItem('email', emailInput.value);
+    localStorage.setItem('password', passwordInput2.value);
+  } else {
+    // remove the user's credentials from localStorage
     localStorage.removeItem('email');
     localStorage.removeItem('password');
   }
 });
 
-  
-  
-}
+
+
 
 
 
