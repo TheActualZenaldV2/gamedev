@@ -68,14 +68,16 @@
 <form id="login-form">
     <p style="text-align: center"> Welcome back! Login to continue. </p>
     <label for="email-input-login">Email:</label>
-    <input type="email" id="email-input-login" required>
+    <input type="email" id="email-input-login" name="email" required>
   
     <label for="password-input-login">Password:</label>
-    <input type="password" id="password-input-login" minlength="6" required>
+    <input type="password" id="password-input-login" name="password" minlength="6" required>
+    <label> Remember Me  <input type="checkbox" id="remember-me" name="remember-me" value="remember-me"> </label>
     <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
     <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p>
     <button type="submit">Log In</button>
 </form>
+
 
 <form id="login-success">
     <p> Login Successful! Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
@@ -213,6 +215,10 @@ profilePictureInput.addEventListener('change', (event) => {
         
     
     }
+
+    
+
+
   
     const registrationForm1 = document.getElementById("registration-form");
 
@@ -275,8 +281,8 @@ registrationForm1.addEventListener('submit', (event) => {
     }
 
     function showLoginForm() {
-        document.getElementById("registration-form").style.display = "none";
         document.getElementById("login-form").style.display = "block";
+        document.getElementById("registration-form").style.display = "none";
         document.getElementById("account-confirmation").style.display = "none";
         document.getElementById("login-success").style.display = "none";
         document.getElementById("passwordResetConfirmation").style.display = "none";
@@ -405,23 +411,37 @@ registrationForm.addEventListener('submit', (event) => {
                             break;
                     }
                 }, function() {
-                    // Upload completed successfully, now we can get the download URL
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        console.log('File available at', downloadURL);
-                        database.ref('users/' + username).update({
-                            profilePicture: downloadURL
-                        });
-                        // entry creation successful
-            console.log("Account data sent to database successfully (Step 2)");
+    // Upload completed successfully, now we can get the download URL
+    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        console.log('File available at', downloadURL);
+        database.ref('users/' + username).update({
+            profilePicture: downloadURL
+        });
+
+        // create a new Image object
+        var image = new Image();
+
+        // attach a listener for the load event
+        image.addEventListener('load', function() {
+            // set the src attribute of the img element
+            document.getElementById("profile-picture-from-db").src = downloadURL;
+
             // show login form and hide spinner
             document.getElementById("registration-form").style.display = "none";
             document.getElementById("account-confirmation").style.display = "block";
             document.getElementById("loading").style.display = "none";
             document.getElementById("loading-text").style.display = "none";
-            //show profile picture by setting its src to the downloadURL
-            document.getElementById("profile-picture-from-db").src = downloadURL;
-                    });
-                });
+
+            //set local storage hasmadeaccount to true
+            localStorage.setItem("hasMadeAccount", "true");
+        });
+
+        // set the src of the Image object to the downloadURL
+        image.src = downloadURL;
+    });
+}
+
+                );
           // create a new entry in the database with the specified username
           database.ref('users/' + username).set({
           
@@ -643,6 +663,31 @@ databaseError1.addEventListener('submit', (event) => {
     
 
 
+const rememberMeCheckbox = document.querySelector('#remember-me');
+
+// check if there are saved credentials in localStorage
+const savedEmail = localStorage.getItem('email');
+const savedPassword = localStorage.getItem('password');
+if (savedEmail && savedPassword) {
+  // fill in the login form with saved credentials
+  document.querySelector('#email-input-login').value = savedEmail;
+  document.querySelector('#password-input-login').value = savedPassword;
+  //check the remember me checkbox
+    rememberMeCheckbox.checked = true;
+
+  let formSubmitted = false; // add this variable to keep track of whether the form has been submitted
+
+    if (formSubmitted == false) { // only submit the form once
+      formSubmitted = true;
+      console.log(formSubmitted);
+        // submit the login form
+   
+    }
+  
+  
+}
+
+
 
 
 
@@ -659,13 +704,16 @@ databaseError1.addEventListener('submit', (event) => {
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
     #profile-picture-from-database, #preview-image, #profile-picture-from-db {
-        /* wip */
+        /* wip profile image css */
         width: 100px;
         height: 100px;
         border-radius: 50%;
-        border: 2px solid #000;
+        border: 1px solid black;
+        object-fit: cover;
         margin: 0 auto;
         display: block;
+
+
     }
 
 
@@ -755,9 +803,10 @@ databaseError1.addEventListener('submit', (event) => {
     body {
         
         font-family: 'Poppins', sans-serif;
-        background: url('https://i.imgur.com/EO23tmu.jpg') no-repeat center center fixed;
+        
+        background: url('https://img.freepik.com/premium-vector/blue-purple-gradient-color-background-website-banner-poster-graphic-design-decoration_120819-1548.jpg') no-repeat center center fixed;
         background-size: cover;
-        color: white;
+        color: black;
         
 
 
