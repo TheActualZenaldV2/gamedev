@@ -127,14 +127,37 @@
 </form>
 
 <form id="databaseError">
-    <p style="text-align: center;"> Continue Setting Up Your Account... </p>
-    
-    <label for="databaseErrorUsername">Username:</label>
-    <input type="text" id="databaseErrorUsername" required>
+    <p style="text-align: center;"> Continue Setting Up Your Account... <br> Select an option:  </p>
+    <button id="fixProfilePicture" class="logoutButton" onclick="showPfpFix()" style="color: black; font-size: 0.9rem; font-weight: bold; padding: 10;"> <i class="fa-solid fa-user" style="font-size: 3rem; color:#db33b7; text-align: center;"></i>      Add a Profile Picture </button> <hr>
+    <button id="fixUsername" class="logoutButton" onclick="showUserNameFix()" style="color: black; font-size: 0.9rem; font-weight: bold; padding: 10;"> <i class="fa-solid fa-signature" style="font-size: 3rem; color:#4CAF50; text-align: center;"></i>      Add a Username</button> 
+  <hr> <br>
+    <p> Click <a href="#" onclick="showLoginSuccess()"> Here</a> To go back</p>  
 
-    <button type="submit"> Continue </button>
 </form>
 
+<form id="databaseErrorUsername">
+    <p style="text-align: center;"> Choose a username! </p>
+    <label for="databaseErrorUsername">Username:</label>
+
+    <input type="text" id="databaseErrorUsernameText" required> 
+
+    <button type="submit"> Continue </button>
+
+</form>
+
+<form id="databaseErrorProfilePicture">
+    <p style="text-align: center;"> Choose a Profile Picture! </p>
+    <label for="profile-picture">Profile Picture:</label>
+    <input type="file" id="profile-picture2" accept="image/*" required> <br> 
+    <div style="text-align: center;">
+        <img id="preview-image2" src="" alt="Image preview">
+    </div>
+    <br> 
+   
+
+    <button type="submit"> Continue </button>
+
+</form>
 <form id="databaseErrorFixed" style="display: none;"> 
     <p style="text-align: center;"> Thank you for your patience. Your account has been set-up! </p>
     <br> <br> 
@@ -194,6 +217,28 @@ profilePictureInput.addEventListener('change', (event) => {
     }
 });
 
+const previewImage2 = document.getElementById('preview-image2');
+const profilePictureInput2 = document.getElementById('profile-picture2');
+previewImage2.style.display = 'none';
+profilePictureInput2.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const maxSize = 10 * 1024 * 1024; // 5MB in bytes
+    if (file && file.size <= maxSize) { // Check if file exists and is within the size limit
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+            previewImage2.src = readerEvent.target.result;
+        }
+        reader.readAsDataURL(file);
+        previewImage2.style.display = 'block';
+        document.getElementById("profile-picture").innerHTML = "Change Profile Picture";
+
+    } else {
+        alert("File is too large! Please select a file that is 5MB or smaller.");
+        profilePictureInput2.value = ''; // Reset the input field to clear the invalid file
+        previewImage2.src = '';
+        previewImage2.style.display = 'none';
+    }
+});
 
 
     const passwordInput = document.getElementById('password-input');
@@ -343,7 +388,30 @@ registrationForm1.addEventListener('submit', (event) => {
         document.getElementById("loading-text").style.display = "none";
     }
 
+    function showLoginSuccess() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        document.getElementById("databaseError").style.display = "none";
+    }
 
+    function showPfpFix() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").style.display = "none";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+        document.getElementById("databaseError").style.display = "none";
+        document.getElementById("databaseErrorProfilePicture").style.display = "block";
+    }
+
+    function showUserNameFix(){
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").style.display = "none";
+        document.getElementById("databaseError").style.display = "none";
+        document.getElementById("databaseErrorUsername").style.display = "block";
+
+    }
 
 
    //start of firebase code
@@ -588,6 +656,8 @@ profilePictureRef.on('value', (snapshot) => {
                 if(databaseError == true){
                     setTimeout(() => {
                         alert("Error: User not found in database. Please finish setting up your account.");
+                        //disable fix profile pciture button
+                        document.getElementById("fixProfilePicture").disabled = true;
                     }, 100);
                     document.getElementById("loading").style.display = "none";
                     document.getElementById("loading-text").style.display = "none";
@@ -625,7 +695,7 @@ profilePictureRef.on('value', (snapshot) => {
 });
 
 
-const input = document.getElementById('databaseErrorUsername');
+const input = document.getElementById('databaseErrorUsernameText');
 
 input.addEventListener('input', () => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -637,14 +707,22 @@ input.addEventListener('input', () => {
 });
 
 
+const profileSetUp = document.getElementById('setUp-profile');
+profileSetUp.addEventListener('click', (event) => {
+    //show the database error form
+    document.getElementById("databaseError").style.display = "block";
+    //hide the login form
+    document.getElementById("login-success").style.display = "none";
+})
+
 // attach an event listener to the database error fix button for form submit 
-const databaseError1 = document.getElementById('databaseError');
+const databaseError1 = document.getElementById('databaseErrorUsername');
 databaseError1.addEventListener('submit', (event) => {
     event.preventDefault();
 
     var user = firebase.auth().currentUser;
     // send username to firebase realtime database
-    const username = document.getElementById('databaseErrorUsername').value;
+    const username = document.getElementById('databaseErrorUsernameText').value;
     const email = document.getElementById('email-input-login').value;
 
     // Query Firebase for the specified username
@@ -671,7 +749,7 @@ databaseError1.addEventListener('submit', (event) => {
         console.log("Account data sent to database successfully (Step 2)");
         // show login form and hide spinner
         document.getElementById("databaseError").style.display = "none";
-        document.getElementById("databaseErrorFixed").style.display = "block";
+        document.getElementById("databaseErrorFixed").style.display = "none";
       }).catch((error) => {
         // entry creation failed
         console.log("Error creating entry in database:", error);
@@ -692,8 +770,44 @@ databaseError1.addEventListener('submit', (event) => {
     // show loading spinner and hide form
     document.getElementById("loading").style.display = "none";
     document.getElementById("loading-text").style.display = "none";
-    document.getElementById("databaseError").style.display = "block";
+    document.getElementById("databaseError").style.display = "none";
+    document.getElementById("databaseErrorUsername").style.display = "none";
+    document.getElementById("databaseErrorFixed").style.display = "none";
+    document.getElementById("login-success").style.display = "block";
+
+
+  
+profilePictureRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data == "" || data == null){
+        databaseError = true;
+        //disable the edit username button
+        document.getElementById("fixUsername").disabled = true;
+        document.getElementById("fixProfilePicture").disabled = false;
+        console.log("No profile picture found in database");
+        document.getElementById("profile-picture-from-database").style.display = "none";
+        //switch the setUp class to the X icon 
+        document.getElementById("setUpIcon").classList.remove("fa-check-circle");
+        document.getElementById("setUpIcon").classList.add("fa-circle-xmark");
+        document.getElementById("setUpIcon").style.color = "red";
+        document.getElementById("continue").classList.remove("fa-check-circle");
+        document.getElementById("continue").classList.add("fa-circle-xmark");
+        document.getElementById("continue").style.color = "red";
+        //disable the continue button
+        document.getElementById("continue-profile").disabled = true;
+        //disable edit profile button
+        document.getElementById("edit-profile").disabled = true;
+        //enable the set up button
+        document.getElementById("setUp-profile").disabled = false;
+
+        
+        userIsLoggedIn();
+    }
 });
+
+});
+
+
 
 
     
@@ -730,6 +844,80 @@ loginForm.addEventListener('submit', (event) => {
 });
 
 
+//attach event listener to databaseErrorProfilePicture
+//on submit, send the profile picture to firebase storage and update the profile picture in the database
+const databaseErrorProfilePicture = document.getElementById('databaseErrorProfilePicture');
+databaseErrorProfilePicture.addEventListener('submit', (event) => {
+    event.preventDefault(); // prevent form from submitting and refreshing the page
+    //show spinner
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("loading-text").style.display = "block";
+    //hide form
+    document.getElementById("databaseErrorProfilePicture").style.display = "none";
+    // send profile picture to database
+    var storageRef = firebase.storage().ref();
+    var file = document.getElementById("profile-picture2").files[0];
+    var metadata = {
+        contentType: file.type
+    };
+    var uploadTask = storageRef.child('profilePictures/' + username).put(file, metadata);
+
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+        function(snapshot) {
+            // handle upload progress
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress.toFixed(2) + '% done');
+        },
+        function(error) {
+            // handle upload errors here
+        },
+        function() {
+            // upload completed successfully, get the download URL
+            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                console.log('File available at', downloadURL);
+
+                // update the profile picture in the database
+                database.ref('users/' + username).update({
+                    profilePicture: downloadURL
+                });
+
+                // update the image element with the new profile picture
+                document.getElementById("profile-picture-from-db").src = downloadURL;
+                //hide the database error form
+                document.getElementById("databaseErrorProfilePicture").style.display = "none";
+                //show the login form
+                document.getElementById("login-success").style.display = "block";
+                //show the picture in the login form
+                document.getElementById("profile-picture-from-database").style.display = "block";
+                //logic if account is set up...
+
+                  //switch the setUp class to the X icon 
+        document.getElementById("setUpIcon").classList.add("fa-check-circle");
+        document.getElementById("setUpIcon").classList.remove("fa-circle-xmark");
+        document.getElementById("setUpIcon").style.color = "green";
+        document.getElementById("continue").classList.add("fa-check-circle");
+        document.getElementById("continue").classList.remove("fa-circle-xmark");
+        document.getElementById("continue").style.color = "green";
+        //enable the continue button
+        document.getElementById("continue-profile").disabled = false;
+        //disable edit profile button
+        document.getElementById("edit-profile").disabled = false;
+        //enable the set up button
+        document.getElementById("setUp-profile").disabled = true;
+
+        //hide spinner 
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading-text").style.display = "none";
+
+            });
+        }
+    );
+});
+
+
+
+
+
 
 
 
@@ -748,7 +936,9 @@ loginForm.addEventListener('submit', (event) => {
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
-   
+   #databaseErrorUsername, #databaseErrorProfilePicture{
+    display: none;
+   }
     .logoutButton{
         /* no background color */
         background-color: transparent;
@@ -785,7 +975,7 @@ loginForm.addEventListener('submit', (event) => {
 
     :disabled {
         cursor: not-allowed;
-        opacity: 0.5;
+        opacity: 0.3;
     }
 /* Style the remember me checkbox */
 #remember-me {
@@ -815,7 +1005,7 @@ loginForm.addEventListener('submit', (event) => {
 
 
 
-    #profile-picture-from-database, #preview-image, #profile-picture-from-db {
+    #profile-picture-from-database, #preview-image, #profile-picture-from-db, #preview-image2 {
         /* wip profile image css */
         position: relative;
         width: 100px;
