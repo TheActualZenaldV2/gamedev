@@ -676,13 +676,16 @@ if (savedEmail && savedPassword) {
     rememberMeCheckbox.checked = true;
 
   let formSubmitted = false; // add this variable to keep track of whether the form has been submitted
+//if its unchecked, clear user and password from local storage
 
-    if (formSubmitted == false) { // only submit the form once
-      formSubmitted = true;
-      console.log(formSubmitted);
-        // submit the login form
-   
-    }
+//add event lisener to the checkbox
+rememberMeCheckbox.addEventListener('change', () => {
+  if (!rememberMeCheckbox.checked) {
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+  }
+});
+
   
   
 }
@@ -705,10 +708,12 @@ if (savedEmail && savedPassword) {
 
     #profile-picture-from-database, #preview-image, #profile-picture-from-db {
         /* wip profile image css */
+        position: relative;
         width: 100px;
         height: 100px;
         border-radius: 50%;
-        border: 1px solid black;
+        border: 3px solid black;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.7);
         object-fit: cover;
         margin: 0 auto;
         display: block;
@@ -741,7 +746,7 @@ if (savedEmail && savedPassword) {
     }
     .checkmark-icon {
         position: absolute;
-        top: 40%;
+        top: 44%;
         left: 50%;
         transform: translate(-50%, -50%);
         color: green;
@@ -749,7 +754,7 @@ if (savedEmail && savedPassword) {
         background-color: white;
         border-radius: 50%;
         padding: 3px;
-        
+        z-index: 999;
     }
     #check {
 
@@ -766,22 +771,23 @@ if (savedEmail && savedPassword) {
         
     }
     
-    /* Style the loading spinner */
     #loading {
-        display: none;
-        margin: 0 auto;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 5px solid #ccc;
-        border-top-color: #333;
-        animation: spin 2s ease-in-out infinite;
-        position: absolute;
-        top: 50%;
-        left: 48.5%;
-        
-        
-      }
+  display: none;
+  margin: 0 auto;
+  width: 50px;
+  height: 50px;
+  border-image: linear-gradient(0deg, #afd4d9 0%, #5fd8e0 100%) 1;
+        border-inline: 5px;
+  border-width: 5px;
+  border-style: solid;
+  animation: spin 2s ease-in-out infinite;
+  position: absolute;
+  top: 50%;
+  left: 48.5%;
+  background-color: #333;
+}
+
+
 
       #loading-text {
         color: white;
