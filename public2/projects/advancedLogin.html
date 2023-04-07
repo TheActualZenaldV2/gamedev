@@ -5,6 +5,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-storage.js"></script>
+<script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
@@ -31,6 +32,7 @@
 
   
     <button id="continue-button" type="submit">Continue</button>
+
 </form>
 
 <form id="registration-form-2">
@@ -72,22 +74,39 @@
   
     <label for="password-input-login">Password:</label>
     <input type="password" id="password-input-login" name="password" minlength="6" required>
-    <label> Remember Me  <input type="checkbox" id="remember-me" name="remember-me" value="remember-me"> </label>
+    <label for="remember-me"> Remember Me  <input type="checkbox" id="remember-me" name="remember-me" value="remember-me"> </label>
     <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
-    <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p>
+    <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p> 
+
+
+    
     <button type="submit">Log In</button>
 </form>
 
 
 <form id="login-success">
-    <p> Login Successful! Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+    <p>  Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> </p>
   <br> 
   <img id="profile-picture-from-database" src="" alt="Profile Picture">
   <br> 
-    <p style="text-decoration: bold;"> I dont feel like working anymore so this is all you get.</p>
+  <p class="check-text loggedIn"> <i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 2rem; text-align: left;"></i>     Logged In Successfully</p><br> 
+  <p class="check-text setUp" id="setUp"><i id="setUpIcon" class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 2rem; text-align: left;"></i>     Account Is Fully Set Up</p><br> 
+
+  <p class="check-text continue"><i id="continue" class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 2rem; text-align: left;"></i>     Ready To Continue </p><br> 
+
+
+
     
     
-    <button type="submit" onclick="logout()">Log Out</button>
+    <button  class="logoutButton" title="Log Out" onclick="logout()"> <i class="fa-solid fa-circle-xmark" style="font-size: 3rem;"></i> </button>
+    <button id="setUp-profile" class="logoutButton fixAccountProblems" title="Fix Account Problems"   disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
+    <button id="edit-profile" class="logoutButton" title="Change Account Details"> <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
+    <button  id="continue-profile" class="logoutButton" title="Continue" > <i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i> </button>
+
+
+
+    
+ 
 </form>
 
 <form id="reset-password"> 
@@ -525,9 +544,26 @@ loginForm.addEventListener('submit', (event) => {
 profilePictureRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if(data == "" || data == null){
+        databaseError = true;
+        
         console.log("No profile picture found in database");
         document.getElementById("profile-picture-from-database").style.display = "none";
-        userIsLoggedIn(); //later, set up a default profile picture OR option to fix this 
+        //switch the setUp class to the X icon 
+        document.getElementById("setUpIcon").classList.remove("fa-check-circle");
+        document.getElementById("setUpIcon").classList.add("fa-circle-xmark");
+        document.getElementById("setUpIcon").style.color = "red";
+        document.getElementById("continue").classList.remove("fa-check-circle");
+        document.getElementById("continue").classList.add("fa-circle-xmark");
+        document.getElementById("continue").style.color = "red";
+        //disable the continue button
+        document.getElementById("continue-profile").disabled = true;
+        //disable edit profile button
+        document.getElementById("edit-profile").disabled = true;
+        //enable the set up button
+        document.getElementById("setUp-profile").disabled = false;
+
+        
+        userIsLoggedIn();
     }
     var img = new Image();
     img.onload = function() {
@@ -712,6 +748,73 @@ loginForm.addEventListener('submit', (event) => {
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
+   
+    .logoutButton{
+        /* no background color */
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+       
+        color: #ffffff;
+        padding-top: 20;
+        padding: 10px;
+
+        padding-bottom: 20;
+    }
+    .logoutButton:hover{
+        padding-top: 10;
+        padding-bottom: 10;
+
+        transition: 0.3s all;
+        border-radius: 20px; 
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    }
+    .check-text {
+       text-align: left;
+       padding: 5px;
+       padding-left: 10px;
+       border-bottom: 5px solid #383838;
+       margin: 0;
+    }
+    .logoutButton:active{
+       transform: scale(1.1);
+       transition: 0.5s all;
+       
+    }
+
+    :disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+/* Style the remember me checkbox */
+#remember-me {
+  /* customize the checkbox */
+   
+    
+  display: inline-block;
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #000;
+    border-radius: 10px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin: 0 4px 0 0;
+    outline: none;
+
+    
+
+
+}
+
+
+    
+
+
+
+
     #profile-picture-from-database, #preview-image, #profile-picture-from-db {
         /* wip profile image css */
         position: relative;
@@ -744,14 +847,18 @@ loginForm.addEventListener('submit', (event) => {
     .devtools {
         display: none;
     }
-    #login-success {
-        text-align: center;
-    }
+    
     #account-confirmation{
         text-align: center;
     }
+    .fa-circle-xmark {
+        color: red;
+        font-size: 5rem;
+        z-index: 999;
+    }
     .checkmark-icon {
-        position: absolute;
+        /*
+       position: absolute;
         top: 44%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -761,6 +868,7 @@ loginForm.addEventListener('submit', (event) => {
         border-radius: 50%;
         padding: 3px;
         z-index: 999;
+        */
     }
     #check {
 
@@ -790,7 +898,7 @@ loginForm.addEventListener('submit', (event) => {
   position: absolute;
   top: 50%;
   left: 48.5%;
-  background-color: #333;
+  background-color: #4949494b;
 }
 
 
@@ -857,7 +965,7 @@ loginForm.addEventListener('submit', (event) => {
     }
     
     button[type="submit"] {
-        display: block;
+        display: relative;
         width: 100%;
         padding: 10px;
         border-radius: 5px;
@@ -899,5 +1007,14 @@ loginForm.addEventListener('submit', (event) => {
     #login-form button[type="submit"]:hover {
         background-color: #555;
     }
+
+
+    #login-success {
+        text-align: center;
+        padding: 50px;
+        
+    }
+
+    
 </style>
 </body>
