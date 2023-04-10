@@ -99,9 +99,10 @@
     
     
     <button  class="logoutButton" title="Log Out" onclick="logout()"> <i class="fa-solid fa-circle-xmark" style="font-size: 3rem;"></i> </button>
-    <button id="setUp-profile" class="logoutButton fixAccountProblems" title="Fix Account Problems"   disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
-    <button id="edit-profile" class="logoutButton" title="Change Account Details"> <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
-    <button  id="continue-profile" class="logoutButton" title="Continue" > <i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i> </button>
+    <button id="setUp-profile" class="logoutButton fixAccountProblems" onclick="{event.preventDefault(); document.getElementById('fixUsername').disabled = true}"
+title="Fix Account Problems"   onclick="{event.preventDefault()}" disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
+    <button id="edit-profile" onclick="{event.preventDefault()}" class="logoutButton" title="Change Account Details"> <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
+    <button  id="continue-profile" onclick="{event.preventDefault()}" class="logoutButton" title="Continue" > <i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i> </button>
 
 
 
@@ -397,6 +398,7 @@ registrationForm1.addEventListener('submit', (event) => {
     }
 
     function showPfpFix() {
+        event.preventDefault();
         document.getElementById("login-form").style.display = "none";
         document.getElementById("login-success").style.display = "none";
         document.getElementById("loading").style.display = "none";
@@ -430,6 +432,7 @@ registrationForm.addEventListener('submit', (event) => {
   // show loading spinner and hide form
   document.getElementById("loading").style.display = "block";
   document.getElementById("loading-text").style.display = "block";
+  
   document.getElementById("registration-form").style.display = "none";
   showSpinner();
 
@@ -580,6 +583,7 @@ loginForm.addEventListener('submit', (event) => {
     // show loading spinner
     document.getElementById("loading").style.display = "block";
     document.getElementById("loading-text").style.display = "block";
+    document.getElementById("loading-text").innerHTML = ("Processing Your Request...");
     document.getElementById("login-form").style.display = "none";
 
     setTimeout(() => {
@@ -611,10 +615,12 @@ loginForm.addEventListener('submit', (event) => {
                 
                 document.getElementById("username-from-database").innerHTML = username;
                 var profilePictureRef = database.ref('users/' + username + '/profilePicture');
+                
 profilePictureRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if(data == "" || data == null){
         databaseError = true;
+        alert("No profile picture found in database. Select the 'Set Up' button to add a profile picture.");
         
         console.log("No profile picture found in database");
         document.getElementById("profile-picture-from-database").style.display = "none";
@@ -656,10 +662,11 @@ profilePictureRef.on('value', (snapshot) => {
 
                 // User with matching email not found
                 if(databaseError == true){
+                    document.getElementById("fixProfilePicture").disabled = true;
+
                     setTimeout(() => {
                         alert("Error: User not found in database. Please finish setting up your account.");
                         //disable fix profile pciture button
-                        document.getElementById("fixProfilePicture").disabled = true;
                     }, 100);
                     document.getElementById("loading").style.display = "none";
                     document.getElementById("loading-text").style.display = "none";
@@ -740,6 +747,8 @@ databaseError1.addEventListener('submit', (event) => {
       if (existingUsernames.includes(lowercaseUsername)) {
         // highlight the username input field
         alert('Username already exists!');
+        document.getElementById("databaseErrorUsername").style.display = "block";
+        document.getElementById("login-success").style.display = "none";
         return;
       }
 
@@ -753,6 +762,8 @@ databaseError1.addEventListener('submit', (event) => {
         // show login form and hide spinner
         document.getElementById("databaseError").style.display = "none";
         document.getElementById("databaseErrorFixed").style.display = "none";
+        alert("Username updated successfully. Login again to continue");
+        location.reload();
       }).catch((error) => {
         // entry creation failed
         console.log("Error creating entry in database:", error);
@@ -776,21 +787,10 @@ databaseError1.addEventListener('submit', (event) => {
     document.getElementById("databaseError").style.display = "none";
     document.getElementById("databaseErrorUsername").style.display = "none";
     document.getElementById("databaseErrorFixed").style.display = "none";
-    document.getElementById("login-success").style.display = "block";
+    
 
-
-  
-profilePictureRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    if(data == "" || data == null){
-        databaseError = true;
-        //disable the edit username button
-        document.getElementById("fixUsername").disabled = true;
-        document.getElementById("fixProfilePicture").disabled = false;
-        console.log("No profile picture found in database");
-        document.getElementById("profile-picture-from-database").style.display = "none";
-        //switch the setUp class to the X icon 
-        document.getElementById("setUpIcon").classList.remove("fa-check-circle");
+   //switch the setUp class to the X icon 
+   document.getElementById("setUpIcon").classList.remove("fa-check-circle");
         document.getElementById("setUpIcon").classList.add("fa-circle-xmark");
         document.getElementById("setUpIcon").style.color = "red";
         document.getElementById("continue").classList.remove("fa-check-circle");
@@ -802,11 +802,13 @@ profilePictureRef.on('value', (snapshot) => {
         document.getElementById("edit-profile").disabled = true;
         //enable the set up button
         document.getElementById("setUp-profile").disabled = false;
+        //enable the fix profile pciutre button
+        document.getElementById("fixProfilePicture").disabled = false;
 
-        
-        userIsLoggedIn();
-    }
-});
+
+
+
+
 
 });
 
@@ -831,6 +833,22 @@ if (savedEmail && savedPassword) {
   //check the remember me checkbox
   rememberMeCheckbox.checked = true;
 }
+
+// add an event listener that listens for the form's submit event
+loginForm.addEventListener('submit', (event) => {
+  // check if the "Remember Me" checkbox is checked
+  if (rememberMeCheckbox.checked) {
+    // save the user's credentials to localStorage
+    localStorage.setItem('email', emailInput.value);
+    localStorage.setItem('password', passwordInput2.value);
+  } else {
+    // remove the user's credentials from localStorage
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+  }
+});
+
+
 
 // add an event listener that listens for the form's submit event
 loginForm.addEventListener('submit', (event) => {
@@ -916,6 +934,7 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         }
     );
 });
+
 
 
 
@@ -1087,8 +1106,9 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         border-inline: 5px;
   border-width: 5px;
   border-style: solid;
-  animation: spin 2s ease-in-out infinite;
-  position: absolute;
+  animation: spin 3.5s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+
+    position: absolute;
   top: 50%;
   left: 48.5%;
   background-color: #4949494b;
@@ -1108,10 +1128,35 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         z-index: 100;
 
       }
-      /* Animation for the loading spinner */
       @keyframes spin {
-        to {transform: rotate(360deg);}
-      }
+  0% {
+    transform: rotate(0deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  20% {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  }
+  40% {
+    transform: rotate(180deg);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  }
+  60% {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+  }
+  80% {
+    transform: rotate(360deg);
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    transform: rotate(360deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+
+
+
     
     body {
         
