@@ -615,8 +615,8 @@ loginForm.addEventListener('submit', (event) => {
                 
                 document.getElementById("username-from-database").innerHTML = username;
                 var profilePictureRef = database.ref('users/' + username + '/profilePicture');
-                
-profilePictureRef.on('value', (snapshot) => {
+                //u
+profilePictureRef.on('vale', (snapshot) => {
     const data = snapshot.val();
     if(data == "" || data == null){
         databaseError = true;
@@ -1131,25 +1131,36 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
       @keyframes spin {
   0% {
     transform: rotate(0deg);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgb(0, 0, 0.6);
+    background-color: #bdbdbd6c;
   }
   20% {
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    background-color: #4949494b;
+
   }
   40% {
     transform: rotate(180deg);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    background-color: #4949494b;
+
   }
   60% {
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    background-color: #4949494b;
+
   }
   80% {
     transform: rotate(360deg);
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+    background-color: #4949494b;
+
   }
   100% {
     transform: rotate(360deg);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgb(0, 0, 0.6);
+    background-color: #bdbdbd6c;
+
   }
 }
 
