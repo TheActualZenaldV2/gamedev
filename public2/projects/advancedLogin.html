@@ -200,7 +200,7 @@ const profilePictureInput = document.getElementById('profile-picture');
 previewImage.style.display = 'none';
 profilePictureInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
-    const maxSize = 10 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
     if (file && file.size <= maxSize) { // Check if file exists and is within the size limit
         const reader = new FileReader();
         reader.onload = (readerEvent) => {
@@ -211,7 +211,7 @@ profilePictureInput.addEventListener('change', (event) => {
         document.getElementById("profile-picture").innerHTML = "Change Profile Picture";
 
     } else {
-        alert("File is too large! Please select a file that is 5MB or smaller.");
+        alert("File is too large! Please select a file that is 10MB or smaller.");
         profilePictureInput.value = ''; // Reset the input field to clear the invalid file
         previewImage.src = '';
         previewImage.style.display = 'none';
