@@ -615,8 +615,8 @@ loginForm.addEventListener('submit', (event) => {
                 
                 document.getElementById("username-from-database").innerHTML = username;
                 var profilePictureRef = database.ref('users/' + username + '/profilePicture');
-                //u
-profilePictureRef.on('vale', (snapshot) => {
+                
+profilePictureRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if(data == "" || data == null){
         databaseError = true;
