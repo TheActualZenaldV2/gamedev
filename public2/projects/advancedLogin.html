@@ -102,8 +102,7 @@
     <button id="setUp-profile" class="logoutButton fixAccountProblems" onclick="{event.preventDefault(); document.getElementById('fixUsername').disabled = true}"
 title="Fix Account Problems"   onclick="{event.preventDefault()}" disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
     <button id="edit-profile" onclick="{event.preventDefault()}" class="logoutButton" title="Change Account Details"> <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
-    <button  id="continue-profile" onclick="{event.preventDefault()}" class="logoutButton" title="Continue" > <i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i> </button>
-
+    <button id="continue-profile" onclick="continueProfile()" class="logoutButton" title="Continue"><i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i></button>
 
 
     
@@ -416,6 +415,14 @@ registrationForm1.addEventListener('submit', (event) => {
         document.getElementById("databaseErrorUsername").style.display = "block";
 
     }
+
+    function continueProfile() {
+    event.preventDefault();
+    document.getElementById('loading-text').style.display = 'block';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('login-success').style.display = 'none';
+    document.getElementById('loading-text').innerHTML = "This won't work, good luck have fun, I'm not doing any more work" + '<br> <br> ' + 'Click <a href="#" onclick="document.getElementById(\'login-success\').style.display = \'block\'; document.getElementById(\'loading\').style.display = \'none\'; document.getElementById(\'loading-text\').style.display = \'none\'">here</a> to go back.';
+}
 
 
    //start of firebase code
@@ -1142,8 +1149,12 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
   40% {
     transform: rotate(180deg);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-    background-color: #4949494b;
-
+    background-color: #bdbdbd6c;
+  }
+  50% {
+    transform: rotate(180deg);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    background-color: #bdbdbd6c;
   }
   60% {
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
