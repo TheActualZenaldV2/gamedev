@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <title>Getting Clients IP</title>
+    
+  
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+    <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyAiuMz206kieB5Rkw8MgbRkZiHtvp41Z3I",
+    authDomain: "iptest-bb546.firebaseapp.com",
+    databaseURL: "https://iptest-bb546-default-rtdb.firebaseio.com",
+    projectId: "iptest-bb546",
+    storageBucket: "iptest-bb546.appspot.com",
+    messagingSenderId: "841653361021",
+    appId: "1:841653361021:web:4c85b1ff44eecb4d539414",
+    measurementId: "G-15PK15WCJE"
+  };
+;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    function sendIpAddressToFirebase(ipAddress) {
+  // Get a reference to the Firebase database
+  var database = firebase.database();
+
+  // Get the current timestamp and format it with timezone
+  var timestamp = Date.now();
+  const date = new Date(timestamp);
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZoneName: 'short'
+  };
+  const formattedTime = date.toLocaleString('en-US', options);
+
+  // Get device info
+  var deviceInfo = getDeviceInfo();
+
+  // Create a new entry with the IP address, device type, browser, and current timestamp
+  var entry = {
+    ipAddress: ipAddress,
+    deviceType: deviceInfo.deviceType,
+    browser: deviceInfo.browser,
+    formattedTime: formattedTime,
+  };
+
+  //get location of user
+  navigator.geolocation.getCurrentPosition(function(position) {
+    //send location to firebase
+    var location = {
+      latitude: position.coords.latitude.toFixed(2),
+      longitude: position.coords.longitude.toFixed(2),
+    };
+    //display location
+    $("#location").html("Latitude: "+ location.latitude + "<br> Longitude: " + location.longitude);
+
+    // Add the location data to the entry
+    Object.assign(entry, location);
+
+    // Add the entry to the database under a new unique key
+    database.ref('ipAddresses').push(entry);
+
+  }, function(error) {
+    // Handle location error by sending data without location
+    database.ref('ipAddresses').push(entry);
+  });
+
+  // Display the timezone
+  $("#timezone").html(formattedTime);
+  $("#browser").html(deviceInfo.browser);
+  $("#deviceType").html(deviceInfo.deviceType);
+}
+
+
+
+function getDeviceInfo() {
+  var userAgent = navigator.userAgent.toLowerCase();
+
+  var deviceType = "";
+  if (userAgent.indexOf("mobile") !== -1) {
+    deviceType = "Mobile";
+  } else if (userAgent.indexOf("tablet") !== -1) {
+    deviceType = "Tablet";
+  } else {
+    deviceType = "Desktop";
+  }
+
+  var browser = "";
+  if ((userAgent.indexOf("opera") || userAgent.indexOf('opr')) !== -1) {
+    browser = 'Opera';
+  } else if (userAgent.indexOf("edge") !== -1) {
+    browser = 'Microsoft Edge';
+  } else if (userAgent.indexOf("chrome") !== -1) {
+    browser = 'Google Chrome';
+  } else if (userAgent.indexOf("safari") !== -1) {
+    browser = 'Safari';
+  } else if (userAgent.indexOf("firefox") !== -1) {
+    browser = 'Firefox';
+  } else if ((userAgent.indexOf("trident") !== -1) || (userAgent.indexOf("msie") !== -1)) {
+    browser = 'Internet Explorer';
+  }
+    
+
+
+
+  return {
+    deviceType: deviceType,
+    browser: browser,
+    
+
+  };
+
+
+}
+
+
+    // function to get the IP address and display it on the page
+    function getIpAddress() {
+        document.getElementById("content").style.display = "block";
+        document.getElementById("warning").style.display = "none";
+        // Add "https://api.ipify.org?format=json" statement
+        // this will communicate with the ipify servers in
+        // order to retrieve the IP address $.getJSON will
+        // load JSON-encoded data from the server using a
+        // GET HTTP request
+        $.getJSON("https://api.ipify.org?format=json", function(data) {
+            // Setting text of element P with id gfg
+            var ipAddress = data.ip;
+            if (ipAddress !== null) {
+                sendIpAddressToFirebase(ipAddress);
+            }
+            $("#gfg").html(ipAddress);
+        });
+    }
+    </script>
+</head>
+ 
+<body>
+    <div id="warning">
+        <h1> Warning: <br> </h1>
+        <p> This is essentially a grabify service. This website will get your personal data including: <br>
+           <li> IP</li> <br>
+                <li> Timezone</li> <br>
+                    <li> Browser Type</li>  <br>
+                        <li> Location</li> <br> </p>
+            <p id="warning2"> Do not proceed if you reject this information being collected and stored. </p>
+        <button onclick="getIpAddress()">Start</button>
+
+    </div>
+    <center id="content">
+        <h1>Getting User Information Using Javascript:</h1>
+        <h3>Public IP Address of user is:</h3>
+        <p id="gfg"> Your browser probably blocks IP tracking.</p>
+        <h3> Timezone information of this user:</h3>
+        <p id="timezone">Your browser probably blocks Timezone tracking. </p>
+        <h3> User Browser: </h3>
+        <p id="browser">Your browser probably blocks Browser Type Tracking.</p>
+        <h3> User Device Type: </h3>
+        <p id="deviceType">Your browser probably blocks Device Type Tracking.</p>
+        <h3> Log & Lat:</h3>
+        <p id="location">You've rejected location services.</p>
+
+    </center>
+</body>
+ 
+</html>
+
+<style>
+    /* import poppins font from google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+body {
+    text-align: center;
+  margin: 0;
+  padding: 0;
+    font-family: 'Poppins', sans-serif;
+  background-color: #f4f4f4;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  color: #333333;
+  margin-top: 60px;
+}
+
+h3, li {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333333;
+  margin-top: 40px;
+}
+
+p {
+  font-size: 24px;
+  font-weight: normal;
+  color: #666666;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#timezone, #browser, #deviceType, #location, #gfg {
+  font-size: 20px;
+  font-weight: normal;
+  color: #999999;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#content {
+    display: none;
+  
+}
+
+#warning2{
+    font-size: 30px;
+    font-weight: normal;
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+</style>
