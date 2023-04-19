@@ -3,18 +3,45 @@
  
 <head>
     <title>Getting Clients IP</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
+      <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+       <!-- Add Firebase products that you want to use -->
+        <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+      </head>
+
+<body>
+  <div id="warning">
+      <h1> Warning: <br> </h1>
+      <p> This is a grabify service. This website will get your personal data including: <br>
+         <li> IP</li> <br>
+              <li> Timezone</li> <br>
+                  <li> Browser Type</li>  <br>
+                      <li> Location</li> <br> </p>
+          <p id="warning2"> Do not proceed if you reject this information being collected and stored. </p>
+      <button onclick="getIpAddress()">Start</button>
+
+  </div>
+  <center id="content">
+      <h1>Getting User Information Using Javascript:</h1>
+      <h3>Public IP Address of user is:</h3>
+      <p id="gfg"> Your browser probably blocks IP tracking.</p>
+      <h3> Timezone information of this user:</h3>
+      <p id="timezone">Your browser probably blocks Timezone tracking. </p>
+      <h3> User Browser: </h3>
+      <p id="browser">Your browser probably blocks Browser Type Tracking.</p>
+      <h3> User Device Type: </h3>
+      <p id="deviceType">Your browser probably blocks Device Type Tracking.</p>
+      <h3> Log & Lat:</h3>
+      <p id="location">You've rejected location services.</p>
+
+  </center>
+</body>
+
+</html>
     
   
-    <script src=
-"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
-    </script>
-
-
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
-
-    <!-- Add Firebase products that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+    
 
     <script>
     const firebaseConfig = {
@@ -193,37 +220,7 @@ function getDeviceInfo() {
         });
     }
     </script>
-</head>
  
-<body>
-    <div id="warning">
-        <h1> Warning: <br> </h1>
-        <p> This is essentially a grabify service. This website will get your personal data including: <br>
-           <li> IP</li> <br>
-                <li> Timezone</li> <br>
-                    <li> Browser Type</li>  <br>
-                        <li> Location</li> <br> </p>
-            <p id="warning2"> Do not proceed if you reject this information being collected and stored. </p>
-        <button onclick="getIpAddress()">Start</button>
-
-    </div>
-    <center id="content">
-        <h1>Getting User Information Using Javascript:</h1>
-        <h3>Public IP Address of user is:</h3>
-        <p id="gfg"> Your browser probably blocks IP tracking.</p>
-        <h3> Timezone information of this user:</h3>
-        <p id="timezone">Your browser probably blocks Timezone tracking. </p>
-        <h3> User Browser: </h3>
-        <p id="browser">Your browser probably blocks Browser Type Tracking.</p>
-        <h3> User Device Type: </h3>
-        <p id="deviceType">Your browser probably blocks Device Type Tracking.</p>
-        <h3> Log & Lat:</h3>
-        <p id="location">You've rejected location services.</p>
-
-    </center>
-</body>
- 
-</html>
 
 <style>
     /* import poppins font from google fonts */
