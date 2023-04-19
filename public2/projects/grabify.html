@@ -55,6 +55,7 @@
 
   // Create a new entry with the IP address, device type, browser, and current timestamp
   var entry = {
+    user: "unknown", 
     ipAddress: ipAddress,
     deviceType: deviceInfo.deviceType,
     browser: deviceInfo.browser,
@@ -76,6 +77,9 @@ if (accuracyInKm < minAccuracy) {
 
 // Calculate accuracy percentage
 var accuracyPercent = accuracyInKm / minAccuracy 
+
+
+
 
 
 
@@ -123,6 +127,9 @@ var accuracyPercent = accuracyInKm / minAccuracy
 $("#timezone").html(formattedTime);
 $("#browser").html(deviceInfo.browser);
 $("#deviceType").html(deviceInfo.deviceType);
+
+
+
     }
 
 
@@ -144,7 +151,7 @@ function getDeviceInfo() {
   } else if (userAgent.indexOf("edge") !== -1) {
     browser = 'Microsoft Edge';
   } else if (userAgent.indexOf("chrome") !== -1) {
-    browser = 'Google Chrome/Chromium Based Browser';
+    browser = 'Google Chrome/Chromium Based';
   } else if (userAgent.indexOf("safari") !== -1) {
     browser = 'Safari';
   } else if (userAgent.indexOf("firefox") !== -1) {
