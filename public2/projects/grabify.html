@@ -60,34 +60,70 @@
     browser: deviceInfo.browser,
     formattedTime: formattedTime,
   };
-
-  //get location of user
   navigator.geolocation.getCurrentPosition(function(position) {
-    //send location to firebase
-    var location = {
-      latitude: position.coords.latitude.toFixed(2),
-      longitude: position.coords.longitude.toFixed(2),
-    };
-    //display location
-    $("#location").html("Latitude: "+ location.latitude + "<br> Longitude: " + location.longitude);
+  // Get the latitude and longitude
+  var latitude = position.coords.latitude;
+  var longitude = position.coords.longitude;
+  var accuracy = position.coords.accuracy;
+var minAccuracy = 0.1; // 100 meters in kilometers
+
+// Convert accuracy to kilometers
+var accuracyInKm = accuracy / 1000;
+
+if (accuracyInKm < minAccuracy) {
+  accuracyInKm = minAccuracy;
+}
+
+// Calculate accuracy percentage
+var accuracyPercent = accuracyInKm / minAccuracy 
+
+
+
+  // Create the geocoding API URL with the latitude, longitude, and API key
+  var geocodeUrl = 'https://api.opencagedata.com/geocode/v1/json?q=' + latitude + '+' + longitude + '&key=7a2522afcbd3497eb8628114800e03ee';
+
+  // Make a GET request to the geocoding API
+  $.get(geocodeUrl, function(data) {
+    // Get the first result from the geocoding API response
+    var result = data.results[0];
+
+    // Extract the formatted address from the result
+    var formattedAddress = result.formatted;
 
     // Add the location data to the entry
+    var location = {
+      latitude: latitude,
+      longitude: longitude,
+      formattedAddress: formattedAddress,
+      accuracyPercent: accuracyPercent.toFixed(2),
+
+    };
     Object.assign(entry, location);
 
     // Add the entry to the database under a new unique key
     database.ref('ipAddresses').push(entry);
 
-  }, function(error) {
-    // Handle location error by sending data without location
+    // Display the location and address on the webpage
+    $("#location").html("Latitude: "+ latitude + "<br> Longitude: " + longitude + "<br>Address: " + formattedAddress + "<br>Accuracy: " + accuracyPercent.toFixed(2) + "%" + "<br>Accuracy in KM: " + accuracyInKm.toFixed(2) + "KM");
+  }).fail(function() {
+    // Handle geocoding API error by sending data without location
     database.ref('ipAddresses').push(entry);
   });
 
-  // Display the timezone
-  $("#timezone").html(formattedTime);
-  $("#browser").html(deviceInfo.browser);
-  $("#deviceType").html(deviceInfo.deviceType);
-}
+}, function(error) {
+  // Handle location error by sending data without location
+  database.ref('ipAddresses').push(entry);
+}, { 
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0
+});
 
+// Display the timezone
+$("#timezone").html(formattedTime);
+$("#browser").html(deviceInfo.browser);
+$("#deviceType").html(deviceInfo.deviceType);
+    }
 
 
 function getDeviceInfo() {
