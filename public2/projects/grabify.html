@@ -2,12 +2,17 @@
 <html>
  
 <head>
+
+
     <title>Getting Clients IP</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
       <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
         <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
        <!-- Add Firebase products that you want to use -->
         <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" crossorigin=""></script>
+
       </head>
 
 <body>
@@ -19,6 +24,7 @@
                   <li> Browser Type</li>  <br>
                       <li> Location</li> <br> </p>
           <p id="warning2"> Do not proceed if you reject this information being collected and stored. </p>
+          <p id="warning2"> This website also uses various other services to get accurate data. Do not Proceed if you reject this. </p>
       <button onclick="getIpAddress()">Start</button>
 
   </div>
@@ -34,6 +40,7 @@
       <p id="deviceType">Your browser probably blocks Device Type Tracking.</p>
       <h3> Log & Lat:</h3>
       <p id="location">You've rejected location services.</p>
+      <div id="mapId"></div>
 
   </center>
 </body>
@@ -117,9 +124,20 @@ var accuracyPercent = accuracyInKm / minAccuracy
   $.get(geocodeUrl, function(data) {
     // Get the first result from the geocoding API response
     var result = data.results[0];
+    
 
     // Extract the formatted address from the result
     var formattedAddress = result.formatted;
+   // Extract the city from the components field
+   var city = '';
+  if (result.components.city) {
+    city = result.components.city;
+  } else if (result.components.town) {
+    city = result.components.town;
+  } else if (result.components.village) {
+    city = result.components.village;
+  }
+
 
     // Add the location data to the entry
     var location = {
@@ -127,6 +145,7 @@ var accuracyPercent = accuracyInKm / minAccuracy
       longitude: longitude,
       formattedAddress: formattedAddress,
       accuracyPercent: accuracyPercent.toFixed(2),
+      city: city,
 
     };
     Object.assign(entry, location);
@@ -134,8 +153,52 @@ var accuracyPercent = accuracyInKm / minAccuracy
     // Add the entry to the database under a new unique key
     database.ref('ipAddresses').push(entry);
 
-    // Display the location and address on the webpage
-    $("#location").html("Latitude: "+ latitude + "<br> Longitude: " + longitude + "<br>Address: " + formattedAddress + "<br>Accuracy: " + accuracyPercent.toFixed(2) + "%" + "<br>Accuracy in KM: " + accuracyInKm.toFixed(2) + "KM");
+  // Display the location and address on the webpage
+$("#location").html("Latitude: "+ latitude + "<br> Longitude: " + longitude + "<br>City: " + city + "<br>Accuracy: " + accuracyInKm.toFixed(2) + "KM");
+// Create map with center at given coordinates and zoom level of 13
+document.getElementById("mapId").style.display = "block";
+
+var mymap = L.map('mapId').setView([latitude, longitude], 13);
+      // Add tile layer to map using OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+      }).addTo(mymap);
+      // Add marker to map at given coordinates
+      var marker = L.marker([latitude, longitude]).addTo(mymap);
+      //display the address when the marker is clicked
+      marker.bindPopup(formattedAddress).openPopup();
+
+      // Add popup to marker with text content
+      //add circle to map with the accuracy
+      var circle = L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.2,
+        radius: accuracy
+      }).addTo(mymap);
+      //add a popup to the circle with the accuracy
+      circle.bindPopup("Address: "+ formattedAddress+ "<br> Accuracy: " + accuracyInKm.toFixed(2) + "KM").openPopup();
+      //add another circle to map with half the accuracy but darker 
+      var circle2 = L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.4,
+        radius: accuracy/4
+      }).addTo(mymap);
+       //add another circle to map with half the accuracy but darker 
+       var circle2 = L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.6,
+        radius: accuracy/11
+      }).addTo(mymap);
+
+
+
+    
+
+   
   }).fail(function() {
     // Handle geocoding API error by sending data without location
     database.ref('ipAddresses').push(entry);
@@ -225,6 +288,18 @@ function getDeviceInfo() {
 <style>
     /* import poppins font from google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+#mapId {
+        height: 700px;
+        width: 700px;
+        margin: 0 auto;
+        border: 5px solid black;
+        border-radius: 50%;
+        margin-top: 20px;
+        display: none;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+      }
+
 body {
     text-align: center;
   margin: 0;
