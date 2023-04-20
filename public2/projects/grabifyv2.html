@@ -221,7 +221,13 @@ var mymap = L.map('mapId').setView([latitude, longitude], 13);
 
     
 
-   
+   //enable high accuracy
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
   }).fail(function() {
     // Handle geocoding API error by sending data without location
     database.ref('ipAddresses').push(entry);
@@ -302,6 +308,7 @@ function getIpAddress() {
 
 
 }
+
 
 
 
@@ -409,6 +416,7 @@ body {
   line-height: 1.5;
   margin: 0;
   padding: 0;
+
 }
 
 /* Styles for smaller screens */
