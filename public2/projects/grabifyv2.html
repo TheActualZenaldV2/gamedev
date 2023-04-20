@@ -174,7 +174,7 @@ var mymap = L.map('mapId').setView([latitude, longitude], 13);
       // Add tile layer to map using OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-        maxZoom: 18,
+        maxZoom: 25,
       }).addTo(mymap);
       // Add marker to map at given coordinates
       var marker = L.marker([latitude, longitude]).addTo(mymap);
@@ -199,12 +199,23 @@ var mymap = L.map('mapId').setView([latitude, longitude], 13);
         radius: accuracy/4
       }).addTo(mymap);
        //add another circle to map with half the accuracy but darker 
-       var circle2 = L.circle([latitude, longitude], {
+       var circle3 = L.circle([latitude, longitude], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.6,
         radius: accuracy/11
       }).addTo(mymap);
+      //add another circle to map with half the accuracy but darker
+      var circle4 = L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.2,
+        radius: accuracy*1.5,
+        
+
+      }).addTo(mymap);
+      
+
 
 
 
@@ -304,6 +315,47 @@ function getIpAddress() {
   /* import poppins font from google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+#warning {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom right, #F1433F, #E64453, #D24668, #C14A7D, #B24C8D, #A251A2, #9255B6, #8358CB, #755AE0, #686CFF);
+  position: fixed; /* or position: absolute; */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+button {
+  padding: 10px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  background-image: linear-gradient(to bottom right, #FF6B6B,  #AA6DFF, #FF6DCE);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(10px);
+  box-shadow: none;
+  background-image: linear-gradient(to bottom right, #FF6DCE,  #AA6DFF, #FF6B6B );
+}
+
+ 
 #content {
   display: none;
 }
