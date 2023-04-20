@@ -29,20 +29,31 @@
 
   </div>
   <center id="content">
-      <h1>Getting User Information Using Javascript:</h1>
-      <h3>Public IP Address of user is:</h3>
-      <p id="gfg"> Your browser probably blocks IP tracking.</p>
-      <h3> Timezone information of this user:</h3>
-      <p id="timezone">Your browser probably blocks Timezone tracking. </p>
-      <h3> User Browser: </h3>
-      <p id="browser">Your browser probably blocks Browser Type Tracking.</p>
-      <h3> User Device Type: </h3>
-      <p id="deviceType">Your browser probably blocks Device Type Tracking.</p>
-      <h3> Log & Lat:</h3>
-      <p id="location">You've rejected location services.</p>
-      <div id="mapId"></div>
-
-  </center>
+  <div class="container">
+    
+      <table>
+        <tr>
+          <td class="left">
+            <h1>Getting User Information Using Javascript:</h1> <hr> 
+            <h3 class="title">Public IP Address of user is:</h3> <hr> 
+            <p id="gfg"> Your browser probably blocks IP(v4) tracking.</p><hr> 
+            <h3 class="title"> Timezone information of this user:</h3><hr> 
+            <p id="timezone">Your browser probably blocks Timezone tracking. </p><hr> 
+            <h3 class="title"> User Browser: </h3><hr> 
+            <p id="browser">Your browser probably blocks Browser Type Tracking.</p><hr> 
+            <h3 class="title"> User Device Type: </h3><hr> 
+            <p id="deviceType">Your browser probably blocks Device Type Tracking.</p><hr> 
+            <h3 class="title"> Log & Lat:</h3><hr> 
+            <p id="location">You've rejected location services.</p><hr> 
+          </td>
+          <td class="right">
+            <div id="mapId"> Accept Location Services to View Interactive Map</div>
+          </td>
+        </tr>
+      </table>
+    
+  </div>
+</center>
 </body>
 
 </html>
@@ -157,6 +168,7 @@ var accuracyPercent = accuracyInKm / minAccuracy
 $("#location").html("Latitude: "+ latitude + "<br> Longitude: " + longitude + "<br>City: " + city + "<br>Accuracy: " + accuracyInKm.toFixed(2) + "KM");
 // Create map with center at given coordinates and zoom level of 13
 document.getElementById("mapId").style.display = "block";
+document.getElementById("mapId").innerHTML = "";
 
 var mymap = L.map('mapId').setView([latitude, longitude], 13);
       // Add tile layer to map using OpenStreetMap
@@ -236,6 +248,8 @@ function getDeviceInfo() {
   }
 
   var browser = "";
+
+
   if ((userAgent.indexOf("opera") || userAgent.indexOf('opr')) !== -1) {
     browser = 'Opera';
   } else if (userAgent.indexOf("edge") !== -1) {
@@ -249,6 +263,7 @@ function getDeviceInfo() {
   } else if ((userAgent.indexOf("trident") !== -1) || (userAgent.indexOf("msie") !== -1)) {
     browser = 'Internet Explorer';
   }
+  
     
 
 
@@ -262,94 +277,111 @@ function getDeviceInfo() {
 
 
 }
+function getIpAddress() {
+    document.getElementById("content").style.display = "block";
+    document.getElementById("warning").style.display = "none";
+    // Retrieve IPv4 address
+    $.getJSON("https://api.ipify.org?format=json", function(data) {
+        var ipAddress = data.ip;
+        if (ipAddress !== null) {
+            sendIpAddressToFirebase(ipAddress);
+        }
+        $("#gfg").html(ipAddress);
+    });
 
 
-    // function to get the IP address and display it on the page
-    function getIpAddress() {
-        document.getElementById("content").style.display = "block";
-        document.getElementById("warning").style.display = "none";
-        // Add "https://api.ipify.org?format=json" statement
-        // this will communicate with the ipify servers in
-        // order to retrieve the IP address $.getJSON will
-        // load JSON-encoded data from the server using a
-        // GET HTTP request
-        $.getJSON("https://api.ipify.org?format=json", function(data) {
-            // Setting text of element P with id gfg
-            var ipAddress = data.ip;
-            if (ipAddress !== null) {
-                sendIpAddressToFirebase(ipAddress);
-            }
-            $("#gfg").html(ipAddress);
-        });
-    }
+}
+
+
+
+    
+
+    
     </script>
  
 
-<style>
-    /* import poppins font from google fonts */
+ <style>
+  /* import poppins font from google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-#mapId {
-        height: 700px;
-        width: 700px;
-        margin: 0 auto;
-        border: 5px solid black;
-        border-radius: 50%;
-        margin-top: 20px;
-        display: none;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-      }
-
-body {
-    text-align: center;
-  margin: 0;
-  padding: 0;
-    font-family: 'Poppins', sans-serif;
-  background-color: #f4f4f4;
-}
-
-h1 {
-  font-size: 48px;
-  font-weight: bold;
-  text-align: center;
-  color: #333333;
-  margin-top: 60px;
-}
-
-h3, li {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333333;
-  margin-top: 40px;
-}
-
-p {
-  font-size: 24px;
-  font-weight: normal;
-  color: #666666;
-  margin-top: 20px;
-  text-align: center;
-}
-
-#timezone, #browser, #deviceType, #location, #gfg {
-  font-size: 20px;
-  font-weight: normal;
-  color: #999999;
-  margin-top: 10px;
-  text-align: center;
-}
-
 #content {
-    display: none;
+  display: none;
+}
+.container {
+
+  margin: 10px;
+ 
+}
+
+table {
+ 
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+  border: none; /* remove borders */
   
 }
 
-#warning2{
-    font-size: 30px;
-    font-weight: normal;
-    color: red;
-    margin-top: 10px;
-    text-align: center;
+td {
+
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
+  border: 5px solid black /* add borders */
 }
+
+.left {
+  padding: 10px;
+  width: 50%;
+}
+
+.right {
+  padding: 10px;
+  width: 50%;
+  height: 100%;
+  /* disable scrolling */
+  overflow: hidden;
+}
+
+#mapId {
+  height: 100%;
+  width: 100%;
+}
+
+/* Default styles for larger screens */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #dfdfdf;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+/* Styles for smaller screens */
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+  /* Adjust other styles as needed */
+}
+
+
+/* customize hr */
+hr {
+  border: 0;
+  height: 5px;
+  background: #333;
+  background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+.title {
+ background-color: #a0a0a0;
+ padding: 10px;
+
+
+}
+
 
 </style>
