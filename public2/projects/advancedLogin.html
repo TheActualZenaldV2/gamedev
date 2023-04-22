@@ -17,15 +17,12 @@
 <div id="loading"></div>
 <span id="loading-text">Please Wait....</span>
  
-
-
 <form id="registration-form">
     <p style="text-align: center;"> Welcome! Create an account to get started. </p>
-    <label for="first-name-input">First Name:</label>
     <label for="email-input">Email:</label> 
     <input type="email" id="email-input" required> 
-
- <label for="password-input">Password:</label>
+  
+    <label for="password-input">Password:</label>
     <input type="password" id="password-input" minlength="6" required> 
     <label for="password-input-confirm">Confirm Password:</label>
     <input type="password" id="password-input-confirm" minlength="6" required>
@@ -37,7 +34,6 @@
     <button id="continue-button" type="submit">Continue</button>
 
 </form>
-
 
 <form id="registration-form-2">
     <p style="text-align: center;"> Welcome! Choose a username to continue. </p>
@@ -60,16 +56,12 @@
 
 
 
-
-
-<form id="account-confirmation">
-    <p class="check-text" style="text-align: center;"> Welcome, <span id="username-welcome" style="font-weight: bold;"> </span>!</p> 
-    <p class="" style="text-align: center;"> Account Creation Successful!<br> </p>
-  <br> 
-  <img id="profile-picture-from-db" src="" alt="Profile Picture">
-  <br> 
-  <button type="submit" onclick="showLoginForm()">Log In</button>
-
+<form id="account-confirmation" >
+    <p> Account Creation Successful! Welcome, <span id="username-welcome" style="font-weight: bold;"> </span>!<br> <i id="check" class="fas fa-check-circle checkmark-icon" style="color: green;"></i></p>
+    <br> 
+    <img id="profile-picture-from-db" src="" alt="Profile Picture">
+    <p> Thank you for creating an account! </p>
+    <button type="submit" onclick="showLoginForm()">Log In</button>
 </form>
 
 
@@ -429,7 +421,7 @@ registrationForm1.addEventListener('submit', (event) => {
     document.getElementById('loading-text').style.display = 'block';
     document.getElementById('loading').style.display = 'block';
     document.getElementById('login-success').style.display = 'none';
-    document.getElementById('loading-text').innerHTML = "This won't work, good luck have fun, I'm not doing any more work" + '<br> <br> ' + 'Click <a href="#" onclick="document.getElementById(\'login-success\').style.display = \'block\'; document.getElementById(\'loading\').style.display = \'none\'; document.getElementById(\'loading-text\').style.display = \'none\'">here</a> to go back.';
+    document.getElementById('loading-text').innerHTML = "Enjoy the infinite spinner!" + '<br> <br> ' + 'Click <a href="#" onclick="document.getElementById(\'login-success\').style.display = \'block\'; document.getElementById(\'loading\').style.display = \'none\'; document.getElementById(\'loading-text\').style.display = \'none\'">here</a> to go back.';
 }
 
 
@@ -447,6 +439,8 @@ registrationForm.addEventListener('submit', (event) => {
   // show loading spinner and hide form
   document.getElementById("loading").style.display = "block";
   document.getElementById("loading-text").style.display = "block";
+  //change the text of the loading text
+    document.getElementById("loading-text").innerHTML = "Creating your account...";
   
   document.getElementById("registration-form").style.display = "none";
   showSpinner();
@@ -972,20 +966,27 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+   #databaseErrorUsername, #databaseErrorProfilePicture{
+    display: none;
+   }
     .logoutButton{
         /* no background color */
         background-color: transparent;
         border: none;
         outline: none;
         cursor: pointer;
+       
         color: #ffffff;
         padding-top: 20;
         padding: 10px;
+
         padding-bottom: 20;
     }
     .logoutButton:hover{
         padding-top: 10;
         padding-bottom: 10;
+
         transition: 0.3s all;
         border-radius: 20px; 
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
@@ -1000,7 +1001,8 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
     .logoutButton:active{
        transform: scale(1.1);
        transition: 0.5s all;
-     }
+       
+    }
 
     :disabled {
         cursor: not-allowed;
@@ -1008,8 +1010,10 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
     }
 /* Style the remember me checkbox */
 #remember-me {
-  /* customize the checkbox */  
-    display: inline-block;
+  /* customize the checkbox */
+   
+    
+  display: inline-block;
     position: relative;
     background-color: #ffffff;
     border: 1px solid #000;
@@ -1020,8 +1024,19 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
     cursor: pointer;
     margin: 0 4px 0 0;
     outline: none;
+
+    
+
+
 }
-        #profile-picture-from-database, #preview-image, #profile-picture-from-db, #preview-image2 {
+
+
+    
+
+
+
+
+    #profile-picture-from-database, #preview-image, #profile-picture-from-db, #preview-image2 {
         /* wip profile image css */
         position: relative;
         width: 100px;
@@ -1032,10 +1047,28 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         object-fit: cover;
         margin: 0 auto;
         display: block;
+
+
     }
-    #databaseError, #passwordResetConfirmation, #registration-form-2, #reset-password, #account-confirmation, #login-success, #login-form, #registration-form, #password-reset-form, #password-reset-confirmation, #account-confirmation, #loading, #loading-text, #databaseErrorUsername, #databaseErrorProfilePicture, .devTools {
+
+
+    #databaseError {
         display: none;
     }
+    #passwordResetConfirmation {
+        display: none;
+    }
+    #registration-form-2{
+        display: none;
+    }
+    
+    #reset-password {
+        display: none;
+    }
+    .devtools {
+        display: none;
+    }
+    
     #account-confirmation{
         text-align: center;
     }
@@ -1044,8 +1077,25 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         font-size: 5rem;
         z-index: 999;
     }
+    .checkmark-icon {
+        /*
+       position: absolute;
+        top: 44%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: green;
+        font-size: 4em;
+        background-color: white;
+        border-radius: 50%;
+        padding: 3px;
+        z-index: 999;
+        */
+    }
     #check {
-        font-size: 2rem;   
+
+        font-size: 2rem;
+    
+        
     }
     #password-text {
         font-family: 'Poppins', sans-serif;
@@ -1053,6 +1103,7 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
         margin: 0;
         margin-bottom: 20;
+        
     }
     
     #loading {
@@ -1061,16 +1112,20 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
   width: 50px;
   height: 50px;
   border-image: linear-gradient(0deg, #afd4d9 0%, #5fd8e0 100%) 1;
-  border-inline: 5px;
+        border-inline: 5px;
   border-width: 5px;
   border-style: solid;
   animation: spin 3.5s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
-  position: absolute;
+
+    position: absolute;
   top: 50%;
   left: 48.5%;
   background-color: #4949494b;
 }
-    #loading-text {
+
+
+
+      #loading-text {
         color: white;
         display: none;
         /*position middle of screen*/
@@ -1080,7 +1135,8 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         transform: translate(-50%, -50%);
         font-size: 20px;
         z-index: 100;
-}
+
+      }
       @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -1120,18 +1176,31 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
 
   }
 }
-body {
+
+
+
+
+
+    
+    body {
+        
         font-family: 'Poppins', sans-serif;
+        
         background: url('https://img.freepik.com/premium-vector/blue-purple-gradient-color-background-website-banner-poster-graphic-design-decoration_120819-1548.jpg') no-repeat center center fixed;
         background-size: cover;
         color: black;
-}
+        
+
+
+    }
+    
     form {
         background-color: rgba(255, 255, 255, 0.35);
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 0 100px rgb(0, 0, 0);
@@ -1170,13 +1239,18 @@ body {
         font-weight: bold;
         cursor: pointer;
     }
+    
+  
+    
     #registration-form {
         top: 50%;
+       
     }
     
     #login-form {
         top: 50%;
-        display: none;  
+        display: none;
+        
     }
     
     #registration-form button[type="submit"] {
@@ -1196,11 +1270,13 @@ body {
     #login-form button[type="submit"]:hover {
         background-color: #555;
     }
-    
+
+
     #login-success {
         text-align: center;
         padding: 50px;
-      }
+        
+    }
 
     
 </style>
