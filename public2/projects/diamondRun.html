@@ -12,6 +12,7 @@
 </head>
 <body>
     <div id="cont">
+        <p id="score">Score:  <span id="scoreHolder">0 </span></p>
 	<canvas id="canvas"></canvas>
 	</div>
 
@@ -44,13 +45,15 @@ body {
             margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: white
 }
 
 
     </style>
 
 
-<script>
+<script> 
+var score = 0;
    const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 gameWon = false;
@@ -67,6 +70,7 @@ const maze = [
     //0 = empty space
     //1 = wall
     //2 = finish
+    //3 = diamond
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1],
   [1, 3, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
@@ -135,7 +139,7 @@ function draw() {
     if (maze[playerPosition.y][playerPosition.x] === 3) {
         maze[playerPosition.y][playerPosition.x] = 0;
         score++;
-        document.getElementById('score').innerHTML = score;
+        document.getElementById('scoreHolder').innerHTML = score;
     }
   
 }
