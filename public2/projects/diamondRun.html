@@ -68,7 +68,7 @@ canvas.height = 500;
 canvas.width = 500;
 
 // Define the maze
-const maze = [
+maze = [
     //0 = empty space
     //1 = wall
     //2 = finish
@@ -76,11 +76,11 @@ const maze = [
     //4 = fakeWall
     //5 = invisibleWall
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 1, 0, 0, 0, 0, 1, 3, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 3, 1],
+  [1, 0, 1, 5, 0, 0, 0, 1, 3, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 3, 1],
   [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
   [1, 4, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 4, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-  [1, 5, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
   [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
   [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
   [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
@@ -183,38 +183,77 @@ ctx.fill();
 
 
     
-  
+ checkWin(); 
 }
 
 
 // Set the starting position of the player
 let playerPosition = { x: 1, y: 1 };
 
-// Handle keyboard input
+
+function canMoveToCell(x, y) {
+    // Check if the cell is within the bounds of the maze
+    if (x < 0 || x >= maze[0].length || y < 0 || y >= maze.length) {
+        return false;
+    }
+
+    // Check if the cell is blocked by an obstacle
+    if (maze[y][x] === 1 || maze[y][x] === 5) {
+        return false;
+    }
+
+    // If the cell is not blocked, the player can move to it
+    return true;
+}
+// Define the speed of movement
+var speed = 5;
 document.addEventListener('keydown', function(event) {
+    var targetX = playerPosition.x;
+    var targetY = playerPosition.y;
+
     switch (event.code) {
         case 'KeyA': // A key
-            if (maze[playerPosition.y][playerPosition.x - 1] !== 1 && maze[playerPosition.y][playerPosition.x - 1] !== 5 && playerPosition.x > 0) {
-                playerPosition.x--;
-            }
+            targetX--;
             break;
         case 'KeyW': // W key
-            if (maze[playerPosition.y - 1][playerPosition.x] !== 1 && maze[playerPosition.y - 1][playerPosition.x] !== 5 && playerPosition.y > 0) {
-                playerPosition.y--;
-            }
+            targetY--;
             break;
         case 'KeyD': // D key
-            if (maze[playerPosition.y][playerPosition.x + 1] !== 1 && maze[playerPosition.y][playerPosition.x + 1] !== 5 && playerPosition.x < maze[0].length - 1) {
-                playerPosition.x++;
-            }
+            targetX++;
             break;
         case 'KeyS': // S key
-            if (maze[playerPosition.y + 1][playerPosition.x] !== 1 && maze[playerPosition.y + 1][playerPosition.x] !== 5 && playerPosition.y < maze.length - 1) {
-                playerPosition.y++;
-            }
+            targetY++;
             break;
     }
+
+    if (canMoveToCell(targetX, targetY)) {
+        var step = 1;
+        var intervalTime = 10;
+
+        var deltaX = targetX - playerPosition.x;
+        var deltaY = targetY - playerPosition.y;
+        var distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        var moveInterval = setInterval(function() {
+            if (distance > 0) {
+                var moveDistance = Math.min(step, distance);
+                var moveX = (moveDistance / distance) * deltaX;
+                var moveY = (moveDistance / distance) * deltaY;
+
+                playerPosition.x += moveX;
+                playerPosition.y += moveY;
+                distance -= moveDistance;
+
+
+            } else {
+                clearInterval(moveInterval);
+            }
+        }, intervalTime);
+    }
 });
+
+
+
 
 
 function checkWin(){
@@ -223,13 +262,37 @@ function checkWin(){
 if (maze[playerPosition.y][playerPosition.x] === 2) {
     if(gameWon === false){
         gameWon = true;
-    alert('Congratulations, you won the game!');
-    window.location.href = "https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fphotos%2Fimages%2Fnewsfeed%2F002%2F297%2F368%2F17f.jpg"
-    }
+    alert('Level 2');
+    //reset player position
+    playerPosition.x = 1;
+    playerPosition.y = 1;
+    //reset maze
+     maze = [
+     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,0,1],
+  [1,0,1,0,1,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1],
+  [1,0,1,0,0,0,1,1,1,1,0,1,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,1,1,0,0,1,0,1,0,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,1,1,1,1,1],
+  [1,1,1,1,1,1,1,0,1,0,0,1,0,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,0,0,1],
+  [1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,1,1,0,1],
+  [1,1,1,0,1,0,1,0,1,1,1,1,1,1,0,0,0,0,0,1],
+  [1,3,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1],
+  [1,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,0,0,0,1],
+  [1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,2,1],
+  [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+    
+
+
 }
 }
-//loop check win function
-setInterval(checkWin, 1);
+}
 
 
 
