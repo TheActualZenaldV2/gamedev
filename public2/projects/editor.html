@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Your Own Maze</title>
+</head>
+<body>
+	<div id="map"></div>
+	<div id="buttons">
+		<button id="empty">Empty Space</button>
+		<button id="wall">Wall</button>
+		<button id="finish">Finish</button>
+		<button id="diamond">Diamond</button>
+		<button id="fakeWall">Fake Wall</button>
+		<button id="invisibleWall">Invisible Wall</button>
+		<button id="zoomOutBlock">Zoom Out Block</button>
+		<button id="zoomInBlock">Zoom In Block</button>
+		<button id="jumpScare">Jump Scare</button>
+		<button id="export" onclick="exportMap()">Export Map</button>
+	</div>
+</body>
+
+<style>
+#map {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#map > div {
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+}
+
+
+
+
+
+#buttons {
+	margin-top: 20px;
+}
+
+#buttons button {
+	margin-right: 10px;
+}
+</style> 
+
+<script>
+// Get the map size from the user
+var size = prompt("Please enter the size of the map (e.g. 20x20):");
+var width = parseInt(size.split("x")[0]);
+var height = parseInt(size.split("x")[1]);
+
+// Create a new map element
+var newMap = document.createElement("div");
+newMap.setAttribute("id", "map");
+
+// Set the map width and height
+newMap.style.width = width * 40 + "px";
+newMap.style.height = height * 40 + "px";
+
+// Create cells and append them to the new map
+for (var i = 0; i < width * height; i++) {
+  var cell = document.createElement("div");
+  newMap.appendChild(cell);
+}
+
+// Update the CSS for the cells
+var cellWidth = 100 / width;
+var cellHeight = 100 / height;
+
+var cellStyle = `
+  box-sizing: border-box;
+  width: ${cellWidth}%;
+  height: ${cellHeight}%;
+  border: 1px solid black;
+`;
+
+var cells = newMap.querySelectorAll("div");
+cells.forEach(function(cell) {
+  cell.style.cssText = cellStyle;
+});
+
+// Replace the old map with the new map
+var oldMap = document.getElementById("map");
+oldMap.parentNode.replaceChild(newMap, oldMap);
+
+
+
+
+
+// Create the map array
+var map = [];
+for (var i = 0; i < height; i++) {
+	map.push([]);
+	for (var j = 0; j < width; j++) {
+		map[i].push(0);
+	}
+}
+
+// Get the map div
+var mapDiv = document.getElementById("map");
+
+// Add cells to the map
+for (var i = 0; i < height; i++) {
+	for (var j = 0; j < width; j++) {
+		var cell = document.createElement("div");
+		cell.addEventListener("click", changeCell);
+		mapDiv.appendChild(cell);
+	}
+}
+// Change the cell's value when clicked
+function changeCell() {
+    var x = Array.prototype.indexOf.call(mapDiv.children, this) % width;
+    var y = Math.floor(Array.prototype.indexOf.call(mapDiv.children, this) / width);
+	var value;
+	switch (selectedButton) {
+		case "empty":
+			value = 0;
+			break;
+		case "wall":
+			value = 1;
+			break;
+		case "finish":
+			value = 2;
+			break;
+		case "diamond":
+			value = 3;
+			break;
+		case "fakeWall":
+			value = 4;
+			break;
+		case "invisibleWall":
+			value = 5;
+			break;
+		case "zoomOutBlock":
+			value = 6;
+			break;
+		case "zoomInBlock":
+			value = 7;
+			break;
+		case "jumpScare":
+			value = 8;
+			break;
+	}
+	map[y][x] = value;
+	this.classList.remove(this.classList[0]);
+	this.classList.add("value" + value);
+    // Change the selected tile's color
+    this.style.backgroundColor = selectedColor;
+}
+
+// Set the selected button
+var selectedButton;
+var selectedColor;
+var buttons = document.getElementsByTagName("button");
+for (var i = 0; i < buttons.length; i++) {
+	buttons[i].addEventListener("click", function() {
+		selectedButton = this.id;
+        // Set the selected color based on the selected button
+        switch (selectedButton) {
+            case "empty":
+                selectedColor = "white";
+                break;
+            case "wall":
+                selectedColor = "gray";
+                break;
+            case "finish":
+                selectedColor = "green";
+                break;
+            case "diamond":
+                selectedColor = "blue";
+                break;
+            case "fakeWall":
+                selectedColor = "orange";
+                break;
+            case "invisibleWall":
+                selectedColor = "lightgray";
+                break;
+            case "zoomOutBlock":
+                selectedColor = "yellow";
+                break;
+            case "zoomInBlock":
+                selectedColor = "purple";
+                break;
+            case "jumpScare":
+                selectedColor = "red";
+                break;
+        }
+        // Update the button styles
+        for (var j = 0; j < buttons.length; j++) {
+            buttons[j].style.backgroundColor = "white";
+            buttons[j].style.color = "black";
+        }
+        this.style.backgroundColor = selectedColor;
+        this.style.color = "white";
+	});
+}
+
+
+
+
+//using the same logic as above, add a new line after every row
+function exportMap() {
+    var exportArray = [];
+    for (var i = 0; i < height; i++) {
+        var rowArray = [];
+        for (var j = 0; j < width; j++) {
+            rowArray.push(map[i][j]);
+        }
+        exportArray.push(rowArray);
+    }
+    console.log(JSON.stringify(exportArray).replace(/\],/g, "],\n"));
+    alert("Map exported to console.");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script> 
+
+
+</html>
+
