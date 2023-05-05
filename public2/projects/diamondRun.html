@@ -11,6 +11,8 @@
 	</style>
 </head>
 <body>
+    <button onclick="level2()"> Level 2</button>
+    <button onclick="level3()"> Level 3</button>
     <div id="cont">
         <p id="score">Score:  <span id="scoreHolder">0 </span></p>
 	<canvas id="canvas"></canvas>
@@ -54,18 +56,20 @@ body {
 
 <script> 
 var score = 0;
-   const canvas = document.getElementById('canvas');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+level = 1;
 gameWon = false;
-
+canvas.height = 500;
+canvas.width = 500;
+// Define the size of each cell
+cellSize = 40;
 // Define the camera
 const camera = {
   x: 0,
-  y: 0
+  y: 0,
 };
 
-canvas.height = 500;
-canvas.width = 500;
 
 // Define the maze
 maze = [
@@ -75,14 +79,17 @@ maze = [
     //3 = diamond
     //4 = fakeWall
     //5 = invisibleWall
+    //6 = zoomOutBlock
+    //7 = zoomInBlock
+    //8 = jumpScare
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 1, 5, 0, 0, 0, 1, 3, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 3, 1],
-  [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 7, 1, 0, 0, 0, 0, 1, 3, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 3, 1],
+  [1, 8, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
   [1, 4, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 4, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
   [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
   [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+  [1, 0, 0, 0, 1, 0, 1, 0, 1, 5, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
   [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
   [1, 0, 1, 3, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1],
@@ -94,11 +101,11 @@ maze = [
   [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-  [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+  [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
   [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 3, 1, 1, 1],
   [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1],
   [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-  [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
+  [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
   [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 2, 1, 1, 1],
 
 
@@ -107,14 +114,6 @@ maze = [
 
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
-
-   
-
-    
-
-
-// Define the size of each cell
-const cellSize = 35;
 
 // Draw the maze and player on the canvas
 function draw() {
@@ -182,6 +181,52 @@ ctx.fill();
     ctx.fillText("Score:" + score, 10, 50);
 
 
+
+    //if collision with zoom out block, make the camera zoom out
+    if (maze[playerPosition.y][playerPosition.x] === 6) {
+//slowly animate zoom out
+        if (cellSize !== 40 && cellSize > 40) {
+            cellSize -= 1.55
+        }
+    }
+
+     //if collision with zoom out block, make the camera zoom in
+     if (maze[playerPosition.y][playerPosition.x] === 7) {
+//slowly animate zoom in
+        if (cellSize < 60) {
+            cellSize += 1.55
+        }
+    }
+   if(maze[playerPosition.y][playerPosition.x] === 8){
+       //play a sound url
+       var sound = new Audio('https://theactualzenaldv2.github.io/gamedev/public2/lg_washer.mp3');
+            sound.play();
+   }
+// Set up the hint button on the canvas
+ctx.fillStyle = 'black';
+ctx.font = '20px sans-serif';
+ctx.fillText("Hint", 10, 100);
+
+function animateHint(){
+    if (cellSize !== 40 && cellSize > 40) {
+            cellSize -= 1.55;
+            requestAnimationFrame(animateHint);
+        }   
+
+}
+// Add a click event listener to the canvas
+canvas.addEventListener('click', function(event) {
+    // Check if the click was within the bounds of the hint button
+    if (event.offsetX > 10 && event.offsetX < 50 && event.offsetY > 70 && event.offsetY < 100) {
+        animateHint()
+    }
+
+
+});
+
+
+
+   
     
  checkWin(); 
 }
@@ -253,15 +298,60 @@ document.addEventListener('keydown', function(event) {
 });
 
 
+function level2(){
+    //shortcut to lvl 2
+    level = 2;
+    //reset player position
+    playerPosition.x = 1;
+    playerPosition.y = 1;
 
+    maze = [
+     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,0,1],
+  [1,0,1,0,1,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1],
+  [1,0,1,0,0,0,1,1,1,1,0,1,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,1,1,0,0,1,0,1,0,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,1,1,1,1,1],
+  [1,1,1,0,1,1,1,0,1,0,0,1,0,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,0,0,1],
+  [1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,1,1,0,1],
+  [1,1,1,0,1,0,1,0,1,1,1,1,1,1,0,0,0,0,0,1],
+  [1,3,0,0,0,0,1,0,1,0,0,0,3,1,0,1,1,1,0,1],
+  [1,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,0,0,0,1],
+  [1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,1,1],
+  [1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,0,1],
+  [1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,2,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+
+}
+
+function level3(){
+    level = 3;
+    //reset player position
+    playerPosition.x = 1;
+    playerPosition.y = 1;
+    maze = [[1,1,1,1,1,1,1,1,1,1],
+[1,7,1,0,0,0,1,3,1,1],
+[1,0,0,0,1,0,1,4,1,1],
+[1,0,1,0,1,0,1,0,1,1],
+[1,1,1,0,1,0,1,0,1,1],
+[1,0,0,0,1,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,0,1],
+[1,2,1,0,1,1,1,0,0,1],
+[1,0,0,0,3,4,4,0,1,1],
+[1,1,1,1,1,1,1,1,1,1]]
+}
 
 
 function checkWin(){
 
 // Detect when the player reaches the end of the maze
 if (maze[playerPosition.y][playerPosition.x] === 2) {
-    if(gameWon === false){
-        gameWon = true;
+    if(level == 1){
+        level = 2;
     alert('Level 2');
     //reset player position
     playerPosition.x = 1;
@@ -275,22 +365,46 @@ if (maze[playerPosition.y][playerPosition.x] === 2) {
   [1,0,1,0,0,0,1,1,1,1,0,1,0,1,0,1,1,1,0,1],
   [1,0,1,1,1,1,1,0,0,1,0,1,0,1,0,0,0,0,0,1],
   [1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,1,1,1,1,1],
-  [1,1,1,1,1,1,1,0,1,0,0,1,0,1,0,0,0,0,0,1],
+  [1,1,1,0,1,1,1,0,1,0,0,1,0,1,0,0,0,0,0,1],
   [1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,1,1,0,1],
   [1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,0,0,1],
   [1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,1,1,0,1],
   [1,1,1,0,1,0,1,0,1,1,1,1,1,1,0,0,0,0,0,1],
-  [1,3,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1],
+  [1,3,0,0,0,0,1,0,1,0,0,0,3,1,0,1,1,1,0,1],
   [1,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,0,0,0,1],
-  [1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1],
-  [1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
-  [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,2,1],
-  [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  [1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,1,1,1],
+  [1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,0,1],
+  [1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,2,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     ];
     
 
 
 }
+if(level == 2){
+    alert("Level 3");
+    level = 3;
+    //reset player position
+    playerPosition.x = 1;
+    playerPosition.y = 1;
+    maze =[[1,1,1,1,1,1,1,1,1,1],
+[1,7,1,0,0,0,1,3,1,1],
+[1,0,0,0,1,0,1,4,1,1],
+[1,0,1,0,1,0,1,0,1,1],
+[1,1,1,0,1,0,1,0,1,1],
+[1,0,0,0,1,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,0,1],
+[1,2,1,0,1,1,1,0,0,1],
+[1,0,0,0,3,4,4,0,1,1],
+[1,1,1,1,1,1,1,1,1,1]]
+}
+}
+
+if(level == 2){
+    if (maze[playerPosition.y][playerPosition.x] === 2 && gameWon == false) {
+        gameWon = true;
+    alert('You Win!');
+    }
 }
 }
 
