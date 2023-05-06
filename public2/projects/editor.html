@@ -5,26 +5,47 @@
 </head>
 <body>
 	<div id="map"></div>
-	<div id="buttons">
-        <button id="generate-map">Generate Map</button>
-        <input id="size" type="text" placeholder="Size (e.g. 10x10)">
+        <p id="choose" > Choose map size: </p>
+        <form id="map-form">
+            <input id="size" type="text" placeholder="Size (e.g. 10x10)" required>
+            <button id="generate-map">Generate Map</button>
+          </form>
+          
+        <div id="buttons">
 		<button id="empty">Empty Space</button>
 		<button id="wall">Wall</button>
 		<button id="finish">Finish</button>
 		<button id="diamond">Diamond</button>
 		<button id="fakeWall">Fake Wall</button>
 		<button id="invisibleWall">Invisible Wall</button>
+    <div id="advancedTools">
 		<button id="zoomOutBlock">Zoom Out Block</button>
 		<button id="zoomInBlock">Zoom In Block</button>
 		<button id="jumpScare">Jump Scare</button>
+        <input type="button" value="Close" onclick="document.getElementById('advancedTools').style.display = 'none'; document.getElementById('buttons').style.display = 'inline-block'; document.getElementById('advancedToolsButton').style.display = 'inline-block';">
+
+        <input type="button" value="Reset" onclick="location.reload()">
+    </div>
 		<input type="button" value="Export Map" onclick="exportMap()">
+        <input id="advancedToolsButton" type="button" value="Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'block'; this.style.display = 'none';">
 	</div>
 </body>
 
 <style>
+    /* import poppins font */
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 #map {
   display: flex;
   flex-wrap: wrap;
+  /* make it draggable */
+    user-select: none;
+    -webkit-user-select: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+
 }
 
 #map > div {
@@ -32,6 +53,8 @@
   width: 40px;
   height: 40px;
   border: 1px solid black;
+  
+
 }
 
 
@@ -45,6 +68,43 @@
 #buttons button {
 	margin-right: 10px;
 }
+
+body {
+    text-align: center;
+    background-color: #eee;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+
+}
+
+#advancedTools {
+    display: none;
+}
+input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    transition: 0.2s;
+}
+button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    transition: 0.2s;
+}
 </style> 
 
 <script>
@@ -54,8 +114,12 @@ var map = [];
 var previusButton;
 
 
-
-    document.getElementById("generate-map").addEventListener("click", function() {
+var mapForm = document.getElementById("map-form");
+mapForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+        document.getElementById("choose").innerHTML = "Choose a tile:"
+        document.getElementById("buttons").style.display = "block";
+        document.getElementById("map").style.display = "none";
         document.getElementById("generate-map").style.display = "none";
         document.getElementById("size").style.display = "none";
         map = []; // Reset the map array to an empty array
@@ -80,7 +144,21 @@ var previusButton;
                 map[i].push(0);
             }
         }
-    });
+  
+});
+const buttonsHolder = document.getElementById("buttons");
+buttonsHolder.addEventListener("click", function(event) {
+    document.getElementById("map").style.display = "flex";
+    document.getElementById("choose").innerHTML = "Click or drag to draw:"
+
+    
+
+});
+
+document.getElementById("buttons").style.display = "none";
+
+
+  
 
 // Get the map div
 var mapDiv = document.getElementById("map");
@@ -92,58 +170,126 @@ for (var i = 0; i < height; i++) {
 		cell.addEventListener("click", changeCell);
 		mapDiv.appendChild(cell);
 	}
-}
-// Change the cell's value when clicked
-function changeCell() {
-    
+}// Add event listener to the document for mousemove event
+mapHolder = document.getElementById("map");
+mapHolder.addEventListener("mousemove", function(event) {
+  // Check if mouse button is pressed
+  if (event.buttons === 1) {
+    // Get the cell that the mouse is over
+    var cell = event.target;
+    // Change the cell's value
+    changeCellValue(cell);
+  }
+});
+
+// Change the cell's value when clicked or dragged
+function changeCell(e) {
+    // Prevent the default drag behavior
+    e.preventDefault();
+
+    // Determine the cell's position
     var x = Array.prototype.indexOf.call(mapDiv.children, this) % width;
     var y = Math.floor(Array.prototype.indexOf.call(mapDiv.children, this) / width);
-	var value;
-	switch (selectedButton) {
-		case "empty":
-			value = 0;
-            previusButton = selectedButton;
-			break;
-		case "wall":
-			value = 1;
-            previusButton = selectedButton;
-			break;
-		case "finish":
-			value = 2;
-            previusButton = selectedButton;
-			break;
-		case "diamond":
-			value = 3;
-            previusButton = selectedButton;
-			break;
-		case "fakeWall":
-			value = 4;
-            previusButton = selectedButton;
-			break;
-		case "invisibleWall":
-			value = 5;
-            previusButton = selectedButton;
-			break;
-		case "zoomOutBlock":
-			value = 6;
-            previusButton = selectedButton;
-			break;
-		case "zoomInBlock":
-			value = 7;
-            previusButton = selectedButton;
-			break;
-		case "jumpScare":
-			value = 8;
-            previusButton = selectedButton;
-			break;
-	}    console.log(map);
 
-	map[y][x] = value;
-	this.classList.remove(this.classList[0]);
-	this.classList.add("value" + value);
-    // Change the selected tile's color
+    // Determine the cell's value based on the selected button
+    var value;
+
+    switch (selectedButton) {
+        case "empty":
+            value = 0;
+            break;
+        case "wall":
+            value = 1;
+            break;
+        case "finish":
+            value = 2;
+            break;
+        case "diamond":
+            value = 3;
+            break;
+        case "fakeWall":
+            value = 4;
+            break;
+        case "invisibleWall":
+            value = 5;
+            break;
+        case "zoomOutBlock":
+            value = 6;
+            break;
+        case "zoomInBlock":
+            value = 7;
+            break;
+        case "jumpScare":
+            value = 8;
+            break;
+    }
+
+    // Update the map array and cell value
+    map[y][x] = value;
+    this.classList.remove(this.classList[0]);
+    this.classList.add("value" + value);
     this.style.backgroundColor = selectedColor;
+
+    // If the mouse button is down, continue to drag cells
+    if (e.buttons === 1) {
+        this.addEventListener("mousemove", changeCell);
+    } else {
+        this.removeEventListener("mousemove", changeCell);
+    }
 }
+
+// Change the value of a cell
+function changeCellValue(cell) {
+  // Get the cell's x and y coordinates
+  var x = Array.prototype.indexOf.call(mapDiv.children, cell) % width;
+  var y = Math.floor(Array.prototype.indexOf.call(mapDiv.children, cell) / width);
+  var value;
+  switch (selectedButton) {
+    case "empty":
+      value = 0;
+      previusButton = selectedButton;
+      break;
+    case "wall":
+      value = 1;
+      previusButton = selectedButton;
+      break;
+    case "finish":
+      value = 2;
+      previusButton = selectedButton;
+      break;
+    case "diamond":
+      value = 3;
+      previusButton = selectedButton;
+      break;
+    case "fakeWall":
+      value = 4;
+      previusButton = selectedButton;
+      break;
+    case "invisibleWall":
+      value = 5;
+      previusButton = selectedButton;
+      break;
+    case "zoomOutBlock":
+      value = 6;
+      previusButton = selectedButton;
+      break;
+    case "zoomInBlock":
+      value = 7;
+      previusButton = selectedButton;
+      break;
+    case "jumpScare":
+      value = 8;
+      previusButton = selectedButton;
+      break;
+  }
+  map[y][x] = value;
+  cell.classList.remove(cell.classList[0]);
+  cell.classList.add("value" + value);
+  // Change the selected tile's color
+  cell.style.backgroundColor = selectedColor;
+
+}
+
 
 // Set the selected button
 var selectedButton;
@@ -209,8 +355,17 @@ for (var i = 0; i < height; i++) {
     exportArray.push(rowArray);
 }
 console.log(JSON.stringify(exportArray).replace(/\],/g, "],\n"));
-alert("Map exported to console.");
+alert("Map exported to console and clipboard.");
+//send it to user clipboard
+var dummy = document.createElement("textarea");
+document.body.appendChild(dummy);
+dummy.value = JSON.stringify(exportArray).replace(/\],/g, "],\n");
+dummy.select();
+document.execCommand("copy");
+document.body.removeChild(dummy);
 exportArray = [];
+
+
 }
 
 
