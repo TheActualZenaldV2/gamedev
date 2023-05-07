@@ -1,33 +1,42 @@
-<!DOCTYPE html>
+
 <html>
 <head>
 	<title>Create Your Own Maze</title>
 </head>
-<body>
-    
+<body onload="">
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
 <div id="options">
-        <p id="choose" > Choose map size: </p>
+    <input type="button" id="newMap" onclick="showMapForm()" value="Create a New Map">
+    <input type="button" id="loadMap" onclick="showLoadMapHolder()" value="Load Map File">
+   
         <form id="map-form">
+            <p id="choose" > Choose map size: </p>
+
             <input id="size" type="text" placeholder="Size (e.g. 10x10)" required>
             <button id="generate-map">Generate Map</button>
           </form>
-          
-        <div id="buttons">
+<div id="loadMapHolder">
+          <input type="button" id="import" onclick="loadMapData()" value="Import Map"> 
+          <input type="button" id="localStorageImport" onclick="loadMap()" value="Load Map">
+</div>
+        <div id="buttons"> Building: 
 		<button id="empty">Empty Space</button> 
 		<button id="wall">Wall</button>
 		<button id="finish">Finish</button>
 		<button id="diamond">Diamond</button>
 		<button id="fakeWall">Fake Wall</button>
-		<button id="invisibleWall">Invisible Wall</button>
+		<button id="invisibleWall">Invisible Wall</button> <br> Tools: 
+        <input type="button" value="Reset and Clear Map" onclick="location.reload(); localStorage.clear();">
+        <input type="button" value="Save & Export Map" onclick="exportMap()">
     <div id="advancedTools">
 		<button id="zoomOutBlock">Zoom Out Block</button>
 		<button id="zoomInBlock">Zoom In Block</button>
 		<button id="jumpScare">Jump Scare</button>
         <input type="button" value="Close" onclick="document.getElementById('advancedTools').style.display = 'none'; document.getElementById('buttons').style.display = 'inline-block'; document.getElementById('advancedToolsButton').style.display = 'inline-block';">
         
-        <input type="button" value="Reset" onclick="location.reload()">
+        
     </div>
-		<input type="button" value="Export Map" onclick="exportMap()">
         <input id="advancedToolsButton" type="button" value="Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'block'; this.style.display = 'none';">
 	</div>
 
@@ -42,7 +51,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
 
-
+#map-form, #loadMapHolder {
+    display: none;
+}
 
 #map {
     margin-top: 20px;
@@ -128,6 +139,145 @@ var previusButton;
 
 var mapForm = document.getElementById("map-form");
 document.getElementById("map").style.display = "none";
+
+function showLoadMapHolder() {
+    document.getElementById("loadMapHolder").style.display = "block";
+    document.getElementById("loadMap").style.display = "none";
+    document.getElementById("newMap").style.display = "none";
+}
+
+function showMapForm() {
+    document.getElementById("map-form").style.display = "block";
+    document.getElementById("loadMap").style.display = "none";
+    document.getElementById("newMap").style.display = "none";
+}
+
+function loadMap(){
+    //if there is a map in local storage, load it
+    if (localStorage.getItem("map") !== null) {
+        var mapArray = JSON.parse(localStorage.getItem("map"));
+        width = mapArray[0].length;
+        height = mapArray.length;
+        var mapDiv = document.getElementById("map");
+        mapDiv.style.width = width * 30 + "px";
+        mapDiv.style.height = height * 30 + "px";
+        mapDiv.innerHTML = "";
+        for (var i = 0; i < height; i++) {
+            map.push([]);
+            for (var j = 0; j < width; j++) {
+                var cell = document.createElement("div");
+                cell.className = "cell";
+                cell.style.width = 100 / width + "%";
+                cell.style.height = 100 / height + "%";
+                cell.addEventListener("click", changeCell);
+                mapDiv.appendChild(cell);
+                map[i].push(mapArray[i][j]);
+                cell.classList.add("value" + mapArray[i][j]);
+                switch (mapArray[i][j]) {
+                    case 0:
+                        cell.style.backgroundColor = "white";
+                        break;
+                    case 1:
+                        cell.style.backgroundColor = "gray";
+                        break;
+                    case 2:
+                        cell.style.backgroundColor = "green";
+                        break;
+                    case 3:
+                        cell.style.backgroundColor = "blue";
+                        break;
+                    case 4:
+                        cell.style.backgroundColor = "orange";
+                        break;
+                    case 5:
+                        cell.style.backgroundColor = "lightgray";
+                        break;
+                    case 6:
+                        cell.style.backgroundColor = "yellow";
+                        break;
+                    case 7:
+                        cell.style.backgroundColor = "purple";
+                        break;
+                    case 8:
+                        cell.style.backgroundColor = "red";
+                        break;
+                }
+            }
+        }
+        document.getElementById("choose").innerHTML = "Click or drag to draw:"
+        document.getElementById("buttons").style.display = "block";
+        document.getElementById("map").style.display = "none";
+        document.getElementById("generate-map").style.display = "none";
+        document.getElementById("size").style.display = "none";
+        document.getElementById("loadMapHolder").style.display = "none";
+
+    }
+}
+
+//load map using data from a prompt
+function loadMapData(){//if there is a map in local storage, load it
+    
+    var mapArrayString = prompt("Paste map data here:");
+var mapArray = JSON.parse(mapArrayString);
+
+        width = mapArray[0].length;
+        height = mapArray.length;
+        var mapDiv = document.getElementById("map");
+        mapDiv.style.width = width * 30 + "px";
+        mapDiv.style.height = height * 30 + "px";
+        mapDiv.innerHTML = "";
+        for (var i = 0; i < height; i++) {
+            map.push([]);
+            for (var j = 0; j < width; j++) {
+                var cell = document.createElement("div");
+                cell.className = "cell";
+                cell.style.width = 100 / width + "%";
+                cell.style.height = 100 / height + "%";
+                cell.addEventListener("click", changeCell);
+                mapDiv.appendChild(cell);
+                map[i].push(mapArray[i][j]);
+                cell.classList.add("value" + mapArray[i][j]);
+                switch (mapArray[i][j]) {
+                    case 0:
+                        cell.style.backgroundColor = "white";
+                        break;
+                    case 1:
+                        cell.style.backgroundColor = "gray";
+                        break;
+                    case 2:
+                        cell.style.backgroundColor = "green";
+                        break;
+                    case 3:
+                        cell.style.backgroundColor = "blue";
+                        break;
+                    case 4:
+                        cell.style.backgroundColor = "orange";
+                        break;
+                    case 5:
+                        cell.style.backgroundColor = "lightgray";
+                        break;
+                    case 6:
+                        cell.style.backgroundColor = "yellow";
+                        break;
+                    case 7:
+                        cell.style.backgroundColor = "purple";
+                        break;
+                    case 8:
+                        cell.style.backgroundColor = "red";
+                        break;
+                }
+            }
+        }
+        document.getElementById("choose").innerHTML = "Click or drag to draw:"
+        document.getElementById("buttons").style.display = "block";
+        document.getElementById("map").style.display = "none";
+        document.getElementById("generate-map").style.display = "none";
+        document.getElementById("size").style.display = "none";
+        document.getElementById("loadMapHolder").style.display = "none";
+
+
+    }
+
 
 mapForm.addEventListener("submit", function(event) {
 
@@ -386,11 +536,16 @@ for (var i = 0; i < buttons.length; i++) {
 function exportMap() {
     selectedButton = previusButton;
 
-exportArray = [];
+    exportArray = [];
+    var hasShownAlert = false;
 for (var i = 0; i < height; i++) {
     var rowArray = [];
     for (var j = 0; j < width; j++) {
-        if (map[i][j] === 0) {
+        if (map[i][j] === null || map[i][j] === undefined) {
+            if (!hasShownAlert) {
+                alert("Some tiles might have been corrupted. All affected tiles have been set to empty.");
+                hasShownAlert = true;
+            }
             rowArray.push(0);
         } else {
             rowArray.push(map[i][j]);
@@ -398,18 +553,28 @@ for (var i = 0; i < height; i++) {
     }
     exportArray.push(rowArray);
 }
-console.log(JSON.stringify(exportArray).replace(/\],/g, "],\n"));
-alert("Map exported to console and clipboard.");
-//send it to user clipboard
-var dummy = document.createElement("textarea");
-document.body.appendChild(dummy);
-dummy.value = JSON.stringify(exportArray).replace(/\],/g, "],\n");
-dummy.select();
-document.execCommand("copy");
-document.body.removeChild(dummy);
-exportArray = [];
 
 
+    console.log(JSON.stringify(exportArray).replace(/\],/g, "],\n"));
+
+    //save map file to local storage
+    localStorage.setItem("map", JSON.stringify(exportArray).replace(/\],/g, "],\n"));
+
+    //send it to user clipboard
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = JSON.stringify(exportArray).replace(/\],/g, "],\n");
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+
+    //try save file with the map data
+    var blob = new Blob([JSON.stringify(exportArray).replace(/\],/g, "],\n")], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "map.txt");
+
+    alert("Map exported to Files, Copied to clipboard, and saved to Local Storage. View a copy in the Console.");
+
+    exportArray = [];
 }
 
 
