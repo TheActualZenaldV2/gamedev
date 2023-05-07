@@ -4,7 +4,8 @@
 	<title>Create Your Own Maze</title>
 </head>
 <body>
-	<div id="map"></div>
+    
+<div id="options">
         <p id="choose" > Choose map size: </p>
         <form id="map-form">
             <input id="size" type="text" placeholder="Size (e.g. 10x10)" required>
@@ -12,7 +13,7 @@
           </form>
           
         <div id="buttons">
-		<button id="empty">Empty Space</button>
+		<button id="empty">Empty Space</button> 
 		<button id="wall">Wall</button>
 		<button id="finish">Finish</button>
 		<button id="diamond">Diamond</button>
@@ -23,28 +24,39 @@
 		<button id="zoomInBlock">Zoom In Block</button>
 		<button id="jumpScare">Jump Scare</button>
         <input type="button" value="Close" onclick="document.getElementById('advancedTools').style.display = 'none'; document.getElementById('buttons').style.display = 'inline-block'; document.getElementById('advancedToolsButton').style.display = 'inline-block';">
-
+        
         <input type="button" value="Reset" onclick="location.reload()">
     </div>
 		<input type="button" value="Export Map" onclick="exportMap()">
         <input id="advancedToolsButton" type="button" value="Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'block'; this.style.display = 'none';">
 	</div>
+
+    <div class="map-container"> 
+        <div id="map"></div>
+    </div>
+</div>
 </body>
 
 <style>
     /* import poppins font */
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
-#map {
-  display: flex;
-  flex-wrap: wrap;
-  /* make it draggable */
-    user-select: none;
-    -webkit-user-select: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 
+
+
+
+#map {
+    margin-top: 20px;
+    margin: 0 auto;
+    
+    display: flex;
+    flex-wrap: wrap;
+    
+   
+    background-color: white;
+    user-select: none;
+    
+    
+    box-shadow: 10px 10px 100px 10px rgba(0,0,0,0.85);
 
 }
 
@@ -53,9 +65,8 @@
   width: 40px;
   height: 40px;
   border: 1px solid black;
-  
-
 }
+
 
 
 
@@ -73,9 +84,9 @@ body {
     text-align: center;
     background-color: #eee;
     font-family: 'Poppins', sans-serif;
-    margin: 0;
+    
     padding: 0;
-
+    overflow: scroll;
 }
 
 #advancedTools {
@@ -105,6 +116,8 @@ button {
     font-size: 16px;
     transition: 0.2s;
 }
+
+
 </style> 
 
 <script>
@@ -113,9 +126,13 @@ var height;
 var map = [];
 var previusButton;
 
-
 var mapForm = document.getElementById("map-form");
+document.getElementById("map").style.display = "none";
+
 mapForm.addEventListener("submit", function(event) {
+
+
+
     event.preventDefault();
         document.getElementById("choose").innerHTML = "Choose a tile:"
         document.getElementById("buttons").style.display = "block";
@@ -131,6 +148,7 @@ mapForm.addEventListener("submit", function(event) {
 
         mapDiv.style.width = width * 30 + "px";
         mapDiv.style.height = height * 30 + "px";
+
         mapDiv.innerHTML = "";
         for (var i = 0; i < height; i++) {
             map.push([]);
@@ -144,16 +162,38 @@ mapForm.addEventListener("submit", function(event) {
                 map[i].push(0);
             }
         }
+
+        
+
   
 });
+
 const buttonsHolder = document.getElementById("buttons");
-buttonsHolder.addEventListener("click", function(event) {
-    document.getElementById("map").style.display = "flex";
-    document.getElementById("choose").innerHTML = "Click or drag to draw:"
 
-    
+function createMapContainer() {
+  // Remove the event listener to prevent multiple containers from being created
+  buttonsHolder.removeEventListener("click", createMapContainer);
+  
+  //create a div enclosing the map and give it a thick border
+  var mapContainer = document.createElement("div");
+  mapContainer.className = "map-container";
+  mapContainer.style.border = "10px solid black";
+  mapContainer.style.borderRadius = "10px";
+  mapContainer.style.width = width * 30 + "px";
+  mapContainer.style.height = height * 30 + "px";
+  mapContainer.style.margin = "0 auto";
 
-});
+  mapContainer.appendChild(mapDiv);
+  document.body.appendChild(mapContainer);
+  document.getElementById("map").style.display = "flex";
+
+  document.getElementsByClassName("map-container")[0].style.display = "flex";
+  document.getElementById("choose").innerHTML = "Click or drag to draw:"
+}
+
+buttonsHolder.addEventListener("click", createMapContainer);
+
+
 
 document.getElementById("buttons").style.display = "none";
 
@@ -232,6 +272,10 @@ function changeCell(e) {
 
     // If the mouse button is down, continue to drag cells
     if (e.buttons === 1) {
+        //if mouse coordinates are outside of the map, stop drawing, or if on border
+        if (e.clientX < mapDiv.getBoundingClientRect().left || e.clientX > mapDiv.getBoundingClientRect().right || e.clientY < mapDiv.getBoundingClientRect().top || e.clientY > mapDiv.getBoundingClientRect().bottom) {
+            return;
+        }
         this.addEventListener("mousemove", changeCell);
     } else {
         this.removeEventListener("mousemove", changeCell);
