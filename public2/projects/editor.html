@@ -37,9 +37,12 @@
             
         </div>
          <br> Tools: 
-         <button id="random" onclick="randomizeBlocks()"> Random Map</button>
+         <input type="button" value="Test Map" onclick="testMap()">
+         <input type="button" onclick="randomizeBlocks()" value="Randomize Map">
+         
         <input type="button" value="Reset and Clear Map" onclick="location.reload(); localStorage.clear();">
         <input type="button" value="Save & Export Map" onclick="exportMap()">
+        
    
         <input id="advancedToolsButton" type="button" value="Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'block'; this.style.display = 'none';">
 	</div>
@@ -297,6 +300,29 @@ var mapArray = JSON.parse(mapArrayString);
 
     }
 
+    function testMap(){
+        //open new tab with the map and game script
+        //var mapArray = JSON.parse(localStorage.getItem("map"));
+       // var mapArrayString = JSON.stringify(mapArray).replace(/\],/g, "],\n");
+       // var mapArrayString2 = mapArrayString.replace(/\[/g, "[\n");
+
+        //open new tab and send map data to it
+        //var win = window.open("testMap.html", '_blank');
+        //win.document.write("<pre>" + mapArrayString2 + "</pre>");
+        //import javascript file to new tab
+        //var script = document.createElement('script');
+       // script.src = 'game.js';
+        //import html file to new tab
+        //var link = document.createElement('link');
+        //link.rel = 'stylesheet';
+        //link.href = 'game.css';
+        //win.document.head.appendChild(script);
+        //win.document.head.appendChild(link);
+        //write HTML to new tab
+        alert("Soon if im not too lazy")
+        
+
+    }
 
 mapForm.addEventListener("submit", function(event) {
 
@@ -451,56 +477,179 @@ function changeCell(e) {
     }
 }
 
+// Add event listener to document object
+document.addEventListener("keydown", function(event) {
+
+  switch (event.keyCode) {
+    case 48: // "0" key
+      selectedButton = "empty";
+      break;
+    case 49: // "1" key
+      selectedButton = "wall";
+      
+      break;
+    case 50: // "2" key
+      selectedButton = "finish";
+      break;
+    case 51: // "3" key
+      selectedButton = "diamond";
+      break;
+    case 52: // "4" key
+      selectedButton = "fakeWall";
+      break;
+    case 53: // "5" key
+      selectedButton = "invisibleWall";
+      break;
+    case 54: // "6" key
+      selectedButton = "zoomOutBlock";
+      document.getElementById("advancedTools").style.display = "block";
+      break;
+    case 55: // "7" key
+      selectedButton = "zoomInBlock";
+      document.getElementById("advancedTools").style.display = "block";
+
+      break;
+    case 56: // "8" key
+      selectedButton = "jumpScare";
+      document.getElementById("advancedTools").style.display = "block";
+
+      break;
+  }
+  //draw the selected tile and button
+    switch (selectedButton) {
+        case "empty":
+        selectedColor = "white";
+        break;
+        case "wall":
+        selectedColor = "gray";
+        break;
+        case "finish":
+        selectedColor = "green";
+        break;
+        case "diamond":
+        selectedColor = "blue";
+        break;
+        case "fakeWall":
+        selectedColor = "orange";
+        break;
+        case "invisibleWall":
+        selectedColor = "lightgray";
+        break;
+        case "zoomOutBlock":
+        selectedColor = "yellow";
+        break;
+        case "zoomInBlock":
+        selectedColor = "purple";
+        break;
+        case "jumpScare":
+        selectedColor = "red";
+        break;
+    }
+   
+
+
+ 
+        
+   //change button color
+   // Update the button styles
+for (var j = 0; j < buttons.length; j++) {
+    buttons[j].style.backgroundColor = "white";
+    buttons[j].style.color = "black";
+}
+if (selectedButton != null && selectedButton !== undefined) {
+  document.getElementById(selectedButton).style.backgroundColor = selectedColor;
+  document.getElementById(selectedButton).style.color = "white";
+}
+
+
+
+});
 // Change the value of a cell
 function changeCellValue(cell) {
   // Get the cell's x and y coordinates
   var x = Array.prototype.indexOf.call(mapDiv.children, cell) % width;
   var y = Math.floor(Array.prototype.indexOf.call(mapDiv.children, cell) / width);
   var value;
-  switch (selectedButton) {
-    case "empty":
-      value = 0;
-      previusButton = selectedButton;
-      break;
-    case "wall":
-      value = 1;
-      previusButton = selectedButton;
-      break;
-    case "finish":
-      value = 2;
-      previusButton = selectedButton;
-      break;
-    case "diamond":
-      value = 3;
-      previusButton = selectedButton;
-      break;
-    case "fakeWall":
-      value = 4;
-      previusButton = selectedButton;
-      break;
-    case "invisibleWall":
-      value = 5;
-      previusButton = selectedButton;
-      break;
-    case "zoomOutBlock":
-      value = 6;
-      previusButton = selectedButton;
-      break;
-    case "zoomInBlock":
-      value = 7;
-      previusButton = selectedButton;
-      break;
-    case "jumpScare":
-      value = 8;
-      previusButton = selectedButton;
-      break;
+
+  // Determine the value based on the selected button or the key pressed
+  if (selectedButton) {
+    switch (selectedButton) {
+      case "empty":
+        value = 0;
+        previusButton = selectedButton;
+        break;
+      case "wall":
+        value = 1;
+        previusButton = selectedButton;
+        break;
+      case "finish":
+        value = 2;
+        previusButton = selectedButton;
+        break;
+      case "diamond":
+        value = 3;
+        previusButton = selectedButton;
+        break;
+      case "fakeWall":
+        value = 4;
+        previusButton = selectedButton;
+        break;
+      case "invisibleWall":
+        value = 5;
+        previusButton = selectedButton;
+        break;
+      case "zoomOutBlock":
+        value = 6;
+        previusButton = selectedButton;
+        break;
+      case "zoomInBlock":
+        value = 7;
+        previusButton = selectedButton;
+        break;
+      case "jumpScare":
+        value = 8;
+        previusButton = selectedButton;
+        break;
+    }
+  } else {
+    switch (event.keyCode) {
+      case 48: // "0" key
+        value = 0;
+        break;
+      case 49: // "1" key
+        value = 1;
+        break;
+      case 50: // "2" key
+        value = 2;
+        break;
+      case 51: // "3" key
+        value = 3;
+        break;
+      case 52: // "4" key
+        value = 4;
+        break;
+      case 53: // "5" key
+        value = 5;
+        break;
+      case 54: // "6" key
+        value = 6;
+        break;
+      case 55: // "7" key
+        value = 7;
+        break;
+      case 56: // "8" key
+        value = 8;
+        break;
+    }
   }
+
+
+ 
+  // Update the map array and cell value
   map[y][x] = value;
   cell.classList.remove(cell.classList[0]);
   cell.classList.add("value" + value);
-  // Change the selected tile's color
   cell.style.backgroundColor = selectedColor;
-
 }
 
 
@@ -555,6 +704,11 @@ for (var i = 0; i < buttons.length; i++) {
         
 	});
 }
+
+
+
+
+
 
 function exportMap() {
     selectedButton = previusButton;
