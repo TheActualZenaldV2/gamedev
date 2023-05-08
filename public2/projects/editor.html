@@ -17,26 +17,30 @@
             <button id="generate-map">Generate Map</button>
           </form>
 <div id="loadMapHolder">
-          <input type="button" id="import" onclick="loadMapData()" value="Import Map"> 
-          <input type="button" id="localStorageImport" onclick="loadMap()" value="Load Map">
+          <input type="button" id="import" onclick="loadMapData()" value="Import Map Data"> 
+          <input type="button" id="localStorageImport" onclick="loadMap()" value="Load Map Last Saved Map">
 </div>
+
         <div id="buttons"> Building: 
-		<button id="empty">Empty Space</button> 
+		<button id="empty" style="color: black;">Empty Space</button> 
 		<button id="wall">Wall</button>
 		<button id="finish">Finish</button>
 		<button id="diamond">Diamond</button>
 		<button id="fakeWall">Fake Wall</button>
-		<button id="invisibleWall">Invisible Wall</button> <br> Tools: 
+		<button id="invisibleWall">Invisible Wall</button>
+        <div id="advancedTools"> Advanced Tools: 
+            <button id="zoomOutBlock">Zoom Out Block</button>
+            <button id="zoomInBlock">Zoom In Block</button>
+            <button id="jumpScare">Jump Scare</button>
+            <input type="button" value="Close Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'none'; document.getElementById('buttons').style.display = 'inline-block'; document.getElementById('advancedToolsButton').style.display = 'inline-block';">
+            
+            
+        </div>
+         <br> Tools: 
+         <button id="random" onclick="randomizeBlocks()"> Random Map</button>
         <input type="button" value="Reset and Clear Map" onclick="location.reload(); localStorage.clear();">
         <input type="button" value="Save & Export Map" onclick="exportMap()">
-    <div id="advancedTools">
-		<button id="zoomOutBlock">Zoom Out Block</button>
-		<button id="zoomInBlock">Zoom In Block</button>
-		<button id="jumpScare">Jump Scare</button>
-        <input type="button" value="Close" onclick="document.getElementById('advancedTools').style.display = 'none'; document.getElementById('buttons').style.display = 'inline-block'; document.getElementById('advancedToolsButton').style.display = 'inline-block';">
-        
-        
-    </div>
+   
         <input id="advancedToolsButton" type="button" value="Advanced Tools" onclick="document.getElementById('advancedTools').style.display = 'block'; this.style.display = 'none';">
 	</div>
 
@@ -139,6 +143,21 @@ var previusButton;
 
 var mapForm = document.getElementById("map-form");
 document.getElementById("map").style.display = "none";
+
+ function randomizeBlocks() {
+  // Loop through the map array
+  for (var y = 0; y < height; y++) {
+    for (var x = 0; x < width; x++) {
+      // Randomly set each cell's value to either 0 (open space) or 1 (wall)
+      map[y][x] = Math.floor(Math.random() * 2); //higher number = more walls 
+      // Set the corresponding CSS class and background color for the cell
+      var cell = mapDiv.children[y * width + x];
+      cell.classList.remove(cell.classList[0]);
+      cell.classList.add("value" + map[y][x]);
+      cell.style.backgroundColor = map[y][x] == 0 ? "white" : "gray";
+    }
+  }
+}
 
 function showLoadMapHolder() {
     document.getElementById("loadMapHolder").style.display = "block";
@@ -529,6 +548,10 @@ for (var i = 0; i < buttons.length; i++) {
         }
         this.style.backgroundColor = selectedColor;
         this.style.color = "white";
+        if(this.style.backgroundColor == "white") {
+            this.style.color = "black";
+            this.style.backgroundColor = "white";
+        }
         
 	});
 }
@@ -543,7 +566,7 @@ for (var i = 0; i < height; i++) {
     for (var j = 0; j < width; j++) {
         if (map[i][j] === null || map[i][j] === undefined) {
             if (!hasShownAlert) {
-                alert("Some tiles might have been corrupted. All affected tiles have been set to empty.");
+                console.log("Some tiles might have been corrupted. All affected tiles have been set to empty.");
                 hasShownAlert = true;
             }
             rowArray.push(0);
