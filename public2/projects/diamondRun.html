@@ -164,9 +164,9 @@ function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     requestAnimationFrame(draw);
     //move camera with player smoothly 
-    camera.x += (playerPosition.x * cellSize - camera.x - canvas.width / 2) * 0.015;
-    camera.y += (playerPosition.y * cellSize - camera.y - canvas.height / 2) * 0.015;
-
+    camera.x += (playerPosition.x * cellSize - camera.x - canvas.width / 2) * 0.02;
+    camera.y += (playerPosition.y * cellSize - camera.y - canvas.height / 2) * 0.02;
+    
 
     // Clamp the camera position to keep it within the maze bounds
     camera.x = Math.max(0, Math.min(camera.x, maze[0].length * cellSize - canvas.width));
