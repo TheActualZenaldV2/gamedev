@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <body onload="updateTurn();"></body>
+    <title>Connect Four</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="spinnerText"> <h3>Loading...</h3></div>
+    <div id="spinner"> </div>
+    <div id="game-over" style="display: none;">
+      <h1>Game Over</h1>
+      <p id="disc">Your opponent has disconnected.</p>
+      
+    </div>
+    <div id="game" style="display: none;">
+    <button style="display: none;" onclick="clearBoard()">Clear Board</button> <br> 
+    <h1>Connect Four</h1>
+    <h3> <span id="currentPlayer"></span></h3>
+    <canvas id="canvas" width="420" height="360"></canvas>
+    </div>
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+     spectator = false;
+        // Initialize Firebase
+    const firebaseConfig = {
+  apiKey: "AIzaSyDT8RNT020nq2AokZsR2k0D9Tg1Y_iqnNs",
+  authDomain: "connect-four-ea8ad.firebaseapp.com",
+  projectId: "connect-four-ea8ad",
+  storageBucket: "connect-four-ea8ad.appspot.com",
+  messagingSenderId: "137957276527",
+  appId: "1:137957276527:web:075676a96470b92333469a",
+  measurementId: "G-LPK8N57TC6"
+};
+      firebase.initializeApp(firebaseConfig);
+
+      // Get a reference to the game state in the database
+      const gameStateRef = firebase.database().ref("gameState");
+
+      // Initialize the game state
+      let gameState = {
+        board: [
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+        ],
+        currentPlayer: 1,
+      };
+      
+      // Initialize the canvas
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Draw the game board
+      function drawBoard() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the cells
+        for (let i = 0; i < 6; i++) {
+          for (let j = 0; j < 7; j++) {
+            const x = j * 60 + 30;
+            const y = i * 60 + 30;
+            const radius = 25;
+
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.closePath();
+
+            if (gameState.board[i][j] === 1) {
+              ctx.fillStyle = "red";
+              ctx.fill();
+            } else if (gameState.board[i][j] === 2) {
+              ctx.fillStyle = "yellow";
+              ctx.fill();
+            }
+
+            ctx.stroke();
+          }
+        }
+      }
+
+     // Update the HTML with the current player's turn
+function updateTurn() {
+  setTimeout(() => {
+    const turnElement = document.getElementById("currentPlayer");
+    if (typeof playerNumber === null) {
+      turnElement.textContent = "Spectating";
+    } else if (gameState.currentPlayer === playerNumber) {
+      turnElement.textContent = "Your turn";
+    } else {
+      turnElement.textContent = `Player ${gameState.currentPlayer}'s turn`;
+    }
+
+    // Listen for changes to the gameState object in Firebase
+    gameStateRef.on("value", (snapshot) => {
+      const gameState = snapshot.val();
+      if (gameState.currentPlayer === playerNumber) {
+        turnElement.textContent = "Your turn";
+      } else {
+        turnElement.textContent = `Player ${gameState.currentPlayer}'s turn`;
+      }
+    });
+
+    // Listen for changes to the connections object in Firebase
+    firebase.database().ref("connections").on("value", (snapshot) => {
+      const numConnections = snapshot.numChildren();
+      if (numConnections === 1) {
+        turnElement.textContent = "Waiting for opponent";
+      } else if (numConnections === 2) {
+        // Both players are connected, update the turn
+        gameStateRef.once("value", (snapshot) => {
+          const gameState = snapshot.val();
+          if (gameState.currentPlayer === playerNumber) {
+            turnElement.textContent = "Your turn";
+          } else {
+            turnElement.textContent = `Player ${gameState.currentPlayer}'s turn`;
+          }
+        });
+      }
+    });
+  }, 1000);
+}
+// Drop a piece into the specified column
+function dropPiece(column) {
+  // Find the lowest empty cell in the column
+  let row = 5;
+  while (gameState.board[row][column] !== 0 && row >= 0) {
+    row--;
+  }
+
+  // If the column is full, do nothing
+  if (row < 0) {
+    return;
+  }
+
+  // Calculate the position and color of the coin
+  const x = column * 60 + 30;
+  const y = -30;
+  const radius = 25;
+  const color = gameState.currentPlayer === 1 ? "red" : "yellow";
+
+  // Start the animation
+  animate(column, row, color, x, y, radius, () => {
+    // Check for a win
+if (checkWin(row, column)) {
+  alert(`Player ${gameState.currentPlayer} wins!`);
+  clearBoard();
+  //give player rewards (LATER)
+  drawBoard();
+  // Set the game over flag in Firebase
+  firebase.database().ref("gameOver").set(true);
+}  else {
+      // Switch to the other player
+      gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+
+      // Update the game state in the database
+      gameStateRef.set(gameState);
+
+      // Update the HTML with the current player's turn
+      updateTurn();
+    }
+
+// Listen for changes to the gameOver flag in Firebase
+firebase.database().ref("gameOver").on("value", (snapshot) => {
+  const gameOver = snapshot.val();
+  if (gameOver === true) {
+    // Show the game over screen
+    document.getElementById("game-over").style.display = "block";
+    document.getElementById("game").style.display = "none";
+    if (gameState.currentPlayer === playerNumber) {
+      document.getElementById("disc").innerHTML = "You win!";
+    } else {
+      document.getElementById("disc").innerHTML = "You lost!";
+    }
+  }
+});
+    
+  });
+}
+      // Animate the coin drop
+      function animate(column, row, color, x, y, radius, callback) {
+        // Draw the coin
+        function draw() {
+          // Clear the canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Draw the cells
+          for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 7; j++) {
+              const x = j * 60 + 30;
+              const y = i * 60 + 30;
+              const radius = 25;
+
+              ctx.beginPath();
+              ctx.arc(x, y, radius, 0, 2 * Math.PI);
+              ctx.closePath();
+
+              if (gameState.board[i][j] === 1) {
+                ctx.fillStyle = "red";
+                ctx.fill();
+              } else if (gameState.board[i][j] === 2) {
+                ctx.fillStyle = "yellow";
+                ctx.fill();
+              }
+
+              ctx.stroke();
+            }
+          }
+
+          // Draw the coin
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        // Update the position of the coin
+        y += 5;
+
+        // Request the next animation frame
+        if (y < row * 60 + 30) {
+          draw();
+          requestAnimationFrame(() => animate(column, row, color, x, y, radius, callback));
+        } else {
+          // Update the game state with the new piece
+          gameState.board[row][column] = gameState.currentPlayer;
+
+          // Call the callback function when the animation is done
+          if (callback) {
+            callback();
+          }
+        }
+      }
+
+      // Check for a win
+      function checkWin(row, column) {
+        const player = gameState.currentPlayer;
+        let count = 0;
+
+        // Check for a horizontal win
+        for (let j = 0; j < 7; j++) {
+          if (gameState.board[row][j] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+        }
+
+        // Check for a vertical win
+        count = 0;
+        for (let i = 0; i < 6; i++) {
+          if (gameState.board[i][column] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+        }
+
+        // Check for a diagonal win (top-left to bottom-right)
+        count = 0;
+        let i = row;
+        let j = column;
+        while (i >= 0 && j >= 0) {
+          if (gameState.board[i][j] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+
+          i--;
+          j--;
+        }
+        i = row + 1;
+        j = column + 1;
+        while (i < 6 && j < 7) {
+          if (gameState.board[i][j] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+
+          i++;
+          j++;
+        }
+
+        // Check for a diagonal win (bottom-left to top-right)
+        count = 0;
+        i = row;
+        j = column;
+        while (i < 6 && j >= 0) {
+          if (gameState.board[i][j] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+
+          i++;
+          j--;
+        }
+        i = row - 1;
+        j = column + 1;
+        while (i >= 0 && j < 7) {
+          if (gameState.board[i][j] === player) {
+            count++;
+          } else {
+            count = 0;
+          }
+
+          if (count === 4) {
+            return true;
+          }
+
+          i--;
+          j++;
+        }
+
+        return false;
+      }
+
+      // Clear the game board and the game state in the database
+      function clearBoard() {
+        // Clear the game board
+        gameState.board = [
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+        ];
+
+        // Clear the game state in the database
+        gameStateRef.set(gameState);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //redraw the board
+        drawBoard();
+      }
+
+      // Listen for changes to the game state in the database
+      gameStateRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          gameState.board = data.board;
+          gameState.currentPlayer = data.currentPlayer;
+          drawBoard();
+        }
+      });
+
+// Initialize player number
+let playerNumber;
+
+
+// Limit the number of connections to 2
+firebase.database().ref(".info/connected").on("value", (snapshot) => {
+  if (snapshot.val() === true) {
+    const connectionRef = firebase.database().ref("connections").push(true);
+    connectionRef.onDisconnect().remove();
+
+    firebase.database().ref("connections").once("value", (snapshot) => {
+      const numConnections = snapshot.numChildren();
+      if (numConnections <= 2) {
+        // Assign player number based on the number of connections
+        firebase.database().ref("players").once("value", (snapshot) => {
+          const playerNumbers = Object.keys(snapshot.val() || {});
+          const availableNumbers = [1, 2].filter(num => !playerNumbers.includes(num.toString()));
+          if (availableNumbers.length > 0) {
+            playerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+            console.log(`Player ${playerNumber} connected`);
+            const spinner = document.getElementById("spinner");
+            setTimeout(() => {
+              spinner.style.display = "none";
+              document.getElementById("game").style.display = "block";
+              document.getElementById("spinnerText").style.display = "none";
+            }, 500);
+
+            // Store player number in Firebase
+            firebase.database().ref(`players/${playerNumber}`).set(true);
+
+            // Clear the board when a player disconnects
+            const playerRef = firebase.database().ref(`players/${playerNumber}`);
+            playerRef.onDisconnect().remove();
+
+    
+          } else {
+            console.log("Both player numbers are already taken");
+            playerNumber = null;
+          }
+        });
+      } 
+      //if there are more than 2 players
+      else {
+        console.log("Too many connections, you are now a spectator.");
+        playerNumber = null;
+        //the user is now a spectator
+        spectator = true;
+      }
+    });
+  }
+});
+
+// Listen for changes to the players object in Firebase
+firebase.database().ref("players").on("value", (snapshot) => {
+  const numPlayers = snapshot.numChildren();
+  if (numPlayers === 2) {
+    // Both players exist, start watching for player disconnection
+    firebase.database().ref("connections").on("value", (snapshot) => {
+      const playerNumbers = Object.keys(snapshot.val() || {});
+      if (playerNumbers.length === 2) {
+        // Both players are still connected
+      } else if (playerNumbers.length === 1) {
+        // One player has disconnected, call the handleDisconnect function
+        handleDisconnect();
+      }
+    });
+  }
+});
+
+
+firebase.database().ref("gameOver").onDisconnect().set(false);
+
+
+
+// Function to handle player disconnection
+function handleDisconnect() {
+  
+
+  if(timer > 1000){
+  clearBoard();
+  drawBoard();
+  //game over screen
+  document.getElementById("game-over").style.display = "block";
+  document.getElementById("game").style.display = "none";
+  }
+}
+
+timer = 0;
+setInterval(() => {
+  timer++;
+}, 1);
+// Add event listeners to the canvas
+canvas.addEventListener("click", event => {
+  // Check if the user is a player
+  if (playerNumber === null) {
+    console.log("You are spectating");
+    return;
+  }
+
+  // Check if it's the player's turn
+  if (gameState.currentPlayer !== playerNumber) {
+    console.log("It's not your turn");
+    return;
+  }
+
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  const column = Math.floor(x / 60);
+  dropPiece(column);
+});
+     
+      drawBoard();
+    </script>
+  </body>
+
+
+
+  <style> 
+  
+  /*import poppins font*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+  body {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background-color: #f2f2f2;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+button {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #555;
+}
+  /* Style the canvas */
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+/* Style the game board */
+#board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border: 2px solid black;
+  border-radius: 50%;
+  margin: 5px;
+}
+
+/* Style the player turn indicator */
+#currentPlayer {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#currentPlayer span {
+  font-weight: normal;
+}
+
+
+#spinnerText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+#spinner {
+  text-align: center;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #7983ff;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
+</html>
