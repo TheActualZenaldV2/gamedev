@@ -431,6 +431,11 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
         playerNumber = null;
         //the user is now a spectator
         spectator = true;
+        setTimeout(() => {
+              spinner.style.display = "none";
+              document.getElementById("game").style.display = "block";
+              document.getElementById("spinnerText").style.display = "none";
+            }, 500);
       }
     });
   }
