@@ -20,6 +20,7 @@
     <div id="game" style="display: none;">
     <button style="display: none;" onclick="clearBoard()">Clear Board</button> <br> 
     <h1>Connect Four</h1>
+    <span id="spectator"> </span>
     <h3> <span id="currentPlayer"></span></h3>
     <canvas id="canvas" width="420" height="360"></canvas>
     </div>
@@ -136,6 +137,12 @@ function updateTurn() {
 }
 // Drop a piece into the specified column
 function dropPiece(column) {
+  // Check if it's the player's turn
+  if (gameState.currentPlayer !== playerNumber) {
+    console.log("It's not your turn");
+    return;
+  }
+
   // Find the lowest empty cell in the column
   let row = 5;
   while (gameState.board[row][column] !== 0 && row >= 0) {
@@ -151,19 +158,18 @@ function dropPiece(column) {
   const x = column * 60 + 30;
   const y = -30;
   const radius = 25;
-  const color = gameState.currentPlayer === 1 ? "red" : "yellow";
+  const color = playerNumber === 1 ? "red" : "yellow";
 
   // Start the animation
   animate(column, row, color, x, y, radius, () => {
     // Check for a win
-if (checkWin(row, column)) {
-  alert(`Player ${gameState.currentPlayer} wins!`);
-  clearBoard();
-  //give player rewards (LATER)
-  drawBoard();
-  // Set the game over flag in Firebase
-  firebase.database().ref("gameOver").set(true);
-}  else {
+    if (checkWin(row, column)) {
+      clearBoard();
+      //give player rewards (LATER)
+      drawBoard();
+      // Set the game over flag in Firebase
+      firebase.database().ref("gameOver").set(true);
+    } else {
       // Switch to the other player
       gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
 
@@ -173,22 +179,6 @@ if (checkWin(row, column)) {
       // Update the HTML with the current player's turn
       updateTurn();
     }
-
-// Listen for changes to the gameOver flag in Firebase
-firebase.database().ref("gameOver").on("value", (snapshot) => {
-  const gameOver = snapshot.val();
-  if (gameOver === true) {
-    // Show the game over screen
-    document.getElementById("game-over").style.display = "block";
-    document.getElementById("game").style.display = "none";
-    if (gameState.currentPlayer === playerNumber) {
-      document.getElementById("disc").innerHTML = "You win!";
-    } else {
-      document.getElementById("disc").innerHTML = "You lost!";
-    }
-  }
-});
-    
   });
 }
       // Animate the coin drop
@@ -429,6 +419,7 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
       else {
         console.log("Too many connections, you are now a spectator.");
         playerNumber = null;
+        document.getElementById("spectator").innerHTML = "You are now a spectator.";
         //the user is now a spectator
         spectator = true;
         setTimeout(() => {
@@ -473,6 +464,9 @@ function handleDisconnect() {
   //game over screen
   document.getElementById("game-over").style.display = "block";
   document.getElementById("game").style.display = "none";
+  setTimeout(() => {
+      location.reload();
+    }, 3000);
   }
 }
 
@@ -500,7 +494,20 @@ canvas.addEventListener("click", event => {
 
   const column = Math.floor(x / 60);
   dropPiece(column);
+  //send the move to the database
+  firebase.database().ref("moves").push({
+    column,
+    player: playerNumber,
+  });
 });
+// Listen for moves
+firebase.database().ref("moves").on("child_added", (snapshot) => {
+  const move = snapshot.val();
+  if (move.player !== playerNumber) {
+    dropPiece(move.column);
+  }
+});
+
      
       drawBoard();
     </script>
@@ -510,15 +517,22 @@ canvas.addEventListener("click", event => {
 
   <style> 
   
-  /*import poppins font*/
+/* Import Poppins font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
-  body {
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  background-color: #f2f2f2;
-  color: #333;
+
+/* Reset default styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Set global styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #333;
+  color: #f2f2f2;
+  text-align: center;
 }
 
 h1 {
@@ -537,8 +551,8 @@ p {
 button {
   font-size: 18px;
   font-weight: bold;
-  color: #fff;
-  background-color: #333;
+  color: #f2f2f2;
+  background-color: #555;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
@@ -547,13 +561,14 @@ button {
 }
 
 button:hover {
-  background-color: #555;
+  background-color: #777;
 }
-  /* Style the canvas */
+
+/* Style the canvas */
 canvas {
   display: block;
   margin: 0 auto;
-  border: 2px solid black;
+  border: 2px solid #f2f2f2;
   border-radius: 10px;
 }
 
@@ -573,7 +588,7 @@ canvas {
 .cell {
   width: 60px;
   height: 60px;
-  border: 2px solid black;
+  border: 2px solid #f2f2f2;
   border-radius: 50%;
   margin: 5px;
 }
@@ -590,7 +605,6 @@ canvas {
   font-weight: normal;
 }
 
-
 #spinnerText {
   margin-top: 20px;
   font-size: 24px;
@@ -598,6 +612,7 @@ canvas {
   text-align: center;
 }
 #spinner {
+  margin-top: 20px;
   text-align: center;
   display: inline-block;
   width: 50px;
@@ -606,6 +621,7 @@ canvas {
   border-left-color: #7983ff;
   border-radius: 50%;
   animation: spin 1s ease-in-out infinite;
+  background-color: #2f2f2f;
 }
 
 @keyframes spin {
