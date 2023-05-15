@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe Multiplayer</title>
+</head>
+<body>
+  <h1>Tic Tac Toe Multiplayer</h1>
+  <span id="turn"></span>
+  <div id="board-container"></div>
+  <div id="buttons">
+    <button onclick="createGameRoom()">Create Game Room</button>
+    <input type="text" id="game-code" placeholder="Enter Game Code">
+    <button onclick="joinGameRoom(document.getElementById('game-code').value)">Join Game Room</button>
+    <button onclick="{
+        location.reload();
+        //clear the database
+        gameRoomRef.remove();
+        }">Restart Game</button>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>  
+</body>
+
+  <style>
+  /* import poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  body {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font: 16px Poppins, sans-serif;
+  text-align: center;
+}
+
+#board-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.cell {
+  border: 1px solid #d4d4d4;
+  font-size: 72px;
+  text-align: center;
+  line-height: 100px;
+  cursor: pointer;
+  height: 100px;
+  width: 100px;
+  color: #d4d4d4;
+  font-family: "Times New Roman", Times, serif;
+
+}
+
+.cell:hover {
+  background-color: #333333;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#status {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 24px;
+  color: #d4d4d4;
+}
+
+#buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  font-size: 16px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333333;
+  color: #d4d4d4;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #444444;
+}
+  </style>
+
+  <script>
+ // Initialize Firebase
+ const firebaseConfig = {
+  apiKey: "AIzaSyAqBL7ia_zvhVCbHrAzBVeao0Sr4UKo3rQ",
+  authDomain: "tic-tac-toe-ffc4d.firebaseapp.com",
+  projectId: "tic-tac-toe-ffc4d",
+  storageBucket: "tic-tac-toe-ffc4d.appspot.com",
+  messagingSenderId: "885851412650",
+  appId: "1:885851412650:web:06ff28330eb7e5f2c218d3",
+  measurementId: "G-P790SXJBEE"
+};
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the game room in the database
+var gameRoomRef = firebase.database().ref("gameRoom");
+
+// Initialize game variables
+var player = "X";
+var opponent = "O";
+var gameOver = false;
+
+// Set up the game board
+var gameBoard = [
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""]
+];
+
+
+
+window.onload = function() {
+  gameRoomRef.once("value", function(snapshot) {
+    if (snapshot.val() === null) {
+      // Generate a random letter for the player
+      let playerLetter = Math.random() < 0.5 ? "X" : "O";
+
+      // Check if the letter is already taken
+      let players = snapshot.child("players").val();
+      while (
+        players &&
+        (players.player1 && players.player1.letter === playerLetter) ||
+        (players.player2 && players.player2.letter === playerLetter)
+      ) {
+        playerLetter = playerLetter === "X" ? "O" : "X";
+      }
+
+      // Assign the letter to the player and store the player information in the database under their UID
+      let playerNumber = players ? Object.keys(players).length + 1 : 1;
+      gameRoomRef.child("players").child("player" + playerNumber).set({
+        uid: uid,
+        letter: playerLetter
+      });
+      console.log("player: " + playerLetter);
+    }
+  });
+};
+
+
+function renderBoard() {
+  var boardContainer = document.getElementById("board-container");
+  boardContainer.innerHTML = "";
+
+  for (var i = 0; i < gameBoard.length; i++) {
+    for (var j = 0; j < gameBoard[i].length; j++) {
+      var cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.row = i;
+      cell.dataset.col = j;
+      cell.textContent = gameBoard[i][j] || " ";
+      cell.addEventListener("click", function() {
+        handleMove(this.dataset.row, this.dataset.col);
+      });
+      boardContainer.appendChild(cell);
+    }
+  }
+}
+
+// Function to handle a move
+function handleMove(row, col) {
+  if (gameBoard[row][col] || gameOver) {
+    return;
+  }
+
+  gameBoard[row][col] = player;
+
+  renderBoard();
+  function checkTie() {
+  for (var i = 0; i < gameBoard.length; i++) {
+    for (var j = 0; j < gameBoard[i].length; j++) {
+      if (!gameBoard[i][j]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+  // Check for a win or tie
+  if (checkWin(player)) {
+    alert(player + " wins!");
+    gameOver = true;
+    gameRoomRef.update({ gameOver: true });
+  } else if (checkTie()) {
+    alert("Tie game!");
+    gameOver = true;
+    gameRoomRef.update({ gameOver: true });
+  } else {
+    // Switch players
+    player = opponent;
+    opponent = player === "X" ? "O" : "X";
+
+    // Update the database with the new state of the game
+    gameRoomRef.update({ gameBoard: gameBoard, player: player, opponent: opponent });
+  }
+}
+
+// Function to check for a win
+function checkWin(player) {
+  // Check rows
+  for (var i = 0; i < gameBoard.length; i++) {
+    if (gameBoard[i][0] === player && gameBoard[i][1] === player && gameBoard[i][2] === player) {
+      return true;
+    }
+  }
+
+  // Check columns
+  for (var j = 0; j < gameBoard[0].length; j++) {
+    if (gameBoard[0][j] === player && gameBoard[1][j] === player && gameBoard[2][j] === player) {
+      return true;
+    }
+  }
+
+  // Check diagonals
+  if (gameBoard[0][0] === player && gameBoard[1][1] === player && gameBoard[2][2] === player) {
+    return true;
+  }
+  if (gameBoard[0][2] === player && gameBoard[1][1] === player && gameBoard[2][0] === player) {
+    return true;
+  }
+
+  // No win found
+  return false;
+}
+
+// Listen for changes to the game state in the Firebase Realtime Database
+gameRoomRef.on("value", function(snapshot) {
+  var gameState = snapshot.val();
+
+  if (gameState) {
+    // Update the game board
+    gameBoard = gameState.gameBoard;
+    renderBoard();
+
+    // Update the game variables
+    player = gameState.player;
+    opponent = gameState.opponent;
+    gameOver = gameState.gameOver;
+  }
+});
+
+// Create a new game room in the Firebase Realtime Database
+function createGameRoom() {
+  gameRoomRef.set({
+    gameBoard: gameBoard,
+    player: player,
+    opponent: opponent,
+    gameOver: gameOver
+  });
+}
+
+// Join an existing game room in the Firebase Realtime Database
+function joinGameRoom(gameCode) {
+  gameRoomRef = firebase.database().ref("gameRoom/" + gameCode);
+}
+renderBoard();
+  </script>
+</html>
