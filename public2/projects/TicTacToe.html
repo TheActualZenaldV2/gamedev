@@ -5,8 +5,18 @@
   <title>Tic Tac Toe Multiplayer</title>
 </head>
 <body>
-  <h1>Tic Tac Toe Multiplayer</h1>
-  <span id="turn"></span>
+  <h1 id="title">Tic Tac Toe Multiplayer</h1>
+  <div id="game-over" style="display: none;">
+    <h1>Game Over</h1>
+    <p id="disc">Your opponent has disconnected.</p>
+    
+  </div>
+  <div id="spinnerText"> <h3>Loading...</h3></div>
+    <div id="spinner"> </div>
+
+  <div id="game" style="display: none">
+    <span id="spectator"></span>
+    <h3> <span id="currentPlayer"></span></h3>
   <div id="board-container"></div>
   <div id="buttons">
     <button onclick="createGameRoom()">Create Game Room</button>
@@ -17,6 +27,7 @@
         //clear the database
         gameRoomRef.remove();
         }">Restart Game</button>
+  </div>
   </div>
   <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
@@ -91,6 +102,31 @@ button {
 button:hover {
   background-color: #444444;
 }
+
+#spinnerText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+#spinner {
+  margin-top: 20px;
+  text-align: center;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #7983ff;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  background-color: #2f2f2f;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
   </style>
 
   <script>
@@ -113,6 +149,7 @@ var gameRoomRef = firebase.database().ref("gameRoom");
 var player = "X";
 var opponent = "O";
 var gameOver = false;
+let turn;
 
 // Set up the game board
 var gameBoard = [
@@ -123,92 +160,74 @@ var gameBoard = [
 
 
 
-window.onload = function() {
-  gameRoomRef.once("value", function(snapshot) {
-    if (snapshot.val() === null) {
-      // Generate a random letter for the player
-      let playerLetter = Math.random() < 0.5 ? "X" : "O";
-
-      // Check if the letter is already taken
-      let players = snapshot.child("players").val();
-      while (
-        players &&
-        (players.player1 && players.player1.letter === playerLetter) ||
-        (players.player2 && players.player2.letter === playerLetter)
-      ) {
-        playerLetter = playerLetter === "X" ? "O" : "X";
-      }
-
-      // Assign the letter to the player and store the player information in the database under their UID
-      let playerNumber = players ? Object.keys(players).length + 1 : 1;
-      gameRoomRef.child("players").child("player" + playerNumber).set({
-        uid: uid,
-        letter: playerLetter
-      });
-      console.log("player: " + playerLetter);
-    }
-  });
-};
 
 
-function renderBoard() {
-  var boardContainer = document.getElementById("board-container");
-  boardContainer.innerHTML = "";
 
-  for (var i = 0; i < gameBoard.length; i++) {
-    for (var j = 0; j < gameBoard[i].length; j++) {
-      var cell = document.createElement("div");
-      cell.classList.add("cell");
-      cell.dataset.row = i;
-      cell.dataset.col = j;
-      cell.textContent = gameBoard[i][j] || " ";
-      cell.addEventListener("click", function() {
-        handleMove(this.dataset.row, this.dataset.col);
-      });
-      boardContainer.appendChild(cell);
-    }
+let currentPlayer;
+console.log("It's " + player + "'s turn");
+
+firebase.database().ref("gameRoom/currentPlayer").on("value", function(snapshot) {
+  currentPlayer = snapshot.val();
+  //if empty, set to X
+  if (!currentPlayer) {
+    currentPlayer = "X";
+    firebase.database().ref("gameBoard/currentPlayer").update({ currentPlayer: currentPlayer });
   }
-}
+ 
+});
 
-// Function to handle a move
 function handleMove(row, col) {
   if (gameBoard[row][col] || gameOver) {
     return;
   }
 
-  gameBoard[row][col] = player;
+  gameBoard[row][col] = currentPlayer;
 
   renderBoard();
+
   function checkTie() {
-  for (var i = 0; i < gameBoard.length; i++) {
-    for (var j = 0; j < gameBoard[i].length; j++) {
-      if (!gameBoard[i][j]) {
-        return false;
+    for (var i = 0; i < gameBoard.length; i++) {
+      for (var j = 0; j < gameBoard[i].length; j++) {
+        if (!gameBoard[i][j]) {
+          return false;
+        }
       }
     }
+    return true;
   }
-  return true;
-}
 
   // Check for a win or tie
-  if (checkWin(player)) {
-    alert(player + " wins!");
+  if (checkWin(currentPlayer)) {
     gameOver = true;
     gameRoomRef.update({ gameOver: true });
+    //show game over
+    document.getElementById("game-over").style.display = "block";
+document.getElementById("disc").innerHTML = "Game Over, " + (currentPlayer === playerLetter ? "You win!" : "You Lose!");
+    document.getElementById("game").style.display = "none";
+    document.getElementById("title").style.display = "none";
+    
   } else if (checkTie()) {
-    alert("Tie game!");
     gameOver = true;
     gameRoomRef.update({ gameOver: true });
+    //show game over
+    document.getElementById("game-over").style.display = "block";
+    document.getElementById("disc").innerHTML = "Game Over, Tie game!";
+    document.getElementById("game").style.display = "none";
+    document.getElementById("title").style.display = "none";
   } else {
     // Switch players
-    player = opponent;
-    opponent = player === "X" ? "O" : "X";
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
 
     // Update the database with the new state of the game
-    gameRoomRef.update({ gameBoard: gameBoard, player: player, opponent: opponent });
-  }
-}
+    gameRoomRef.update({
+       gameBoard: gameBoard,
+       currentPlayer: currentPlayer
+    
+    });
 
+  }
+  
+}
 // Function to check for a win
 function checkWin(player) {
   // Check rows
@@ -237,19 +256,15 @@ function checkWin(player) {
   return false;
 }
 
-// Listen for changes to the game state in the Firebase Realtime Database
-gameRoomRef.on("value", function(snapshot) {
-  var gameState = snapshot.val();
-
-  if (gameState) {
-    // Update the game board
-    gameBoard = gameState.gameBoard;
-    renderBoard();
-
-    // Update the game variables
-    player = gameState.player;
-    opponent = gameState.opponent;
-    gameOver = gameState.gameOver;
+//check if firebase says game is over
+firebase.database().ref("gameRoom/gameOver").on("value", function(snapshot) {
+  gameOver = snapshot.val();
+  if (gameOver) {
+    //show game over
+    document.getElementById("game-over").style.display = "block";
+    document.getElementById("disc").innerHTML = "Game Over, " + (currentPlayer === playerLetter ? "You win!" : "You Lose!");
+    document.getElementById("game").style.display = "none";
+    document.getElementById("title").style.display = "none";
   }
 });
 
@@ -267,6 +282,200 @@ function createGameRoom() {
 function joinGameRoom(gameCode) {
   gameRoomRef = firebase.database().ref("gameRoom/" + gameCode);
 }
+
+
+
+// Initialize player number
+let playerNumber;
+let playerLetter;
+
+
+// Limit the number of connections to 2
+firebase.database().ref(".info/connected").on("value", (snapshot) => {
+  if (snapshot.val() === true) {
+    const connectionRef = firebase.database().ref("connections").push(true);
+    connectionRef.onDisconnect().remove();
+
+    firebase.database().ref("connections").once("value", (snapshot) => {
+      const numConnections = snapshot.numChildren();
+      if (numConnections <= 2) {
+        // Assign player number based on the number of connections
+        firebase.database().ref("players").once("value", (snapshot) => {
+          const playerNumbers = Object.keys(snapshot.val() || {});
+          const availableNumbers = [1, 2].filter(num => !playerNumbers.includes(num.toString()));
+          if (availableNumbers.length > 0) {
+            playerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+            //convert number to X or O
+            playerLetter = playerNumber === 1 ? "X" : "O";
+            console.log(`Player ${playerLetter} connected`);
+            
+            const spinner = document.getElementById("spinner");
+            setTimeout(() => {
+              spinner.style.display = "none";
+              document.getElementById("game").style.display = "block";
+              document.getElementById("spinnerText").style.display = "none";
+            }, 500);
+
+            // Store player number in Firebase
+            firebase.database().ref(`players/${playerNumber}`).set(true);
+
+            // Clear the board when a player disconnects
+            const playerRef = firebase.database().ref(`players/${playerNumber}`);
+            playerRef.onDisconnect().remove();
+
+    
+          } else {
+            console.log("Both player numbers are already taken");
+            playerNumber = null;
+          }
+        });
+      } 
+      //if there are more than 2 players
+      else {
+        console.log("Too many connections, you are now a spectator.");
+        playerNumber = null;
+        document.getElementById("spectator").innerHTML = "You are now a spectator.";
+        //the user is now a spectator
+        spectator = true;
+        setTimeout(() => {
+              spinner.style.display = "none";
+              document.getElementById("game").style.display = "block";
+              document.getElementById("spinnerText").style.display = "none";
+
+            }, 500);
+      }
+    });
+  }
+});
+function renderBoard() {
+  var boardContainer = document.getElementById("board-container");
+  boardContainer.innerHTML = "";
+
+  for (var i = 0; i < gameBoard.length; i++) {
+    for (var j = 0; j < gameBoard[i].length; j++) {
+      var cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.row = i;
+      cell.dataset.col = j;
+      cell.textContent = gameBoard[i][j] || " ";
+
+
+      cell.addEventListener("click", function() {
+         // Check if the user is a player
+  if (playerNumber === null) {
+    console.log("You are spectating");
+    return;
+  }
+  if (playerLetter !== currentPlayer) {
+  console.log("It's not your turn");
+  return;
+}
+        handleMove(this.dataset.row, this.dataset.col);
+      });
+
+
+      boardContainer.appendChild(cell);
+    }
+  }
+}
+firebase.database().ref("gameOver").onDisconnect().set(false);
+//clear board on disconnect
+firebase.database().ref("gameBoard").onDisconnect().set([
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""]
+]);
+//clear all data on disconnect
+firebase.database().ref("gameRoom").onDisconnect().set({});
+
+
+// Listen for changes to the players object in Firebase
+firebase.database().ref("players").on("value", (snapshot) => {
+  const numPlayers = snapshot.numChildren();
+  if (numPlayers === 2) {
+    // Both players exist, start watching for player disconnection
+    firebase.database().ref("connections").on("value", (snapshot) => {
+      const playerNumbers = Object.keys(snapshot.val() || {});
+      if (playerNumbers.length === 2) {
+        // Both players are still connected
+      } else if (playerNumbers.length === 1) {
+        // One player has disconnected, call the handleDisconnect function
+        handleDisconnect();
+      }
+    });
+  }
+});
+
+
+firebase.database().ref("gameOver").onDisconnect().set(false);
+
+
+
+timer = 0;
+setInterval(() => {
+  timer++;
+}, 1);
+// Function to handle player disconnection
+function handleDisconnect() {
+  
+
+  if(timer > 1000){
+  
+  //game over screen
+  document.getElementById("game-over").style.display = "block";
+  document.getElementById("game").style.display = "none";
+  setTimeout(() => {
+      location.reload();
+    }, 3000);
+  }
+}
+
+// Listen for changes to the game state in the Firebase Realtime Database
+gameRoomRef.on("value", function(snapshot) {
+  var gameState = snapshot.val();
+
+  if (gameState) {
+    // Update the game board
+    gameBoard = gameState.gameBoard;
+
+    // Update the game variables
+    player = gameState.player;
+    opponent = gameState.opponent;
+    gameOver = gameState.gameOver;
+    renderBoard();
+
+  }
+});
+
+const turnElement = document.getElementById("currentPlayer");
+
+firebase.database().ref("gameRoom/currentPlayer").on("value", function(snapshot) {
+  var currentPlayer = snapshot.val();
+
+  if (currentPlayer === playerLetter) {
+    turnElement.textContent = "Your turn";
+  } else if (currentPlayer) {
+    turnElement.textContent = `Player ${currentPlayer}'s turn`;
+    //add event listener
+  } else {
+    turnElement.textContent = "Waiting for players...";
+    
+  }
+});
+
+
+firebase.database().ref("connections").on("value", function(snapshot) {
+  var numConnections = snapshot.numChildren();
+
+  if (numConnections >= 2) {
+    if(currentPlayer === playerLetter){
+    turnElement.textContent = "Your turn";
+    }
+  } 
+  if (numConnections >= 2 && currentPlayer !== playerLetter) {
+    turnElement.textContent = `Player ${currentPlayer}'s turn`;
+  }
+});
 renderBoard();
   </script>
 </html>
