@@ -15,12 +15,11 @@
     <div id="game-over" style="display: none;">
       <h1>Game Over</h1>
       <p id="disc">Your opponent has disconnected.</p>
-      
+
     </div>
     <div id="game" style="display: none;">
     <button style="display: none;" onclick="clearBoard()">Clear Board</button> <br> 
-    <h1>Connect Four</h1>
-    <span id="spectator"> </span>
+    <h1>Multiplayer Connect Four</h1>
     <h3> <span id="currentPlayer"></span></h3>
     <canvas id="canvas" width="420" height="360"></canvas>
     </div>
@@ -60,7 +59,7 @@
         ],
         currentPlayer: 1,
       };
-      
+
       // Initialize the canvas
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
@@ -137,12 +136,6 @@ function updateTurn() {
 }
 // Drop a piece into the specified column
 function dropPiece(column) {
-  // Check if it's the player's turn
-  if (gameState.currentPlayer !== playerNumber) {
-    console.log("It's not your turn");
-    return;
-  }
-
   // Find the lowest empty cell in the column
   let row = 5;
   while (gameState.board[row][column] !== 0 && row >= 0) {
@@ -158,18 +151,19 @@ function dropPiece(column) {
   const x = column * 60 + 30;
   const y = -30;
   const radius = 25;
-  const color = playerNumber === 1 ? "red" : "yellow";
+  const color = gameState.currentPlayer === 1 ? "red" : "yellow";
 
   // Start the animation
   animate(column, row, color, x, y, radius, () => {
     // Check for a win
-    if (checkWin(row, column)) {
-      clearBoard();
-      //give player rewards (LATER)
-      drawBoard();
-      // Set the game over flag in Firebase
-      firebase.database().ref("gameOver").set(true);
-    } else {
+if (checkWin(row, column)) {
+  alert(`Player ${gameState.currentPlayer} wins!`);
+  clearBoard();
+  //give player rewards (LATER)
+  drawBoard();
+  // Set the game over flag in Firebase
+  firebase.database().ref("gameOver").set(true);
+}  else {
       // Switch to the other player
       gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
 
@@ -179,6 +173,22 @@ function dropPiece(column) {
       // Update the HTML with the current player's turn
       updateTurn();
     }
+
+// Listen for changes to the gameOver flag in Firebase
+firebase.database().ref("gameOver").on("value", (snapshot) => {
+  const gameOver = snapshot.val();
+  if (gameOver === true) {
+    // Show the game over screen
+    document.getElementById("game-over").style.display = "block";
+    document.getElementById("game").style.display = "none";
+    if (gameState.currentPlayer === playerNumber) {
+      document.getElementById("disc").innerHTML = "You win!";
+    } else {
+      document.getElementById("disc").innerHTML = "You lost!";
+    }
+  }
+});
+
   });
 }
       // Animate the coin drop
@@ -408,7 +418,7 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
             const playerRef = firebase.database().ref(`players/${playerNumber}`);
             playerRef.onDisconnect().remove();
 
-    
+
           } else {
             console.log("Both player numbers are already taken");
             playerNumber = null;
@@ -419,14 +429,8 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
       else {
         console.log("Too many connections, you are now a spectator.");
         playerNumber = null;
-        document.getElementById("spectator").innerHTML = "You are now a spectator.";
         //the user is now a spectator
         spectator = true;
-        setTimeout(() => {
-              spinner.style.display = "none";
-              document.getElementById("game").style.display = "block";
-              document.getElementById("spinnerText").style.display = "none";
-            }, 500);
       }
     });
   }
@@ -456,7 +460,7 @@ firebase.database().ref("gameOver").onDisconnect().set(false);
 
 // Function to handle player disconnection
 function handleDisconnect() {
-  
+
 
   if(timer > 1000){
   clearBoard();
@@ -464,9 +468,6 @@ function handleDisconnect() {
   //game over screen
   document.getElementById("game-over").style.display = "block";
   document.getElementById("game").style.display = "none";
-  setTimeout(() => {
-      location.reload();
-    }, 3000);
   }
 }
 
@@ -494,21 +495,54 @@ canvas.addEventListener("click", event => {
 
   const column = Math.floor(x / 60);
   dropPiece(column);
-  //send the move to the database
-  firebase.database().ref("moves").push({
-    column,
-    player: playerNumber,
-  });
+  //send column to server
+  gameStateRef.child("lastMove").set(column);
+  //same location, set current color 
+  gameStateRef.child("currentColor").set(gameState.currentPlayer);
 });
-// Listen for moves
-firebase.database().ref("moves").on("child_added", (snapshot) => {
-  const move = snapshot.val();
-  if (move.player !== playerNumber) {
-    dropPiece(move.column);
+
+
+//on change of lastMove call animateClient, with color
+gameStateRef.child("lastMove").on("value", (snapshot) => {
+  const column = snapshot.val();
+  if (column !== null) {
+    animateClient(column, gameState.currentPlayer);
   }
 });
 
-     
+// Drop a piece into the specified column
+function animateClient(column, color) {
+  // Find the lowest empty cell in the column
+  let row = 5;
+  while (gameState.board[row][column] !== 0 && row >= 0) {
+    row--;
+  }
+
+  // If the column is full, do nothing
+  if (row < 0) {
+    return;
+  }
+
+  // Calculate the position and color of the coin
+  const x = column * 60 + 30;
+  const y = -30;
+  const radius = 25;
+  color = color === 1 ? "red" : "yellow";
+
+  
+
+  // Start the animation
+  animate(column, row, color, x, y, radius, () => {
+    
+
+
+}
+  );
+}
+
+
+
+
       drawBoard();
     </script>
   </body>
@@ -516,8 +550,7 @@ firebase.database().ref("moves").on("child_added", (snapshot) => {
 
 
   <style> 
-  
-/* Import Poppins font */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 
 /* Reset default styles */
