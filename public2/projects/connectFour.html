@@ -178,6 +178,9 @@ if (checkWin(row, column)) {
 firebase.database().ref("gameOver").on("value", (snapshot) => {
   const gameOver = snapshot.val();
   if (gameOver === true) {
+    setTimeout(() => {
+      location.reload();
+    }, 2000);
     // Show the game over screen
     document.getElementById("game-over").style.display = "block";
     document.getElementById("game").style.display = "none";
@@ -248,110 +251,144 @@ firebase.database().ref("gameOver").on("value", (snapshot) => {
         }
       }
 
-      // Check for a win
       function checkWin(row, column) {
-        const player = gameState.currentPlayer;
-        let count = 0;
+  const player = gameState.currentPlayer;
+  let count = 0;
 
-        // Check for a horizontal win
-        for (let j = 0; j < 7; j++) {
-          if (gameState.board[row][j] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+  // Check for a horizontal win
+  for (let j = 0; j < 7; j++) {
+    if (gameState.board[row][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
-        }
+    if (count === 4) {
+      return true;
+    }
+  }
 
-        // Check for a vertical win
-        count = 0;
-        for (let i = 0; i < 6; i++) {
-          if (gameState.board[i][column] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+  // Check for a vertical win
+  count = 0;
+  for (let i = 0; i < 6; i++) {
+    if (gameState.board[i][column] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
-        }
+    if (count === 4) {
+      return true;
+    }
+  }
 
-        // Check for a diagonal win (top-left to bottom-right)
-        count = 0;
-        let i = row;
-        let j = column;
-        while (i >= 0 && j >= 0) {
-          if (gameState.board[i][j] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+  // Check for a diagonal win (top-left to bottom-right)
+  count = 0;
+  let i = row;
+  let j = column;
+  while (i >= 0 && j >= 0) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
+    if (count === 4) {
+      return true;
+    }
 
-          i--;
-          j--;
-        }
-        i = row + 1;
-        j = column + 1;
-        while (i < 6 && j < 7) {
-          if (gameState.board[i][j] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+    i--;
+    j--;
+  }
+  i = row + 1;
+  j = column + 1;
+  while (i < 6 && j < 7) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
+    if (count === 4) {
+      return true;
+    }
 
-          i++;
-          j++;
-        }
+    i++;
+    j++;
+  }
 
-        // Check for a diagonal win (bottom-left to top-right)
-        count = 0;
-        i = row;
-        j = column;
-        while (i < 6 && j >= 0) {
-          if (gameState.board[i][j] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+  // Check for a diagonal win (bottom-left to top-right)
+  count = 0;
+  i = row;
+  j = column;
+  while (i < 6 && j >= 0) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
+    if (count === 4) {
+      return true;
+    }
 
-          i++;
-          j--;
-        }
-        i = row - 1;
-        j = column + 1;
-        while (i >= 0 && j < 7) {
-          if (gameState.board[i][j] === player) {
-            count++;
-          } else {
-            count = 0;
-          }
+    i++;
+    j--;
+  }
+  i = row - 1;
+  j = column + 1;
+  while (i >= 0 && j < 7) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
 
-          if (count === 4) {
-            return true;
-          }
+    if (count === 4) {
+      return true;
+    }
 
-          i--;
-          j++;
-        }
+    i--;
+    j++;
+  }
 
-        return false;
-      }
+  // Check for a diagonal win (bottom-right to top-left)
+  count = 0;
+  i = row;
+  j = column;
+  while (i < 6 && j < 7) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
+
+    if (count === 4) {
+      return true;
+    }
+
+    i++;
+    j++;
+  }
+  i = row - 1;
+  j = column - 1;
+  while (i >= 0 && j >= 0) {
+    if (gameState.board[i][j] === player) {
+      count++;
+    } else {
+      count = 0;
+    }
+
+    if (count === 4) {
+      return true;
+    }
+
+    i--;
+    j--;
+  }
+
+  return false;
+}
 
       // Clear the game board and the game state in the database
       function clearBoard() {
@@ -468,6 +505,9 @@ function handleDisconnect() {
   //game over screen
   document.getElementById("game-over").style.display = "block";
   document.getElementById("game").style.display = "none";
+  setTimeout(() => {
+    location.reload();
+  }, 2000);
   }
 }
 
