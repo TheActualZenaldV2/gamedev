@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multi-User Chat System</title>
+</head>
+<body>
+
+    <div id="user-container">
+        <form id="user-from">
+        <input type="text" id="username-input" placeholder="Enter your username..." required>
+        <button type="submit" onclick="event.preventDefault(); submitUser();">Submit</button>
+        </form>
+
+    </div>
+    <div id="chat-container" style="display: none;">
+        <div id="message-container"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+</body>
+
+<style>
+#chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#message-container {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#message-form {
+    display: flex;
+}
+
+#message-input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+</style>
+
+<script>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDXF0wkenM6F7AM29X-PupSj6JrJPwbDuM",
+    authDomain: "multi-chat-86d3a.firebaseapp.com",
+    databaseURL: "https://multi-chat-86d3a-default-rtdb.firebaseio.com",
+    projectId: "multi-chat-86d3a",
+    storageBucket: "multi-chat-86d3a.appspot.com",
+    messagingSenderId: "619644574166",
+    appId: "1:619644574166:web:d26a2cbaccabc38be7ec77",
+    measurementId: "G-W8196MM2KN"
+  };
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database service
+var database = firebase.database();
+
+// Get a reference to the message container
+var messageContainer = document.getElementById("message-container");
+
+// Get a reference to the message form, input, and username input
+var messageForm = document.getElementById("message-form");
+var messageInput = document.getElementById("message-input");
+var usernameInput = document.getElementById("username-input");
+
+// Listen for new messages in the database
+database.ref("messages").on("child_added", function(snapshot) {
+    var message = snapshot.val();
+    var messageElement = document.createElement("div");
+    messageElement.innerText = message.username + ": " + message.text;
+    messageContainer.appendChild(messageElement);
+});
+
+// Handle form submission
+messageForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    var messageText = messageInput.value;
+    var username = usernameInput.value;
+    if (messageText.trim() !== "" && username.trim() !== "") {
+        database.ref("messages").push({
+            username: username,
+            text: messageText
+        });
+        messageInput.value = "";
+    }
+});
+
+function submitUser() {
+    var username = usernameInput.value;
+    if (username.trim() !== "") {
+        document.getElementById("user-container").style.display = "none";
+        document.getElementById("chat-container").style.display = "block";
+    }
+    if(username.trim() == ""){
+        alert("Please enter a username");
+    }
+}
+
+
+user = usernameInput.value;
+// Set up a callback to run when the client disconnects
+database.ref('.info/connected').on('value', function(snapshot) {
+  if (snapshot.val() === false) {
+ 
+    database.ref('messages').orderByChild('user').equalTo(user).once('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        childSnapshot.ref.remove();
+      });
+    });
+  }
+});
+
+
+</script> 
+</html>
