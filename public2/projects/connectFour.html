@@ -132,7 +132,7 @@ function updateTurn() {
         });
       }
     });
-  }, 1000);
+  }, 1);
 }
 // Drop a piece into the specified column
 function dropPiece(column) {
@@ -490,7 +490,7 @@ firebase.database().ref("players").on("value", (snapshot) => {
   }
 });
 
-
+let clickMade = false;
 firebase.database().ref("gameOver").onDisconnect().set(false);
 
 
@@ -516,6 +516,7 @@ setInterval(() => {
   timer++;
 }, 1);
 // Add event listeners to the canvas
+let lastClickTime = 0;
 canvas.addEventListener("click", event => {
   // Check if the user is a player
   if (playerNumber === null) {
@@ -529,6 +530,13 @@ canvas.addEventListener("click", event => {
     return;
   }
 
+  const now = Date.now();
+  if (now - lastClickTime < 1000) {
+    console.log("Please wait before making another move");
+    return;
+  }
+  lastClickTime = now;
+  clickMade = true;
   const rect = canvas.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
@@ -539,6 +547,9 @@ canvas.addEventListener("click", event => {
   gameStateRef.child("lastMove").set(column);
   //same location, set current color 
   gameStateRef.child("currentColor").set(gameState.currentPlayer);
+  setTimeout(() => {
+    clickMade = false;
+  }, 1000);
 });
 
 
@@ -552,6 +563,9 @@ gameStateRef.child("lastMove").on("value", (snapshot) => {
 
 // Drop a piece into the specified column
 function animateClient(column, color) {
+    if(clickMade!==true){
+     
+    
   // Find the lowest empty cell in the column
   let row = 5;
   while (gameState.board[row][column] !== 0 && row >= 0) {
@@ -579,7 +593,7 @@ function animateClient(column, color) {
 }
   );
 }
-
+}
 
 
 
