@@ -4,12 +4,26 @@
     <body onload="updateTurn();"></body>
     <title>Connect Four</title>
     <style>
-      canvas {
-        border: 1px solid black;
-      }
+      
     </style>
   </head>
   <body>
+
+    <div id="user-container">
+        <form id="user-from">
+        <input type="text" id="username-input" placeholder="Enter your username to chat..." required>
+        <button type="submit" onclick="event.preventDefault(); submitUser();">Submit</button>
+        </form>
+
+    </div>
+    <div id="chat-container" style="display: none;">
+        <div id="message-container"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button type="submit">Send</button>
+            
+        </form>
+    </div>
     <div id="spinnerText"> <h3>Loading...</h3></div>
     <div id="spinner"> </div>
     <div id="game-over" style="display: none;">
@@ -470,6 +484,12 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
         playerNumber = null;
         //the user is now a spectator
         spectator = true;
+        //show the site
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("game").style.display = "block";
+        document.getElementById("spinnerText").style.display = "none";
+
+
       }
     });
   }
@@ -600,6 +620,69 @@ function animateClient(column, color) {
 
 
       drawBoard();
+
+
+      
+// Get a reference to the database service
+var database = firebase.database();
+messageCount = 0;
+
+// Get a reference to the message container
+var messageContainer = document.getElementById("message-container");
+
+// Get a reference to the message form, input, and username input
+var messageForm = document.getElementById("message-form");
+var messageInput = document.getElementById("message-input");
+var usernameInput = document.getElementById("username-input");
+// Listen for new messages in the database
+database.ref("messages").on("child_added", function(snapshot) {
+    // Increment the message count
+    messageCount++;
+
+    // If there are more than 20 messages, delete the oldest message
+    if (messageCount > 20) {
+        var oldestMessage = messageContainer.firstChild;
+        if (oldestMessage && oldestMessage.parentNode === messageContainer) {
+            database.ref("messages/" + oldestMessage.id).remove();
+            messageContainer.removeChild(oldestMessage);
+            messageCount--;
+        }
+    }
+
+    var message = snapshot.val();
+    var messageElement = document.createElement("div");
+    messageElement.id = snapshot.key;
+    messageElement.innerText = message.username + ": " + message.text;
+    messageContainer.appendChild(messageElement);
+
+    // Scroll to the bottom of the message container
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+});
+
+// Handle form submission
+messageForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    var messageText = messageInput.value;
+    var username = usernameInput.value;
+    if (messageText.trim() !== "" && username.trim() !== "") {
+        database.ref("messages").push({
+            username: username,
+            text: messageText
+        });
+        messageInput.value = "";
+    }
+});
+
+function submitUser() {
+    var username = usernameInput.value;
+    if (username.trim() !== "") {
+        document.getElementById("user-container").style.display = "none";
+        document.getElementById("chat-container").style.display = "block";
+    }
+    if(username.trim() == ""){
+        alert("Please enter a username");
+    }
+}
     </script>
   </body>
 
@@ -718,5 +801,37 @@ canvas {
     transform: rotate(360deg);
   }
 }
+
+
+#chat-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      #message-container {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #message-form {
+        display: flex;
+      }
+
+      #message-input {
+        flex: 1;
+        margin-right: 10px;
+      }
+
+      button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+      }
 </style>
 </html>
