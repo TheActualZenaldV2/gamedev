@@ -17,6 +17,7 @@
         <form id="message-form">
             <input type="text" id="message-input" placeholder="Type your message here...">
             <button type="submit">Send</button>
+            
         </form>
     </div>
 
@@ -74,6 +75,7 @@ firebase.initializeApp(firebaseConfig);
 
 // Get a reference to the database service
 var database = firebase.database();
+messageCount = 0;
 
 // Get a reference to the message container
 var messageContainer = document.getElementById("message-container");
@@ -82,13 +84,29 @@ var messageContainer = document.getElementById("message-container");
 var messageForm = document.getElementById("message-form");
 var messageInput = document.getElementById("message-input");
 var usernameInput = document.getElementById("username-input");
-
 // Listen for new messages in the database
 database.ref("messages").on("child_added", function(snapshot) {
+    // Increment the message count
+    messageCount++;
+
+    // If there are more than 20 messages, delete the oldest message
+    if (messageCount > 20) {
+        var oldestMessage = messageContainer.firstChild;
+        if (oldestMessage && oldestMessage.parentNode === messageContainer) {
+            database.ref("messages/" + oldestMessage.id).remove();
+            messageContainer.removeChild(oldestMessage);
+            messageCount--;
+        }
+    }
+
     var message = snapshot.val();
     var messageElement = document.createElement("div");
+    messageElement.id = snapshot.key;
     messageElement.innerText = message.username + ": " + message.text;
     messageContainer.appendChild(messageElement);
+
+    // Scroll to the bottom of the message container
+    messageContainer.scrollTop = messageContainer.scrollHeight;
 });
 
 // Handle form submission
@@ -115,21 +133,5 @@ function submitUser() {
         alert("Please enter a username");
     }
 }
-
-
-user = usernameInput.value;
-// Set up a callback to run when the client disconnects
-database.ref('.info/connected').on('value', function(snapshot) {
-  if (snapshot.val() === false) {
- 
-    database.ref('messages').orderByChild('user').equalTo(user).once('value', function(snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-        childSnapshot.ref.remove();
-      });
-    });
-  }
-});
-
-
 </script> 
 </html>
