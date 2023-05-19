@@ -240,6 +240,8 @@ firebase.database().ref("gameOver").on("value", (snapshot) => {
         if (y < row * 60 + 30) {
           draw();
           requestAnimationFrame(() => animate(column, row, color, x, y, radius, callback));
+          // Request an extra frame to ensure that the animation completes
+  requestAnimationFrame(() => {});
         } else {
           // Update the game state with the new piece
           gameState.board[row][column] = gameState.currentPlayer;
