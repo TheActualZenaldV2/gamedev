@@ -9,21 +9,7 @@
   </head>
   <body>
 
-    <div id="user-container">
-        <form id="user-from">
-        <input type="text" id="username-input" placeholder="Enter your username to chat..." required>
-        <button type="submit" onclick="event.preventDefault(); submitUser();">Submit</button>
-        </form>
 
-    </div>
-    <div id="chat-container" style="display: none;">
-        <div id="message-container"></div>
-        <form id="message-form">
-            <input type="text" id="message-input" placeholder="Type your message here...">
-            <button type="submit">Send</button>
-            
-        </form>
-    </div>
     <div id="spinnerText"> <h3>Loading...</h3></div>
     <div id="spinner"> </div>
     <div id="game-over" style="display: none;">
@@ -34,8 +20,30 @@
     <div id="game" style="display: none;">
     <button style="display: none;" onclick="clearBoard()">Clear Board</button> <br> 
     <h1>Multiplayer Connect Four</h1>
+    <p id="spectator"></p>
     <h3> <span id="currentPlayer"></span></h3>
     <canvas id="canvas" width="420" height="360"></canvas>
+    </div>
+    <br> <br> <br> <br> 
+
+    <div id="chatHolder" style="display: none";>
+      <div id="user-container">
+          <form id="user-from">
+          <input type="text" id="username-input" placeholder="Enter your username to chat..." required>
+          <button type="submit" onclick="event.preventDefault(); submitUser();">Submit</button>
+          </form>
+  
+      </div>
+       
+      <div id="chat-container" style="display: none;">
+          <div id="message-container"></div>
+          <form id="message-form">
+              <input type="text" id="message-input" placeholder="Type your message here...">
+
+              <button type="submit">Send</button>
+              
+          </form>
+      </div>
     </div>
 <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -462,6 +470,7 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
               spinner.style.display = "none";
               document.getElementById("game").style.display = "block";
               document.getElementById("spinnerText").style.display = "none";
+              document.getElementById("chatHolder").style.display = "block";
             }, 500);
 
             // Store player number in Firebase
@@ -488,6 +497,9 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
         document.getElementById("spinner").style.display = "none";
         document.getElementById("game").style.display = "block";
         document.getElementById("spinnerText").style.display = "none";
+        document.getElementById("chatHolder").style.display = "block";
+        document.getElementById("spectator").innerHTML = "You are spectating this game."
+        //scroll to the bottom of the chat
 
 
       }
@@ -670,6 +682,8 @@ messageForm.addEventListener("submit", function(event) {
             text: messageText
         });
         messageInput.value = "";
+//scroll to bottom
+        messageContainer.scrollTop = messageContainer.scrollHeight;
     }
 });
 
@@ -691,6 +705,13 @@ function submitUser() {
   <style> 
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+#username-input {
+  font-size: 18px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 500px;
+}
 
 /* Reset default styles */
 * {
@@ -802,7 +823,10 @@ canvas {
   }
 }
 
-
+div {
+  word-wrap: break-word;
+  word-break: break-all;
+}
 #chat-container {
         max-width: 600px;
         margin: 0 auto;
@@ -815,6 +839,7 @@ canvas {
         border: 1px solid #ccc;
         padding: 10px;
         margin-bottom: 10px;
+        max-width: 600px;
       }
 
       #message-form {
