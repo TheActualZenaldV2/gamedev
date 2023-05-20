@@ -19,6 +19,7 @@
     <h3> <span id="currentPlayer"></span></h3>
   <div id="board-container"></div>
   <div id="buttons">
+    <div id="rooms" style="display: none;"> 
     <button onclick="createGameRoom()">Create Game Room</button>
     <input type="text" id="game-code" placeholder="Enter Game Code">
     <button onclick="joinGameRoom(document.getElementById('game-code').value)">Join Game Room</button>
@@ -27,6 +28,25 @@
         //clear the database
         gameRoomRef.remove();
         }">Restart Game</button>
+</div>
+<br> <br> <br>
+<div id="user-container">
+  <form id="user-from">
+  <input type="text" id="username-input" placeholder="Enter your username..." required>
+  <button type="submit" onclick="event.preventDefault(); submitUser();">Submit</button>
+  </form>
+
+</div>
+<div id="chat-container" style="display: none;">
+  <div id="message-container"></div>
+  <form id="message-form">
+      <input type="text" id="message-input" placeholder="Type your message here...">
+      <button type="submit">Send</button>
+      
+  </form>
+</div>
+
+
   </div>
   </div>
   <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -51,6 +71,10 @@
   height: 300px;
   margin: 0 auto;
   font-family: "Times New Roman", Times, serif;
+}
+div {
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .cell {
@@ -127,6 +151,45 @@ button:hover {
     transform: rotate(360deg);
   }
 }
+
+#chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#message-container {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#message-form {
+    display: flex;
+}
+
+#message-input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#username-input {
+  font-size: 18px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 500px;
+}
   </style>
 
   <script>
@@ -150,6 +213,9 @@ var player = "X";
 var opponent = "O";
 var gameOver = false;
 let turn;
+let waitingForPlayer = true;
+let tie = false;
+
 
 // Set up the game board
 var gameBoard = [
@@ -175,7 +241,25 @@ firebase.database().ref("gameRoom/currentPlayer").on("value", function(snapshot)
   }
  
 });
+const turnElement = document.getElementById("currentPlayer");
 
+firebase.database().ref("gameRoom/currentPlayer").on("value", function(snapshot) {
+  var currentPlayer = snapshot.val();
+
+  if (currentPlayer === playerLetter) {
+    turnElement.textContent = "Your turn";
+    waitingForPlayer = false;
+  } else if (currentPlayer) {
+    turnElement.textContent = `Player ${currentPlayer}'s turn`;
+    waitingForPlayer = false;
+
+  } else {
+    turnElement.textContent = "Waiting for players...";
+    //disable event listener on canvas
+    
+    
+  }
+});
 function handleMove(row, col) {
   if (gameBoard[row][col] || gameOver) {
     return;
@@ -203,10 +287,17 @@ function handleMove(row, col) {
     //show game over
     document.getElementById("game-over").style.display = "block";
 document.getElementById("disc").innerHTML = "Game Over, " + (currentPlayer === playerLetter ? "You win!" : "You Lose!");
+if(tie === true) {
+  document.getElementById("disc").innerHTML = "Game Over, Tie game!";
+}
     document.getElementById("game").style.display = "none";
     document.getElementById("title").style.display = "none";
-    
+    //reload after 3 sec
+    setTimeout(function() {
+      location.reload();
+    }, 3000);
   } else if (checkTie()) {
+    tie = true;
     gameOver = true;
     gameRoomRef.update({ gameOver: true });
     //show game over
@@ -263,9 +354,13 @@ firebase.database().ref("gameRoom/gameOver").on("value", function(snapshot) {
     //show game over
     document.getElementById("game-over").style.display = "block";
     document.getElementById("disc").innerHTML = "Game Over, " + (currentPlayer === playerLetter ? "You win!" : "You Lose!");
+    if(tie === true) {
+      document.getElementById("disc").innerHTML = "Game Over, Tie game!";
+    }
     document.getElementById("game").style.display = "none";
     document.getElementById("title").style.display = "none";
   }
+  
 });
 
 // Create a new game room in the Firebase Realtime Database
@@ -289,7 +384,6 @@ function joinGameRoom(gameCode) {
 let playerNumber;
 let playerLetter;
 
-
 // Limit the number of connections to 2
 firebase.database().ref(".info/connected").on("value", (snapshot) => {
   if (snapshot.val() === true) {
@@ -304,10 +398,25 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
           const playerNumbers = Object.keys(snapshot.val() || {});
           const availableNumbers = [1, 2].filter(num => !playerNumbers.includes(num.toString()));
           if (availableNumbers.length > 0) {
-            playerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-            //convert number to X or O
-            playerLetter = playerNumber === 1 ? "X" : "O";
-            console.log(`Player ${playerLetter} connected`);
+            if (availableNumbers.length > 0) {
+  // Shuffle the available numbers
+  const shuffledNumbers = shuffle(availableNumbers);
+
+  // Assign player letters based on shuffled numbers
+  playerLetter = shuffledNumbers[0] === 1 ? "X" : "O";
+  console.log(`Player ${playerLetter} connected`);
+
+  // Assign the player number
+  playerNumber = parseInt(shuffledNumbers[0]);
+}
+function shuffle(array) {
+  // Fisher-Yates shuffle algorithm
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
             
             const spinner = document.getElementById("spinner");
             setTimeout(() => {
@@ -347,6 +456,11 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
     });
   }
 });
+let playerCount;
+//get players from firebase
+firebase.database().ref("players").on("value", (snapshot) => {
+  playerCount = snapshot.numChildren();
+});
 function renderBoard() {
   var boardContainer = document.getElementById("board-container");
   boardContainer.innerHTML = "";
@@ -359,20 +473,29 @@ function renderBoard() {
       cell.dataset.col = j;
       cell.textContent = gameBoard[i][j] || " ";
 
-
+     
       cell.addEventListener("click", function() {
-         // Check if the user is a player
+  // Check if there are at least two players connected
+  if (playerCount < 2) {
+    console.log("Waiting for more players to join");
+    return;
+  }
+
+  // Check if the user is a player
   if (playerNumber === null) {
     console.log("You are spectating");
     return;
   }
-  if (playerLetter !== currentPlayer) {
-  console.log("It's not your turn");
-  return;
-}
-        handleMove(this.dataset.row, this.dataset.col);
-      });
 
+  // Check if it's the user's turn
+  if (playerLetter !== currentPlayer) {
+    console.log("It's not your turn");
+    return;
+  }
+
+  handleMove(this.dataset.row, this.dataset.col);
+});
+    
 
       boardContainer.appendChild(cell);
     }
@@ -447,35 +570,100 @@ gameRoomRef.on("value", function(snapshot) {
   }
 });
 
-const turnElement = document.getElementById("currentPlayer");
 
-firebase.database().ref("gameRoom/currentPlayer").on("value", function(snapshot) {
-  var currentPlayer = snapshot.val();
 
-  if (currentPlayer === playerLetter) {
-    turnElement.textContent = "Your turn";
-  } else if (currentPlayer) {
-    turnElement.textContent = `Player ${currentPlayer}'s turn`;
-    //add event listener
+
+firebase.database().ref("connections").once("value", function(snapshot) {
+  var numConnections = snapshot.numChildren();
+
+  if (numConnections >= 2) {
+    if(currentPlayer === playerLetter){
+      turnElement.textContent = "Your turn";
+    } else {
+      turnElement.textContent = `Player ${currentPlayer}'s turn`;
+    }
   } else {
-    turnElement.textContent = "Waiting for players...";
-    
+    turnElement.textContent = "Waiting for players to join";
   }
 });
-
 
 firebase.database().ref("connections").on("value", function(snapshot) {
   var numConnections = snapshot.numChildren();
 
   if (numConnections >= 2) {
     if(currentPlayer === playerLetter){
-    turnElement.textContent = "Your turn";
+      turnElement.textContent = "Your turn";
+    } else {
+      turnElement.textContent = `Player ${currentPlayer}'s turn`;
     }
-  } 
-  if (numConnections >= 2 && currentPlayer !== playerLetter) {
-    turnElement.textContent = `Player ${currentPlayer}'s turn`;
+  } else {
+    turnElement.textContent = "Waiting for players to join";
   }
 });
 renderBoard();
+
+
+
+// Get a reference to the database service
+var database = firebase.database();
+messageCount = 0;
+
+// Get a reference to the message container
+var messageContainer = document.getElementById("message-container");
+
+// Get a reference to the message form, input, and username input
+var messageForm = document.getElementById("message-form");
+var messageInput = document.getElementById("message-input");
+var usernameInput = document.getElementById("username-input");
+// Listen for new messages in the database
+database.ref("messages").on("child_added", function(snapshot) {
+    // Increment the message count
+    messageCount++;
+
+    // If there are more than 20 messages, delete the oldest message
+    if (messageCount > 20) {
+        var oldestMessage = messageContainer.firstChild;
+        if (oldestMessage && oldestMessage.parentNode === messageContainer) {
+            database.ref("messages/" + oldestMessage.id).remove();
+            messageContainer.removeChild(oldestMessage);
+            messageCount--;
+        }
+    }
+
+    var message = snapshot.val();
+    var messageElement = document.createElement("div");
+    messageElement.id = snapshot.key;
+    messageElement.innerText = message.username + ": " + message.text;
+    messageContainer.appendChild(messageElement);
+
+    // Scroll to the bottom of the message container
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+});
+
+// Handle form submission
+messageForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    var messageText = messageInput.value;
+    var username = usernameInput.value;
+    if (messageText.trim() !== "" && username.trim() !== "") {
+        database.ref("messages").push({
+            username: username,
+            text: messageText
+        });
+        messageInput.value = "";
+    }
+});
+
+
+function submitUser() {
+    var username = usernameInput.value;
+    if (username.trim() !== "") {
+        document.getElementById("user-container").style.display = "none";
+        document.getElementById("chat-container").style.display = "block";
+    }
+    if(username.trim() == ""){
+        alert("Please enter a username");
+    }
+}
   </script>
 </html>
