@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link id="my-css" rel="stylesheet" href="https://theactualzenaldv2.github.io/gamedev/public2/extra/chat.css">
     <title>Multi-User Chat System</title>
 </head>
 <body onload="">
-
+    <button class="btn" onclick="changeCss()"><i class="fas fa-paint-brush"></i></button>
     <div id="user-container">
         <form id="user-from">
         <input type="text" id="username-input" placeholder="Enter your username..." required>
@@ -12,7 +13,9 @@
         </form>
 
     </div>
+    
     <div id="chat-container" style="display: none;">
+        
         <div id="message-container"></div>
         <form id="message-form">
             <div id="message-input-container">
@@ -28,184 +31,27 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
-</body>
+    <script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script></body>
 
 <style>
-    /* import poppins font */
+   .btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    border: none;
+    outline: none;
+    background-color: rgb(125, 123, 123);
+    cursor: pointer;
+    padding: 15px;
+    font-size: 18px;
+    color: black;
 
-/* Set global styles */
-body {
-    background-color: #dddddd;
-  font-family: "Poppins", sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* Set styles for message container */
-#message-container, #user-container {
-  background-color: #dddddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  margin: 20px auto;
-  max-width: 750px;
-  padding: 20px;
-}
-#chat-container {
-    max-height: 800px;
-  background-color: #dddddd;
-  border-radius: 5px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  margin: 20px auto;
-  max-width: 800px;
-  padding: 20px;
-  overflow: scroll;
-}
-
-/* Set styles for messages */
-.message {
-  background-color: #bdb3b3;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-bottom: 10px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-}
-
-/* Set styles for usernames */
-.user {
-  font-weight: bold;
-  margin-right: 10px;
-  flex-shrink: 0;
-}
-/* style input field */
-#message-input {
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  padding: 10px;
-  margin-right: 20px;
-  width: calc(90% - 20px);
-  bottom: 0;
-  left: 0;
-}
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 10px 0;
-  border-radius: 5px;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: box-shadow 0.3s ease;
-}
-
-img:hover {
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.3s ease;
-}
-#chat-container::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  background-color: transparent;
-}
-/* Style submit button and file input button */
-#submit-button,
-#file-input {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Add some space between the buttons */
-#submit-button {
-  margin-left: 10px;
-}
-
-/* Style the message input container */
-#message-input-container {
-  display: flex;
-  align-items: center;
-}
-#message-input:disabled {
-  background-color: #cccccc;
-  cursor: default;
-  cursor: not-allowed;
-}
-/* Style the submit button */
-button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 13px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-button:disabled {
-  background-color: #cccccc;
-  cursor: default;
-}
-button:disabled:hover {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-/* Change the background color of the button on hover */
-button:hover {
-  background-color: #3e8e41;
-}
-
-strong {
-  font-weight: bold;
-  padding-right: 5px;
-}
-
-
-@-webkit-keyframes swing-in-top-fwd {
-  0% {
-    -webkit-transform: rotateX(-100deg);
-            transform: rotateX(-100deg);
-    -webkit-transform-origin: top;
-            transform-origin: top;
-    opacity: 0;
-  }
-  100% {
-    -webkit-transform: rotateX(0deg);
-            transform: rotateX(0deg);
-    -webkit-transform-origin: top;
-            transform-origin: top;
-    opacity: 1;
-  }
-}
-@keyframes swing-in-top-fwd {
-  0% {
-    -webkit-transform: rotateX(-100deg);
-            transform: rotateX(-100deg);
-    -webkit-transform-origin: top;
-            transform-origin: top;
-    opacity: 0;
-  }
-  100% {
-    -webkit-transform: rotateX(0deg);
-            transform: rotateX(0deg);
-    -webkit-transform-origin: top;
-            transform-origin: top;
-    opacity: 1;
-  }
-}
-.message {
-    -webkit-animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
-	        animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
-}
-
-.hide   { display: none; }
+   }
 </style>
 
 <script>
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXF0wkenM6F7AM29X-PupSj6JrJPwbDuM",
@@ -251,6 +97,7 @@ window.addEventListener("beforeunload", function() {
 });
 // Listen for new messages in the database
 database.ref("messages").on("child_added", function(snapshot) {
+    
     // Increment the message count
     messageCount++;
 
@@ -434,5 +281,19 @@ submitButton.addEventListener("click", function(event) {
         messageInput.focus();
     }
 });
+var css = document.getElementById("my-css");
+        var file1 = "https://theactualzenaldv2.github.io/gamedev/public2/extra/chat.css";
+        var file2 = "https://theactualzenaldv2.github.io/gamedev/public2/extra/chat2.css";
+        var currentFile = file1;
+function changeCss(){
+    if (currentFile === file1) {
+                css.href = file2;
+                currentFile = file2;
+            } else {
+                css.href = file1;
+                currentFile = file1;
+            }
+         
+}
 </script> 
 </html>
