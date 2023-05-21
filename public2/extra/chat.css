@@ -1,0 +1,172 @@
+ /* import poppins font */
+
+/* Set global styles */
+body {
+    background-color: #dddddd;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set styles for message container */
+#message-container, #user-container {
+  background-color: #dddddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 20px auto;
+  max-width: 750px;
+  padding: 20px;
+}
+#chat-container {
+    max-height: 800px;
+  background-color: #dddddd;
+  border-radius: 5px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  margin: 20px auto;
+  max-width: 800px;
+  padding: 20px;
+  overflow: scroll;
+}
+
+/* Set styles for messages */
+.message {
+  background-color: #bdb3b3;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Set styles for usernames */
+.user {
+  font-weight: bold;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+/* style input field */
+#message-input {
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  padding: 10px;
+  margin-right: 20px;
+  width: calc(90% - 20px);
+  bottom: 0;
+  left: 0;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+img:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+#chat-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+/* Style submit button and file input button */
+#submit-button,
+#file-input {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Add some space between the buttons */
+#submit-button {
+  margin-left: 10px;
+}
+
+/* Style the message input container */
+#message-input-container {
+  display: flex;
+  align-items: center;
+}
+#message-input:disabled {
+  background-color: #cccccc;
+  cursor: default;
+  cursor: not-allowed;
+}
+/* Style the submit button */
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:disabled {
+  background-color: #cccccc;
+  cursor: default;
+}
+button:disabled:hover {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Change the background color of the button on hover */
+button:hover {
+  background-color: #3e8e41;
+}
+
+strong {
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+
+@-webkit-keyframes swing-in-top-fwd {
+  0% {
+    -webkit-transform: rotateX(-100deg);
+            transform: rotateX(-100deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 1;
+  }
+}
+@keyframes swing-in-top-fwd {
+  0% {
+    -webkit-transform: rotateX(-100deg);
+            transform: rotateX(-100deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 1;
+  }
+}
+.message {
+    -webkit-animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+	        animation: swing-in-top-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+}
+
+.hide   { display: none; }
