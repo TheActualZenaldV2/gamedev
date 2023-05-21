@@ -1,0 +1,242 @@
+ /* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* Set global styles */
+body {
+    background-color: #1a1a1a;
+    color: #f2f2f2;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+/* Set styles for message container */
+#message-container {
+    background-color: #1a1a1a;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 20px auto;
+
+  padding: 20px;
+}
+
+/* Set styles for chat container */
+#chat-container {
+    background-color: #1a1a1a;
+  border-radius: 5px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  margin: 20px auto;
+  max-height: calc(100vh - 100px);
+  
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Set styles for messages */
+.message {
+    background-color: #333333;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Set styles for usernames */
+.user {
+  font-weight: bold;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+/* Style input field */
+#message-input {
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  padding: 10px;
+  margin-right: 20px;
+  background-color: #333333;
+  color: #f2f2f2;
+  width: calc(90% - 20px);
+}
+
+/* Style submit button and file input button */
+#submit-button,
+#file-input {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Add some space between the buttons */
+#submit-button {
+  margin-left: 10px;
+}
+
+/* Style the message input container */
+#message-input-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the submit button */
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: default;
+}
+
+button:disabled:hover {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Change the background color of the button on hover */
+button:hover {
+  background-color: #3e8e41;
+}
+
+strong {
+  font-weight: bold;
+  padding-right: 5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+img:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+#message-input:disabled {
+    background-color: #212121;  cursor: default;
+  cursor: not-allowed;
+}
+button:disabled {
+  background-color: #212121;
+  cursor: default;
+}
+button:disabled:hover {
+    background-color: #212121;
+    cursor: not-allowed;
+}
+/* style scroll bar */
+#chat-container::-webkit-scrollbar {
+  width: 10px;
+  background-color: #333333;
+  border-radius: 5px;
+}
+#chat-container::-webkit-scrollbar-thumb {
+  background-color: #4CAF50;
+  border-radius: 5px;
+}
+#username-input {
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    padding: 10px;
+    margin-right: 20px;
+    background-color: #333333;
+    color: #f2f2f2;
+    
+}
+
+#user-container {
+    border-radius: 5px;
+    margin: 20px auto;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #1a1a1a;
+}
+
+
+
+@-webkit-keyframes text-focus-in-swing-top-fwd {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    -webkit-transform: rotateX(-100deg);
+            transform: rotateX(-100deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0;
+  }
+  50% {
+    -webkit-filter: blur(6px);
+            filter: blur(6px);
+    -webkit-transform: rotateX(20deg);
+            transform: rotateX(20deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0.8;
+
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 1;
+  }
+}
+
+#spinnerText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+#spinner {
+  margin-top: 20px;
+  text-align: center;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #7983ff;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  background-color: #2f2f2f;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.message {
+    -webkit-animation: text-focus-in-swing-top-fwd 0.7s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+	        animation: text-focus-in-swing-top-fwd 0.7s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+           
+}
+
+.hide   { display: none; }
