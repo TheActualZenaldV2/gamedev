@@ -55,32 +55,47 @@ button {
 button:hover {
   background-color: #0069d9;
 }
-
-/* Style for the game rooms list */
 #gameRoomsList {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* Style for the game room links */
 #gameRoomsList li {
-  margin: 10px 0;
+  margin-bottom: 10px;
 }
 
-#gameRoomsList li a {
+#gameRoomsList a {
   display: block;
   padding: 10px;
-  background-color: #2b2b2b;
-  border-radius: 5px;
+  background-color: #f2f2f2;
+  color: #333;
   text-decoration: none;
-  color: #f5f5f5;
-  font-weight: bold;
-  transition: background-color 0.2s ease-in-out;
+  border-radius: 5px;
+  position: relative;
+  transition: all 0.3s ease-in-out;
 }
 
-#gameRoomsList li a:hover {
-  background-color: #3a3a3a;
+#gameRoomsList a:hover {
+  background-color: #ddd;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+#gameRoomsList a:hover::after {
+  content: 'Join Room';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-weight: bold;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+
+strong {
+    color: #007bff;
+
 }
   </style>
 </head>
@@ -103,6 +118,7 @@ button:hover {
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+  <script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
 
   <script>
       const firebaseConfig = {
@@ -257,18 +273,30 @@ function leaveGameRoom(roomCode) {
   });
   document.getElementById("error").innerHTML = "Left Room: " + roomCode;
     document.getElementById("error").style.color = "Red";
-}// Function to display the list of game rooms
+}
+//display game rooms
 function displayGameRooms() {
-  // Get the list of game rooms from the database
+  var gameRoomsRef = database.ref('gameRooms');
   gameRoomsRef.on('value', function(snapshot) {
-    var gameRooms = snapshot.val();
-    // Create a list of game room links
-    var gameRoomLinks = '';
-    for (var roomCode in gameRooms) {
-      gameRoomLinks += '<li><a href="#" onclick="joinGameRoom(\'' + roomCode + '\')">' + roomCode + '</a></li>';
-    }
-    // Display the list of game rooms
-    document.getElementById('gameRoomsList').innerHTML = gameRoomLinks;
+    var gameRoomsList = document.getElementById('gameRoomsList');
+    gameRoomsList.innerHTML = '';
+    snapshot.forEach(function(childSnapshot) {
+      var roomCode = childSnapshot.key;
+      var players = childSnapshot.child('players').val();
+      var numPlayers = players ? Object.keys(players).length : 0;
+      var listItem = document.createElement('li');
+      var link = document.createElement('a');
+      link.href = '#';
+      link.innerHTML =  ' Room' + '<strong> ' + roomCode + '</strong> (' + numPlayers + ' players)';
+      var icon = document.createElement('i');
+      icon.classList.add('fas', 'fa-users');
+      link.insertBefore(icon, link.firstChild);
+      listItem.appendChild(link);
+      gameRoomsList.appendChild(listItem);
+      link.addEventListener('click', function() {
+        joinGameRoom(roomCode);
+      });
+    });
   });
 }
     // Add event listeners to the buttons
@@ -283,6 +311,11 @@ function displayGameRooms() {
       var roomCode = document.getElementById('roomCode').value;
       leaveGameRoom(roomCode);
     });
+
+
+
+
+    
   </script>
 </body>
 </html>
