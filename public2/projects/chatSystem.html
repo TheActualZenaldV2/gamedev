@@ -52,6 +52,18 @@
     border: 3px solid rgb(90, 89, 89);
     margin: 10px;
    }
+ 
+    div {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+#submitMessage{
+    min-width: fit-content;
+}
+#file-input{
+    min-width: fit-content;
+}
+
 </style>
 
 <script>
@@ -105,15 +117,7 @@ database.ref("messages").on("child_added", function(snapshot) {
     // Increment the message count
     messageCount++;
 
-    // If there are more than 20 messages, delete the oldest message
-    if (messageCount > 20) {
-        var oldestMessage = messageContainer.firstChild;
-        if (oldestMessage && oldestMessage.parentNode === messageContainer) {
-            database.ref("messages/" + oldestMessage.id).remove();
-            messageContainer.removeChild(oldestMessage);
-            messageCount--;
-        }
-    }
+    
 
     // Get the message data from the snapshot
     var message = snapshot.val();
@@ -180,6 +184,7 @@ messagesRef.on("child_removed", function(snapshot) {
         message.classList.add("hide");
         setTimeout(function() {
             messageContainer.removeChild(message);
+            snapshot.ref.remove(); // Remove message from database
             console.clear()
         }, 500);
     }
