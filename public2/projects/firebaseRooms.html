@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Game Rooms</title>
+  <style>
+    body {
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #2b2b2b;
+  color: #f5f5f5;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #f5f5f5;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+/* Style for the game rooms list */
+#gameRoomsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style for the game room links */
+#gameRoomsList li {
+  margin: 10px 0;
+}
+
+#gameRoomsList li a {
+  display: block;
+  padding: 10px;
+  background-color: #2b2b2b;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #f5f5f5;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#gameRoomsList li a:hover {
+  background-color: #3a3a3a;
+}
+  </style>
+</head>
+<body onload="displayGameRooms()">
+  <div class="container">
+    <h1>Firebase Game Rooms</h1>
+    <div class="form-group"><p id="error"></p>
+      <label for="roomCode">Room Code:</label>
+      
+      <input type="text" id="roomCode" name="roomCode" placeholder="Enter room code"> <button id="joinButton">Join Room</button>
+    </div>
+    
+    <button id="createButton">Create Room</button>
+    <button id="leaveButton">Leave Room</button>
+    <h1>Games Running: </h1>
+  <ul id="gameRoomsList"></ul>
+  </div>
+
+  <!-- Firebase JavaScript SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+
+  <script>
+      const firebaseConfig = {
+    apiKey: "AIzaSyBmDKME79mUj8N6UtSe4UgEeFpmVVS7C0Y",
+    authDomain: "game-room-template.firebaseapp.com",
+    databaseURL: "https://game-room-template-default-rtdb.firebaseio.com",
+    projectId: "game-room-template",
+    storageBucket: "game-room-template.appspot.com",
+    messagingSenderId: "25574615862",
+    appId: "1:25574615862:web:99e878703c122dcb9ca197",
+    measurementId: "G-5T1L24037P"
+  };
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the database service
+    var database = firebase.database();
+
+    // Get a reference to the auth service
+var auth = firebase.auth();
+var uid;
+var roomCode;
+let authenticated = false;
+var gameRoomsRef = database.ref('gameRooms');
+
+// Authenticate the user anonymously on page load
+auth.signInAnonymously().catch(function(error) {
+  console.log('Error authenticating anonymously:', error);
+});
+
+// Listen for changes in authentication state
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    console.log('User authenticated anonymously:', user.uid);
+    uid = user.uid;
+    // Do something with the authenticated user
+    authenticated = true;
+  } else {
+    console.log('User is not authenticated');
+  }
+});
+    // Function to generate a random 4 character code
+    function generateRoomCode() {
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var code = '';
+      for (var i = 0; i < 4; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+      roomCode = code;
+    }
+
+    // Function to create a new game room
+function createGameRoom() {
+  var currentUser = firebase.auth().currentUser;
+  var userRef = database.ref('users/' + currentUser.uid);
+  var roomCode = generateRoomCode();
+  var roomRef = database.ref('gameRooms/' + roomCode);
+  // Retrieve the list of game rooms that the user is currently in
+  userRef.child('gameRooms').once('value').then(function(snapshot) {
+    var gameRooms = snapshot.val();
+    // Remove the user from all other rooms
+    for (var code in gameRooms) {
+      var otherRoomRef = database.ref('gameRooms/' + code);
+      otherRoomRef.child('players/' + currentUser.uid).remove();
+    }
+    // Create the new room
+    roomRef.set({
+      players: {
+        // add the creator as the first player
+        [currentUser.uid]: true
+      }
+    });
+    roomRef.child('players/' + currentUser.uid).onDisconnect().set(null);
+    // Update the user's current room
+    userRef.child('currentRoom').set(roomCode);
+    // Add the new room to the user's list of game rooms
+    userRef.child('gameRooms/' + roomCode).set(true);
+    console.log('Created room:', roomCode);
+    document.getElementById('roomCode').value = roomCode;
+  });
+  document.getElementById("error").innerHTML = "Room Created: " + roomCode;
+  document.getElementById("error").style.color = "green";
+}
+
+ // Function to join an existing game room
+function joinGameRoom(roomCode) {
+    document.getElementById('roomCode').value = roomCode;
+
+  var currentUser = firebase.auth().currentUser;
+  var roomRef = database.ref('gameRooms/' + roomCode);
+  var currentRoomCode = document.getElementById('roomCode').value;
+  var gameRoomsRef = database.ref('gameRooms');
+  gameRoomsRef.once('value').then(function(snapshot) {
+    var gameRooms = snapshot.val();
+    // Remove the user from all other rooms except for the current room
+    for (var code in gameRooms) {
+      if (code !== currentRoomCode && gameRooms[code].players && gameRooms[code].players[currentUser.uid]) {
+        var otherRoomRef = database.ref('gameRooms/' + code);
+        otherRoomRef.child('players/' + currentUser.uid).remove();
+      }
+    }
+    // Add the user to the new room
+    roomRef.once('value').then(function(snapshot) {
+      var players = snapshot.child('players').val();
+      if (players) {
+        players[currentUser.uid] = true;
+        roomRef.child('players').set(players);
+        // Listen for changes in the players list
+        roomRef.child('players').on('value', function(snapshot) {
+          var players = snapshot.val();
+          if (!players || Object.keys(players).length === 0) {
+            // Remove the game room if there are no more players
+            roomRef.remove();
+          }
+        });
+        roomRef.child('players/' + currentUser.uid).onDisconnect().set(null);
+        console.log('Joined room:', roomCode);
+      } else {
+        console.log('Room does not exist');
+        document.getElementById("error").innerHTML = "Room Does Not Exist: " + "'" + roomCode +"'";
+  document.getElementById("error").style.color = "Red";
+      }
+    });
+    // Join the next room after leaving all other rooms
+    if (currentRoomCode === null) {
+      for (var code in gameRooms) {
+        if (code !== roomCode && gameRooms[code].players && gameRooms[code].players[currentUser.uid]) {
+          joinGameRoom(code);
+          break;
+        }
+      }
+    }
+  });
+  document.getElementById("error").innerHTML = "Joinned Room: " + roomCode;
+  document.getElementById("error").style.color = "Green";
+}
+window.onunload = function() {
+  
+    leaveGameRoom(roomCode);
+  
+};
+
+// Function to leave the current game room
+function leaveGameRoom(roomCode) {
+  var roomRef = database.ref('gameRooms/' + roomCode);
+  roomRef.once('value').then(function(snapshot) {
+    var players = snapshot.child('players').val();
+    if (players) {
+      delete players[firebase.auth().currentUser.uid];
+      roomRef.child('players').set(players);
+    }
+  });
+  document.getElementById("error").innerHTML = "Left Room: " + roomCode;
+    document.getElementById("error").style.color = "Red";
+}// Function to display the list of game rooms
+function displayGameRooms() {
+  // Get the list of game rooms from the database
+  gameRoomsRef.on('value', function(snapshot) {
+    var gameRooms = snapshot.val();
+    // Create a list of game room links
+    var gameRoomLinks = '';
+    for (var roomCode in gameRooms) {
+      gameRoomLinks += '<li><a href="#" onclick="joinGameRoom(\'' + roomCode + '\')">' + roomCode + '</a></li>';
+    }
+    // Display the list of game rooms
+    document.getElementById('gameRoomsList').innerHTML = gameRoomLinks;
+  });
+}
+    // Add event listeners to the buttons
+    document.getElementById('createButton').addEventListener('click', function() {
+      var roomCode = createGameRoom();
+    });
+    document.getElementById('joinButton').addEventListener('click', function() {
+      var roomCode = document.getElementById('roomCode').value;
+      joinGameRoom(roomCode);
+    });
+    document.getElementById('leaveButton').addEventListener('click', function() {
+      var roomCode = document.getElementById('roomCode').value;
+      leaveGameRoom(roomCode);
+    });
+  </script>
+</body>
+</html>
