@@ -1,0 +1,378 @@
+<div id="moneyHolder">
+  <h2 id="income"> Income: 10</h2>
+   <h3 id="money"> Money: 0</h3>
+   <h2> Upgrades</h2>
+   <button onclick="buyTank()"> Buy Tank </button>
+
+</div>
+<div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
+<canvas id="myCanvas"> </canvas>
+<div id="progress-bar"></div>
+
+
+<style>
+  /* import poppins font */
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    canvas {
+        border: 1px solid #d3d3d3;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #progress-bar {
+            background-color: #ddd;
+            height: 20px;
+            width: 0%;
+            transition: width 2s;
+        }
+    #moneyHolder {
+           position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #ddd;
+            height: auto;
+            width: 200px;
+            transition: width 2s;
+            z-index: 999;
+            padding: 20px;
+        }
+   #popup {
+  position: fixed;
+  text-align: center;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ddd;
+  height: 100px;
+  width: 300px;
+  transition: width 2s;
+  z-index: 999;
+}
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font: 16px/1.5 "Poppins", sans-serif;
+        }
+
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+<script>
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAKMgbAe0C8eGo2MkboK1Nlt5s0GV6pYiM",
+    authDomain: "capture-dc59c.firebaseapp.com",
+    databaseURL: "https://capture-dc59c-default-rtdb.firebaseio.com",
+    projectId: "capture-dc59c",
+    storageBucket: "capture-dc59c.appspot.com",
+    messagingSenderId: "395245372331",
+    appId: "1:395245372331:web:1dc751bb9e9cd89d2788ee",
+    measurementId: "G-9V4WKHVBLS"
+  };
+  firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Set up canvas
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Set up progress bar
+        const progressBar = document.getElementById("progress-bar");
+
+        // Set up game variables
+        const cellSize = 50;
+        const numRows = Math.floor(canvas.height / cellSize);
+        const numCols = Math.floor(canvas.width / cellSize);
+        const cells = [];
+        let currentPlayer = "player1";
+        let progress = 0;
+        var rgb;
+        var myCells = [];
+        var lastCell;
+        var owner;
+        var money = 0;
+        var income = 10;
+        var tileCost = 50;
+
+        // Set up cells
+        for (let i = 0; i < numRows; i++) {
+            cells[i] = [];
+            for (let j = 0; j < numCols; j++) {
+                cells[i][j] = {
+                    owner: null,
+                    x: j * cellSize,
+                    y: i * cellSize
+                };
+            }
+          
+
+           
+        
+        }
+        
+
+      
+        //on hover of canvas, display the rgb color of the cell
+        canvas.addEventListener("mousemove", function(event) {
+           
+            
+        });
+
+  function drawCells(cells) {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the cells with borders
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const cell = cells[row] && cells[row][col];
+        const color = cell ? cell.color : "white";
+        // Draw the cell with a border
+        ctx.fillStyle = color;
+        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        //if the color is the same as the rgb color, that means that the cell is owned by the player, so draw a border around it
+        if (color == rgb) {
+  // Draw a border around the cell
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "red";
+  ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+  //add the cell to the myCells array
+  myPosition = {
+    row: row,
+    col: col,
+    owner: currentPlayer,
+    currentOwner: owner,
+  };
+  myCells.push(myPosition);
+  
+        
+  
+}
+        
+      }
+    }
+  }
+
+  // Listen for changes in the cells database
+  database.ref('cells').on('value', (snapshot) => {
+    const cells = snapshot.val();
+    
+    if(cells == null) {
+      // If there are no cells in the database, set the cells to the default values
+      
+    }
+    drawCells(cells);
+   
+
+  });
+
+
+
+        
+
+        // Helper function to capture a cell
+        function captureCell(){
+  
+row = Math.floor(event.clientY / cellSize);
+col = Math.floor(event.clientX / cellSize);
+
+
+cell = cells[row][col]; 
+
+   
+                cell.owner = currentPlayer;
+                database.ref(`cells/${row}/${col}`).set({
+                    owner: currentPlayer,
+                    color: rgb,
+                    currentOwner: owner,
+                });
+                
+            
+        }
+
+
+
+
+
+// Define variables for the progress bar and timer
+
+  const progressBarHeight = 20;
+  let isDisabled = false;
+
+
+
+// Handle click
+canvas.addEventListener("click", function(event) {
+  // Check if the canvas is disabled
+  if (!isDisabled) {
+    
+
+
+    // Disable the canvas and start the timer
+    isDisabled = true;
+    canvas.setAttribute("disabled", true);
+    const row = Math.floor(event.clientY / cellSize);
+    const col = Math.floor(event.clientX / cellSize);
+    
+
+
+
+   
+    // Update the progress bar every 100ms
+    const interval = setInterval(function() {
+      progress += 0.005;
+      if (progress >= 1) {
+        // Stop the timer and enable the canvas
+        clearInterval(interval);
+        progress = 0;
+        isDisabled = false;
+        canvas.removeAttribute("disabled");
+      }
+      ctx.clearRect(0, canvas.height - progressBarHeight, canvas.width, progressBarHeight);
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0, "lime");
+        gradient.addColorStop(1, "green");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, canvas.height - progressBarHeight, canvas.width * progress, progressBarHeight);
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, canvas.height - progressBarHeight, canvas.width, progressBarHeight);
+      
+      
+    }, 10);
+    let isAdjacent = false;
+if (myCells.length > 0) {
+  // Check if the cell is adjacent to one of the player's cells
+  let isAdjacent = false;
+  for (let i = 0; i < myCells.length; i++) {
+    if (myCells[i].owner == currentPlayer) {
+      if (myCells[i].row == row - 1 && myCells[i].col == col) {
+        isAdjacent = true;
+        break;
+      }
+      else if (myCells[i].row == row + 1 && myCells[i].col == col) {
+        isAdjacent = true;
+        break;
+      }
+      else if (myCells[i].row == row && myCells[i].col == col - 1) {
+        isAdjacent = true;
+        break;
+      }
+      else if (myCells[i].row == row && myCells[i].col == col + 1) {
+        isAdjacent = true;
+        break;
+      }
+    }
+  }
+
+  if (!isAdjacent) {
+    //don't let them move
+    //complete the timer
+    progress = 1;
+    return;
+  }
+}
+
+//check if the user clicked on a cell that is already owned by the player
+if (cells[row][col].owner == currentPlayer) {
+  //don't let them move
+  //complete the timer
+  progress = 1;
+  return;
+}
+//if a cell gets cut off from the rest of the player's cells, it is no longer owned by the player
+for (let i = 0; i < myCells.length; i++) {
+  if (myCells[i].owner == currentPlayer) {
+    //check if the cell is adjacent to one of the player's cells
+    if (myCells[i].row == row - 1 && myCells[i].col == col) {
+      //the cell is adjacent, so don't do anything
+      break;
+    }
+    else if (myCells[i].row == row + 1 && myCells[i].col == col) {
+      //the cell is adjacent, so don't do anything
+      break;
+    }
+    else if (myCells[i].row == row && myCells[i].col == col - 1) {
+      //the cell is adjacent, so don't do anything
+      break;
+    }
+    else if (myCells[i].row == row && myCells[i].col == col + 1) {
+      //the cell is adjacent, so don't do anything
+      break;
+    }
+    else if (i == myCells.length - 1) {
+      //the cell is not adjacent to any of the player's cells, so make it white
+      cells[row][col].color = "white";
+      database.ref(`cells/${row}/${col}`).set({
+        owner: cells[row][col].owner,
+        color: "white",
+      });
+    }
+  }
+}
+
+//if user doesn't have enough money, don't let them move
+if (money < tileCost) {
+  //complete the timer
+  progress = 1;
+  document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture a cell.";
+
+  return;
+}
+
+
+
+captureCell(row, col);
+money -= 50;
+document.getElementById("popupText").innerHTML = "You captured a cell!";
+tileCost = tileCost * 1.3.toFixed(2);
+  }
+});
+
+
+        // Helper function to generate a random color based on the owner
+        function getRandomColor() {
+            //use math.random to generate a random number between 0 and 255, once
+
+            for (let i = 0; i < 3; i++) {
+                //use math.random to generate a random number between 0 and 255, three times
+                 r = Math.floor(Math.random() * 256);
+                g = Math.floor(Math.random() * 256);
+                b = Math.floor(Math.random() * 256);
+                //join the three random numbers together to form an rgb string
+                   rgb = `rgb(${r}, ${g}, ${b})`;
+                //return the rgb string
+                console.log(rgb);
+                owner = Math.floor(Math.random() * 9999999999);
+                return rgb;
+                
+            }
+        }
+
+      //give player money, draw it on canvas
+      function drawMoney() {
+      
+      
+       money += income;
+       document.getElementById("money").innerHTML = "Money: " + money;
+        console.log(money);
+        document.getElementById("income").innerHTML = "Income: " + income;
+      }
+     function buyTank() {
+      if(money >= 100){
+      income += 10;
+      money -= 100;
+     }
+    }
+        setInterval(drawMoney, 1000);
+
+
+        getRandomColor();
+</script>
