@@ -1,10 +1,11 @@
 <div id="moneyHolder">
-  <h2 id="income"> Income: 10</h2>
-   <h3 id="money"> Money: 0</h3>
-   <h2> Upgrades</h2>
-   <button onclick="buyTank()"> Buy Tank </button>
+  <h1 id="moneyHolderText"> <i class="fas fa-coins"></i> <span id="money">Money: 0</span></h1>
 
-</div>
+  <h2 id="incomeHolder"> <i class="fas fa-money-bill-wave"></i> <span id="income">Income: 10 </span></h2>
+   <h2> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> <HR>
+   <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $100 <br> <span id="tanksOwned">Tanks Owned: 0 </span> </button> 
+    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $200 <br> <span id="fightersOwned">Fighters Owned: 0 </span> </button>
+  </div>
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
 <div id="progress-bar"></div>
@@ -32,7 +33,7 @@
             right: 0;
             background-color: #ddd;
             height: auto;
-            width: 200px;
+            width: auto;
             transition: width 2s;
             z-index: 999;
             padding: 20px;
@@ -55,10 +56,30 @@
             overflow: hidden;
             font: 16px/1.5 "Poppins", sans-serif;
         }
+        
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #f5f5f5;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
+        hr {
+          
+            height: 2px;
+            color: black;
+            border: 5px solid #007bff;
+        }
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+<script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
+
 <script>
 
 
@@ -95,9 +116,11 @@ const firebaseConfig = {
         var myCells = [];
         var lastCell;
         var owner;
-        var money = 0;
+        var money = 100;
         var income = 10;
         var tileCost = 50;
+        var tanksOwned = 0;
+        var fightersOwned = 0;
 
         // Set up cells
         for (let i = 0; i < numRows; i++) {
@@ -169,6 +192,9 @@ const firebaseConfig = {
       
     }
     drawCells(cells);
+   //on disconnect, remove the player's cells from the database
+    database.ref(`cells/${row}/${col}`).onDisconnect().remove();
+
    
 
   });
@@ -193,8 +219,8 @@ cell = cells[row][col];
                     color: rgb,
                     currentOwner: owner,
                 });
-                
-            
+           
+         
         }
 
 
@@ -364,12 +390,25 @@ tileCost = tileCost * 1.3.toFixed(2);
        document.getElementById("money").innerHTML = "Money: " + money;
         console.log(money);
         document.getElementById("income").innerHTML = "Income: " + income;
+        
       }
      function buyTank() {
       if(money >= 100){
       income += 10;
       money -= 100;
+      tanksOwned++;
+      document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned;
+        document.getElementById("popupText").innerHTML = "You bought a tank!";
      }
+    }
+    function buyFigher() {
+      if(money >= 200){
+      income += 20;
+      money -= 200;
+      fightersOwned++
+      document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned;
+        document.getElementById("popupText").innerHTML = "You bought a fighter!";
+      }
     }
         setInterval(drawMoney, 1000);
 
