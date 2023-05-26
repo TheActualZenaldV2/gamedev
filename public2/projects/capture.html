@@ -1,10 +1,12 @@
-<div id="moneyHolder">
+<body onload="spawnRandom();"></body>
+<button onclick="show()" id="showButton" style="display: none">Show</button>
+<div id="moneyHolder"> <button onclick="hide()"> <span id="toggle"> Minimise</span></button>
   <h1 id="moneyHolderText"> <i class="fas fa-coins"></i> <span id="money">Money: 0</span></h1>
 
   <h2 id="incomeHolder"> <i class="fas fa-money-bill-wave"></i> <span id="income">Income: 10 </span></h2>
    <h2> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> <HR>
-   <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $100 <br> <span id="tanksOwned">Tanks Owned: 0 </span> </button> 
-    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $200 <br> <span id="fightersOwned">Fighters Owned: 0 </span> </button>
+   <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $<span id="tankCost">100</span> <br> <span id="tanksOwned">Tanks Owned: 0/5 </span> </button> 
+    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">200</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
   </div>
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
@@ -27,16 +29,19 @@
             width: 0%;
             transition: width 2s;
         }
-    #moneyHolder {
+    #moneyHolder, #showButton {
            position: absolute;
             top: 0;
             right: 0;
-            background-color: #ddd;
             height: auto;
             width: auto;
             transition: width 2s;
             z-index: 999;
             padding: 20px;
+        }
+        #moneyHolder{
+          background-color: #ddd;
+
         }
    #popup {
   position: fixed;
@@ -116,11 +121,15 @@ const firebaseConfig = {
         var myCells = [];
         var lastCell;
         var owner;
-        var money = 100;
+        var money = 5000;
         var income = 10;
-        var tileCost = 50;
+        var tileCost = 1000;
         var tanksOwned = 0;
         var fightersOwned = 0;
+        var fighterCost = 200;
+        var tankCost = 100;
+        var maxTanks = 5;
+        var maxFighters = 5;
 
         // Set up cells
         for (let i = 0; i < numRows; i++) {
@@ -146,42 +155,60 @@ const firebaseConfig = {
             
         });
 
-  function drawCells(cells) {
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw the cells with borders
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        const cell = cells[row] && cells[row][col];
-        const color = cell ? cell.color : "white";
-        // Draw the cell with a border
-        ctx.fillStyle = color;
-        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
-        //if the color is the same as the rgb color, that means that the cell is owned by the player, so draw a border around it
-        if (color == rgb) {
-  // Draw a border around the cell
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "red";
-  ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
-  //add the cell to the myCells array
-  myPosition = {
-    row: row,
-    col: col,
-    owner: currentPlayer,
-    currentOwner: owner,
-  };
-  myCells.push(myPosition);
-  
-        
-  
-}
-        
+function spawnRandom(){
+        //spawn the player's first cell in a random location
+        var randomRow = Math.floor(Math.random() * numRows);
+        var randomCol = Math.floor(Math.random() * numCols);
+        row = randomRow;
+        col = randomCol;
+        //send to firebase
+        database.ref(`cells/${row}/${col}`).set({
+                    owner: currentPlayer,
+                    color: rgb,
+                    currentOwner: owner,
+                });
+              }
+
+function drawCells(cells) {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the cells with borders
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      const cell = cells[row] && cells[row][col];
+      const color = cell ? cell.color : "white";
+      // Draw the cell with a border
+      ctx.fillStyle = color;
+      ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      ctx.strokeStyle = "black";
+      ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      //if the color is the same as the rgb color, that means that the cell is owned by the player, so draw a border around it
+      if (color == rgb) {
+        // Draw a border around the cell
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "red";
+        ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+        //add the cell to the myCells array
+        myPosition = {
+          row: row,
+          col: col,
+          owner: currentPlayer,
+          currentOwner: owner,
+          level: 1,
+        };
+        myCells.push(myPosition);
+      }
+      // Draw the level number on the cell
+      if (cell && cell.level) {
+        ctx.fillStyle = "black";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
       }
     }
   }
+}
 
   // Listen for changes in the cells database
   database.ref('cells').on('value', (snapshot) => {
@@ -306,11 +333,35 @@ if (myCells.length > 0) {
   }
 }
 
-//check if the user clicked on a cell that is already owned by the player
+// check if the user clicked on a cell that is already owned by the player
 if (cells[row][col].owner == currentPlayer) {
-  //don't let them move
-  //complete the timer
+  // don't let them move
+  // complete the timer
   progress = 1;
+
+  // upgrade the cell. it will cost $1000
+  if (money >= 1000) {
+    console.log("upgrade");
+    money -= 1000;
+
+    // get the cell's level from myCells
+    let cellLevel;
+    for (let i = 0; i < myCells.length; i++) {
+      if (myCells[i].row == row && myCells[i].col == col) {
+        cellLevel = myCells[i].level;
+        myCells[i].level++;
+        break;
+      }
+    }
+
+    console.log(cellLevel);
+    database.ref(`cells/${row}/${col}`).set({
+      owner: cells[row][col].owner,
+      color: rgb,
+      level: cellLevel + 1,
+      currentOwner: owner,
+    });
+  }
   return;
 }
 //if a cell gets cut off from the rest of the player's cells, it is no longer owned by the player
@@ -358,7 +409,7 @@ if (money < tileCost) {
 captureCell(row, col);
 money -= 50;
 document.getElementById("popupText").innerHTML = "You captured a cell!";
-tileCost = tileCost * 1.3.toFixed(2);
+tileCost = tileCost * 1.15.toFixed(2);
   }
 });
 
@@ -388,28 +439,52 @@ tileCost = tileCost * 1.3.toFixed(2);
       
        money += income;
        document.getElementById("money").innerHTML = "Money: " + money;
-        console.log(money);
         document.getElementById("income").innerHTML = "Income: " + income;
         
       }
      function buyTank() {
-      if(money >= 100){
+      if(tanksOwned >= maxTanks){
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
+          return;
+        }
+      if(money >= tankCost){
+        tankCost = tankCost * 1.55.toFixed(2);
       income += 10;
       money -= 100;
       tanksOwned++;
-      document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned;
+      document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned + "/" + maxTanks;
         document.getElementById("popupText").innerHTML = "You bought a tank!";
+        //update the cost of the tank
+        document.getElementById("tankCost").innerHTML =  tankCost.toFixed(0);
      }
     }
     function buyFigher() {
-      if(money >= 200){
+      if(fightersOwned >= maxFighters){
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
+          return;
+        }
+      if(money >= fighterCost){
+        
       income += 20;
       money -= 200;
+      fighterCost = fighterCost * 1.55.toFixed(2);
       fightersOwned++
-      document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned;
+      document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned +"/" + maxFighters;
         document.getElementById("popupText").innerHTML = "You bought a fighter!";
+        //update the cost of the fighter
+       document.getElementById("fighterCost").innerHTML =  fighterCost.toFixed(0);
       }
     }
+
+    function hide(){
+      document.getElementById("moneyHolder").style.display = "none";
+      document.getElementById("showButton").style.display = "block";
+    }
+    function show(){
+      document.getElementById("moneyHolder").style.display = "block";
+      document.getElementById("showButton").style.display = "none";
+    }
+
         setInterval(drawMoney, 1000);
 
 
