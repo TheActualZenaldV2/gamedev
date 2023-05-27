@@ -139,7 +139,7 @@ const firebaseConfig = {
         var myCells = [];
         var lastCell;
         var owner;
-        var money = 0;
+        var money = 5000;
         var income = 10;
         var cellsArray = [];
         var tanksOwned = 0;
@@ -329,6 +329,48 @@ function checkForLoss() {
           }
       
         
+          canvas.addEventListener('mousemove', (event) => {
+    const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    //get the row and col of the cell
+    const row = Math.floor(y / cellSize);
+    const col = Math.floor(x / cellSize);
+    //get the tile cost
+    const cellLevel = getCellLevel(row, col);
+    let tileCostPopupNumber = cellLevel * 1000;
+    let tileCostTotal = tileCostPopupNumber.toLocaleString();
+   
+    cellLevelBBG = getCellLevel(row, col);
+    if (cellLevel == null || cellLevel == undefined || cellLevel == 0) {
+      tileCostPopupNumber = 500;
+    }
+    tooltip.style.left = x + 30 +  'px';
+    tooltip.style.top = y + 30 +  'px';
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = 'Tile cost: ' + tileCostTotal;
+    //when over your own cell, show the upgrade cost
+    if (cells[row][col].owner == currentPlayer) {
+      tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
+    }
+
+  });
+  
+  canvas.addEventListener('mouseout', () => {
+    
+    tooltip.style.display = 'none';
+  });
+canvas.addEventListener('click', (event) =>{
+ 
+  const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    //get the row and col of the cell
+    const row = Math.floor(y / cellSize);
+    const col = Math.floor(x / cellSize);
+    cellLevelBBG = getCellLevel(row, col);
+  if (cells[row][col].owner == currentPlayer) {
+      tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
+    }
+})
 
 function spawnRandom(){
         //spawn the player's first cell in a random location
