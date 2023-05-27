@@ -11,6 +11,7 @@
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
 <div id="progress-bar"></div>
+<div id="tooltip" style="position: absolute; display: none;"></div>
 
 
 <style>
@@ -53,7 +54,7 @@
   height: 100px;
   width: 300px;
   transition: width 2s;
-  z-index: 999;
+  z-index: 9;
 }
         body {
             margin: 0;
@@ -80,6 +81,16 @@
             color: black;
             border: 5px solid #007bff;
         }
+        #tooltip {
+  position: absolute;
+  display: none;
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 99999999999;
+}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
@@ -106,6 +117,8 @@ const firebaseConfig = {
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        const tooltip = document.getElementById('tooltip');
+
 
         // Set up progress bar
         const progressBar = document.getElementById("progress-bar");
@@ -121,15 +134,16 @@ const firebaseConfig = {
         var myCells = [];
         var lastCell;
         var owner;
-        var money = 5000;
+        var money = 0;
         var income = 10;
-        var tileCost = 1000;
+        var cellsArray = [];
         var tanksOwned = 0;
         var fightersOwned = 0;
         var fighterCost = 200;
         var tankCost = 100;
         var maxTanks = 5;
         var maxFighters = 5;
+        var basePos = [];
 
         // Set up cells
         for (let i = 0; i < numRows; i++) {
@@ -138,7 +152,8 @@ const firebaseConfig = {
                 cells[i][j] = {
                     owner: null,
                     x: j * cellSize,
-                    y: i * cellSize
+                    y: i * cellSize,
+                    level : 1,
                 };
             }
           
@@ -149,11 +164,7 @@ const firebaseConfig = {
         
 
       
-        //on hover of canvas, display the rgb color of the cell
-        canvas.addEventListener("mousemove", function(event) {
-           
-            
-        });
+        
 
 function spawnRandom(){
         //spawn the player's first cell in a random location
@@ -166,7 +177,11 @@ function spawnRandom(){
                     owner: currentPlayer,
                     color: rgb,
                     currentOwner: owner,
+                    level: 500,
+                    row: row,
+                    col: col,
                 });
+                basePos.push([row,col]);
               }
 
 function drawCells(cells) {
@@ -200,19 +215,42 @@ function drawCells(cells) {
         myCells.push(myPosition);
       }
       // Draw the level number on the cell
-      if (cell && cell.level) {
+      if (cell && cell.level && cell.level < 500) {
         ctx.fillStyle = "black";
         ctx.font = "bold 16px Arial";
         ctx.textAlign = "center";
         ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
       }
+      //if level = 500, draw a crown on the cell
+      if (cell && cell.level == 500) {
+        ctx.fillStyle = "yellow";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("👑", col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
+      }
     }
   }
+  checkForLoss();
+}
+
+//when a player loses their first cell, they lose the game
+function checkForLoss() {
+  
+  //check if the user still has their base from basePos
+//  var baseExists = false;
+//  for (let i = 0; i < basePos.length; i++) {
+ //   if (cellsArray[basePos[i][0]][basePos[i][1]].color == rgb) {
+  //    baseExists = true;
+  //    console.log("base exists");
+  //  }
+ // }
 }
 
   // Listen for changes in the cells database
   database.ref('cells').on('value', (snapshot) => {
     const cells = snapshot.val();
+    cellsArray = [];
+    
     
     if(cells == null) {
       // If there are no cells in the database, set the cells to the default values
@@ -221,12 +259,59 @@ function drawCells(cells) {
     drawCells(cells);
    //on disconnect, remove the player's cells from the database
     database.ref(`cells/${row}/${col}`).onDisconnect().remove();
+    cellsArray = cells;
 
+    //update myCells array with just the users cells
+    //its the users cells if the owner is the same as the rgb color
+    myCells = [];
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const cell = cells[row] && cells[row][col];
+        const color = cell ? cell.color : "white";
+        if (color == rgb) {
+          // Draw a border around the cell
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "red";
+          ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+          //add the cell to the myCells array
+          myPosition = {
+            row: row,
+            col: col,
+            owner: currentPlayer,
+            currentOwner: owner,
+            level: cell.level,
+          };
+          myCells.push(myPosition);
+        }
+      }
+    }
+    
    
 
   });
 
-
+  
+          canvas.addEventListener('mousemove', (event) => {
+    const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    //get the row and col of the cell
+    const row = Math.floor(y / cellSize);
+    const col = Math.floor(x / cellSize);
+    //get the tile cost
+    const cellLevel = getCellLevel(row, col);
+    let tileCostPopupNumber = cellLevel * 1000;
+    if (cellLevel == null || cellLevel == undefined || cellLevel == 0) {
+      tileCostPopupNumber = 500;
+    }
+    tooltip.style.left = x + 30 +  'px';
+    tooltip.style.top = y + 30 +  'px';
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = 'Tile cost: ' + tileCostPopupNumber;
+  });
+  
+  canvas.addEventListener('mouseout', () => {
+    tooltip.style.display = 'none';
+  });
 
         
 
@@ -245,6 +330,9 @@ cell = cells[row][col];
                     owner: currentPlayer,
                     color: rgb,
                     currentOwner: owner,
+                    level: 1,
+                    row: row,
+                    col: col,
                 });
            
          
@@ -263,6 +351,42 @@ cell = cells[row][col];
 
 // Handle click
 canvas.addEventListener("click", function(event) {
+  
+  const row = Math.floor(event.clientY / cellSize);
+    const col = Math.floor(event.clientX / cellSize);
+    const cellLevelRequested = getCellLevel(row, col);
+  // check if the user clicked on a cell that is already owned by the player
+if (cells[row][col].owner == currentPlayer) {
+  // don't let them move
+  // complete the timer
+  
+
+  // upgrade the cell. it will cost $1000
+  if (money >= 1000) {
+    console.log("upgrade");
+    money -= 700;
+
+    // get the cell's level from myCells
+    let cellLevel;
+    for (let i = 0; i < myCells.length; i++) {
+      if (myCells[i].row == row && myCells[i].col == col) {
+        cellLevel = myCells[i].level;
+        myCells[i].level++;
+        break;
+      }
+    }
+
+    console.log(cellLevel);
+    database.ref(`cells/${row}/${col}`).set({
+      owner: cells[row][col].owner,
+      color: rgb,
+      level: cellLevel + 1,
+      currentOwner: owner,
+    });
+  }
+
+
+  }
   // Check if the canvas is disabled
   if (!isDisabled) {
     
@@ -271,8 +395,6 @@ canvas.addEventListener("click", function(event) {
     // Disable the canvas and start the timer
     isDisabled = true;
     canvas.setAttribute("disabled", true);
-    const row = Math.floor(event.clientY / cellSize);
-    const col = Math.floor(event.clientX / cellSize);
     
 
 
@@ -300,6 +422,8 @@ canvas.addEventListener("click", function(event) {
       
       
     }, 10);
+
+    
     let isAdjacent = false;
 if (myCells.length > 0) {
   // Check if the cell is adjacent to one of the player's cells
@@ -333,83 +457,44 @@ if (myCells.length > 0) {
   }
 }
 
-// check if the user clicked on a cell that is already owned by the player
-if (cells[row][col].owner == currentPlayer) {
-  // don't let them move
-  // complete the timer
+// Calculate the tile cost based on the cell level
+var tileCost;
+    if (cellLevelRequested >= 1) {
+      tileCost = 1000 * cellLevelRequested;
+    }
+
+    if(cellLevelRequested == 1){
+      tileCost = 1000;
+    }
+
+
+
+   
+    
+
+    // Check if the user has enough money to capture the cell
+    if (money < tileCost) {
+      // Complete the timer
+      progress = 1;
+      document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture a cell.";
+      return;
+    }
+
+if(!tileCost){
+  tileCost = 500;
+}
+
+//if they have enough money, capture the cell
+if(money >= tileCost){
+  captureCell(row, col);
+  money -= tileCost;
+  document.getElementById("popupText").innerHTML = "You captured a cell!";
+} else {
+  document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture this cell.";
   progress = 1;
-
-  // upgrade the cell. it will cost $1000
-  if (money >= 1000) {
-    console.log("upgrade");
-    money -= 1000;
-
-    // get the cell's level from myCells
-    let cellLevel;
-    for (let i = 0; i < myCells.length; i++) {
-      if (myCells[i].row == row && myCells[i].col == col) {
-        cellLevel = myCells[i].level;
-        myCells[i].level++;
-        break;
-      }
-    }
-
-    console.log(cellLevel);
-    database.ref(`cells/${row}/${col}`).set({
-      owner: cells[row][col].owner,
-      color: rgb,
-      level: cellLevel + 1,
-      currentOwner: owner,
-    });
-  }
-  return;
-}
-//if a cell gets cut off from the rest of the player's cells, it is no longer owned by the player
-for (let i = 0; i < myCells.length; i++) {
-  if (myCells[i].owner == currentPlayer) {
-    //check if the cell is adjacent to one of the player's cells
-    if (myCells[i].row == row - 1 && myCells[i].col == col) {
-      //the cell is adjacent, so don't do anything
-      break;
-    }
-    else if (myCells[i].row == row + 1 && myCells[i].col == col) {
-      //the cell is adjacent, so don't do anything
-      break;
-    }
-    else if (myCells[i].row == row && myCells[i].col == col - 1) {
-      //the cell is adjacent, so don't do anything
-      break;
-    }
-    else if (myCells[i].row == row && myCells[i].col == col + 1) {
-      //the cell is adjacent, so don't do anything
-      break;
-    }
-    else if (i == myCells.length - 1) {
-      //the cell is not adjacent to any of the player's cells, so make it white
-      cells[row][col].color = "white";
-      database.ref(`cells/${row}/${col}`).set({
-        owner: cells[row][col].owner,
-        color: "white",
-      });
-    }
-  }
-}
-
-//if user doesn't have enough money, don't let them move
-if (money < tileCost) {
-  //complete the timer
-  progress = 1;
-  document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture a cell.";
-
-  return;
 }
 
 
-
-captureCell(row, col);
-money -= 50;
-document.getElementById("popupText").innerHTML = "You captured a cell!";
-tileCost = tileCost * 1.15.toFixed(2);
   }
 });
 
@@ -437,7 +522,7 @@ tileCost = tileCost * 1.15.toFixed(2);
       function drawMoney() {
       
       
-       money += income;
+       money += income/2;
        document.getElementById("money").innerHTML = "Money: " + money;
         document.getElementById("income").innerHTML = "Income: " + income;
         
@@ -485,7 +570,21 @@ tileCost = tileCost * 1.15.toFixed(2);
       document.getElementById("showButton").style.display = "none";
     }
 
-        setInterval(drawMoney, 1000);
+   // Get the cell level at a specific row and column
+function getCellLevel(row, col) {
+  row = parseInt(row);
+  col = parseInt(col);
+  
+  // Check if the cellsArray is defined and has a defined cell at the specified row and column
+  if (cellsArray && cellsArray[row] && cellsArray[row][col]) {
+    // Return the level property of the cell
+    return cellsArray[row][col].level;
+  }
+  // Return null if the cellsArray is not defined or the cell does not exist
+  return null;
+}
+
+        setInterval(drawMoney, 500);
 
 
         getRandomColor();
