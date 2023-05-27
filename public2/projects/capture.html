@@ -4,10 +4,11 @@
   <h1 id="moneyHolderText"> <i class="fas fa-coins"></i> <span id="money">Money: 0</span></h1>
 
   <h2 id="incomeHolder"> <i class="fas fa-money-bill-wave"></i> <span id="income">Income: 10 </span></h2>
-   <h2> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> <HR>
+  <HR>  <h2 style="text-align: center;"> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> 
    <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $<span id="tankCost">100</span> <br> <span id="tanksOwned">Tanks Owned: 0/5 </span> </button> 
-    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">200</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
-    <button onclick="buyBatallion()"> <i class="fa-solid fa-person-military-rifle"></i> Buy Batallion: $<span id="batallionCost">3000</span> <br> <span id="batallionsOwned"> Batallions Owned: 0/5</span></button>
+    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">1,000</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
+    <button onclick="buyBatallion()"> <i class="fa-solid fa-person-military-rifle"></i> Buy Batallion: $<span id="batallionCost">5,000</span> <br> <span id="batallionsOwned"> Batallions Owned: 0/5</span></button>
+    <button onclick="buyAirBase()"> <i class="fa-solid fa-tower-observation"></i> Buy Air Base: $<span id="airBaseCost">50,000</span> <br> <span id="airBasesOwned"> Air Bases Owned: 0/10</span></button>
   </div>
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
@@ -139,17 +140,25 @@ const firebaseConfig = {
         var myCells = [];
         var lastCell;
         var owner;
-        var money = 5000;
+        var money = 0;
         var income = 10;
         var cellsArray = [];
         var tanksOwned = 0;
         var fightersOwned = 0;
-        var fighterCost = 200;
+        var fighterCost = 1000;
         var tankCost = 100;
         var maxTanks = 5;
         var maxFighters = 5;
         var basePos = [];
+        var maxBatallions = 5;
+        var batallionsOwned = 0;
+        var batallionCost = 10000;
+        var maxAirBases = 10;
+        var airBasesOwned = 0;
+        var airBaseCost = 50000;
 
+
+   
         // Set up cells
         for (let i = 0; i < numRows; i++) {
             cells[i] = [];
@@ -338,16 +347,21 @@ function checkForLoss() {
     //get the tile cost
     const cellLevel = getCellLevel(row, col);
     let tileCostPopupNumber = cellLevel * 1000;
+    if(tileCostPopupNumber== 500000){
+      tileCostPopupNumber = 100000;
+    }
     let tileCostTotal = tileCostPopupNumber.toLocaleString();
    
     cellLevelBBG = getCellLevel(row, col);
+    
     if (cellLevel == null || cellLevel == undefined || cellLevel == 0) {
-      tileCostPopupNumber = 500;
+  tileCostTotal = 500;
     }
+    
     tooltip.style.left = x + 30 +  'px';
     tooltip.style.top = y + 30 +  'px';
     tooltip.style.display = 'block';
-    tooltip.innerHTML = 'Tile cost: ' + tileCostTotal;
+    tooltip.innerHTML = 'Tile cost: $' + tileCostTotal;
     //when over your own cell, show the upgrade cost
     if (cells[row][col].owner == currentPlayer) {
       tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
@@ -367,6 +381,9 @@ canvas.addEventListener('click', (event) =>{
     const row = Math.floor(y / cellSize);
     const col = Math.floor(x / cellSize);
     cellLevelBBG = getCellLevel(row, col);
+    if(cellLevelBBG == 500){
+      cellLevelBBG = 100;
+    }
   if (cells[row][col].owner == currentPlayer) {
       tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
     }
@@ -617,6 +634,9 @@ if (cells[row][col].owner == currentPlayer) {
 var tileCost;
     if (cellLevelRequested >= 1) {
       tileCost = 1000 * cellLevelRequested;
+      if(tileCost > 10000){
+        tileCost = 10000;
+      }
     }
 
     if(cellLevelRequested == 1){
@@ -687,23 +707,24 @@ function getBrightness(r, g, b) {
       
       
        money += income/2;
-       const formattedMoney = money.toLocaleString();
-        document.getElementById("money").innerHTML = "Money: " + formattedMoney;
+       const formattedMoney = Math.floor(money).toLocaleString();
+        document.getElementById("money").innerHTML = "Money: $" + formattedMoney;
        
-        document.getElementById("income").innerHTML = "Income: " + income + "/s";
+        document.getElementById("income").innerHTML = "Income: $" + income + "/s";
         
       }
      function buyTank() {
       if(tanksOwned >= maxTanks){
         showPopup();
 
-          document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of tanks!";
           return;
         }
       if(money >= tankCost){
-        tankCost = tankCost * 1.55.toFixed(2);
       income += 10;
-      money -= 100;
+      money -= tankCost;
+      tankCost = tankCost * 1.55.toFixed(2);
+
       tanksOwned++;
       document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned + "/" + maxTanks;
       showPopup();
@@ -720,10 +741,14 @@ function getBrightness(r, g, b) {
           document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
           return;
         }
+        if(money <= fighterCost){
+          showPopup();
+          document.getElementById("popupText").innerHTML = "You do not have enough money to buy a fighter!";
+        }
       if(money >= fighterCost){
         
       income += 20;
-      money -= 200;
+      money -= fighterCost;
       fighterCost = fighterCost * 1.55.toFixed(2);
       fightersOwned++
       document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned +"/" + maxFighters;
@@ -748,7 +773,7 @@ document.getElementById("popupText").innerHTML = "You bought a fighter!";
       if(money >= batallionCost){
         
       income += 200;
-      money -= 3000;
+      money -= batallionCost;
       batallionCost = batallionCost * 1.55.toFixed(2);
       batallionsOwned++;
       document.getElementById("batallionsOwned").innerHTML = "Batallions Owned: " + batallionsOwned + "/" + maxBatallions;
@@ -759,7 +784,31 @@ document.getElementById("popupText").innerHTML = "You bought a fighter!";
         document.getElementById("batallionCost").innerHTML =  batallionCost.toFixed(0);
       }
     }
+    function buyAirBase(){
+      if(airBasesOwned >= maxAirBases){
+        showPopup();
 
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of air bases!";
+          return;
+        }
+        if(money <= airBaseCost){
+          showPopup();
+          document.getElementById("popupText").innerHTML = "You do not have enough money to buy an air base!";
+        }
+      if(money >= airBaseCost){
+        
+      income += 500;
+      money -= airBaseCost;
+      airBaseCost = airBaseCost * 1.55.toFixed(2);
+      airBasesOwned++;
+      document.getElementById("airBasesOwned").innerHTML = "Air Bases Owned: " + airBasesOwned + "/" + maxAirBases;
+      showPopup();
+
+        document.getElementById("popupText").innerHTML = "You bought an air base!";
+        //update the cost of the air base
+        document.getElementById("airBaseCost").innerHTML =  airBaseCost.toFixed(0);
+      }
+    }
     function hide(){
       document.getElementById("moneyHolder").style.display = "none";
       document.getElementById("showButton").style.display = "block";
