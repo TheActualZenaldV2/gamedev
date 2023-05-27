@@ -7,6 +7,7 @@
    <h2> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> <HR>
    <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $<span id="tankCost">100</span> <br> <span id="tanksOwned">Tanks Owned: 0/5 </span> </button> 
     <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">200</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
+    <button onclick="buyBatallion()"> <i class="fa-solid fa-person-military-rifle"></i> Buy Batallion: $<span id="batallionCost">3000</span> <br> <span id="batallionsOwned"> Batallions Owned: 0/5</span></button>
   </div>
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
@@ -45,9 +46,11 @@
 
         }
    #popup {
+    display: none;
   position: fixed;
   text-align: center;
   bottom: 0;
+  margin-bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #ddd;
@@ -110,6 +113,8 @@ const firebaseConfig = {
     measurementId: "G-9V4WKHVBLS"
   };
   firebase.initializeApp(firebaseConfig);
+        
+
         const database = firebase.database();
 
         // Set up canvas
@@ -163,6 +168,165 @@ const firebaseConfig = {
         }
         
 
+      
+        
+
+        function spawnRandom(){
+        //spawn the player's first cell in a random location
+        var randomRow = Math.floor(Math.random() * numRows);
+        var randomCol = Math.floor(Math.random() * numCols);
+        row = randomRow;
+        col = randomCol;
+        //send to firebase
+        database.ref(`cells/${row}/${col}`).set({
+                    owner: currentPlayer,
+                    color: rgb,
+                    currentOwner: owner,
+                    level: 500,
+                    row: row,
+                    col: col,
+                });
+                basePos.push([row,col]);
+              }
+
+function drawCells(cells) {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the cells with borders
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      const cell = cells[row] && cells[row][col];
+      const color = cell ? cell.color : "white";
+      // Draw the cell with a border
+      ctx.fillStyle = color;
+      ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      ctx.strokeStyle = "black";
+      ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      //if the color is the same as the rgb color, that means that the cell is owned by the player, so draw a border around it
+      if (color == rgb) {
+        // Draw a border around the cell
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "red";
+        ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+        //add the cell to the myCells array
+        myPosition = {
+          row: row,
+          col: col,
+          owner: currentPlayer,
+          currentOwner: owner,
+          level: 1,
+        };
+        myCells.push(myPosition);
+      }
+      // Draw the level number on the cell
+      if (cell && cell.level && cell.level < 500) {
+        ctx.fillStyle = "black";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
+      }
+      //if level = 500, draw a crown on the cell
+      if (cell && cell.level == 500) {
+        ctx.fillStyle = "yellow";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("👑", col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
+      }
+    }
+  }
+  checkForLoss();
+}
+
+//when a player loses their first cell, they lose the game
+function checkForLoss() {
+  
+  //check if the user still has their base from basePos
+//  var baseExists = false;
+//  for (let i = 0; i < basePos.length; i++) {
+ //   if (cellsArray[basePos[i][0]][basePos[i][1]].color == rgb) {
+  //    baseExists = true;
+  //    console.log("base exists");
+  //  }
+ // }
+}
+
+  // Listen for changes in the cells database
+  database.ref('cells').on('value', (snapshot) => {
+    const cells = snapshot.val();
+    cellsArray = [];
+    
+    
+    if(cells == null) {
+      // If there are no cells in the database, set the cells to the default values
+      
+    }
+    drawCells(cells);
+   //on disconnect, remove the player's cells from the database
+    database.ref(`cells/${row}/${col}`).onDisconnect().remove();
+    cellsArray = cells;
+
+    //update myCells array with just the users cells
+    //its the users cells if the owner is the same as the rgb color
+    myCells = [];
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const cell = cells[row] && cells[row][col];
+        const color = cell ? cell.color : "white";
+        if (color == rgb) {
+          // Draw a border around the cell
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "red";
+          ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+          //add the cell to the myCells array
+          myPosition = {
+            row: row,
+            col: col,
+            owner: currentPlayer,
+            currentOwner: owner,
+            level: cell.level,
+          };
+          myCells.push(myPosition);
+        }
+      }
+    }
+    
+   
+
+  });
+ // Helper function to capture a cell
+ function captureCell(){
+  
+  row = Math.floor(event.clientY / cellSize);
+  col = Math.floor(event.clientX / cellSize);
+  const cellLevelRequested = getCellLevel(row, col);
+  
+  cell = cells[row][col]; 
+  
+     
+                  cell.owner = currentPlayer;
+                  if(cellLevelRequested == 500){
+                      database.ref(`cells/${row}/${col}`).set({
+                      owner: currentPlayer,
+                      color: rgb,
+                      currentOwner: owner,
+                      level: 500,
+                      row: row,
+                      col: col,
+                  });
+                  } else {
+                  database.ref(`cells/${row}/${col}`).set({
+                      owner: currentPlayer,
+                      color: rgb,
+                      currentOwner: owner,
+                      level: 1,
+                      row: row,
+                      col: col,
+                  });
+              }
+             
+           
+          }
       
         
 
@@ -289,67 +453,9 @@ function checkForLoss() {
    
 
   });
-
-  
-          canvas.addEventListener('mousemove', (event) => {
-    const x = event.clientX - canvas.offsetLeft;
-    const y = event.clientY - canvas.offsetTop;
-    //get the row and col of the cell
-    const row = Math.floor(y / cellSize);
-    const col = Math.floor(x / cellSize);
-    //get the tile cost
-    const cellLevel = getCellLevel(row, col);
-    let tileCostPopupNumber = cellLevel * 1000;
-    if (cellLevel == null || cellLevel == undefined || cellLevel == 0) {
-      tileCostPopupNumber = 500;
-    }
-    tooltip.style.left = x + 30 +  'px';
-    tooltip.style.top = y + 30 +  'px';
-    tooltip.style.display = 'block';
-    tooltip.innerHTML = 'Tile cost: ' + tileCostPopupNumber;
-  });
-  
-  canvas.addEventListener('mouseout', () => {
-    tooltip.style.display = 'none';
-  });
-
-        
-
-        // Helper function to capture a cell
-        function captureCell(){
-  
-row = Math.floor(event.clientY / cellSize);
-col = Math.floor(event.clientX / cellSize);
-
-
-cell = cells[row][col]; 
-
-   
-                cell.owner = currentPlayer;
-                database.ref(`cells/${row}/${col}`).set({
-                    owner: currentPlayer,
-                    color: rgb,
-                    currentOwner: owner,
-                    level: 1,
-                    row: row,
-                    col: col,
-                });
-           
-         
-        }
-
-
-
-
-
-// Define variables for the progress bar and timer
-
-  const progressBarHeight = 20;
-  let isDisabled = false;
-
-
-
 // Handle click
+isDisabled = false;
+progressBarHeight = 20;
 canvas.addEventListener("click", function(event) {
   
   const row = Math.floor(event.clientY / cellSize);
@@ -363,7 +469,7 @@ if (cells[row][col].owner == currentPlayer) {
 
   // upgrade the cell. it will cost $1000
   if (money >= 1000) {
-    console.log("upgrade");
+   
     money -= 700;
 
     // get the cell's level from myCells
@@ -376,7 +482,7 @@ if (cells[row][col].owner == currentPlayer) {
       }
     }
 
-    console.log(cellLevel);
+   
     database.ref(`cells/${row}/${col}`).set({
       owner: cells[row][col].owner,
       color: rgb,
@@ -456,7 +562,15 @@ if (myCells.length > 0) {
     return;
   }
 }
+// check if the user clicked on a cell that is already owned by the player
+if (cells[row][col].owner == currentPlayer) {
+  // don't let them move
+  // complete the timer
+  progress = 1;
+  return;
 
+
+  }
 // Calculate the tile cost based on the cell level
 var tileCost;
     if (cellLevelRequested >= 1) {
@@ -476,6 +590,8 @@ var tileCost;
     if (money < tileCost) {
       // Complete the timer
       progress = 1;
+      showPopup();
+
       document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture a cell.";
       return;
     }
@@ -488,8 +604,12 @@ if(!tileCost){
 if(money >= tileCost){
   captureCell(row, col);
   money -= tileCost;
+  showPopup();
+
   document.getElementById("popupText").innerHTML = "You captured a cell!";
 } else {
+  showPopup();
+
   document.getElementById("popupText").innerHTML = "You do not have enough money to capture this cell. You need $" + tileCost + " to capture this cell.";
   progress = 1;
 }
@@ -499,36 +619,42 @@ if(money >= tileCost){
 });
 
 
-        // Helper function to generate a random color based on the owner
-        function getRandomColor() {
-            //use math.random to generate a random number between 0 and 255, once
 
-            for (let i = 0; i < 3; i++) {
-                //use math.random to generate a random number between 0 and 255, three times
-                 r = Math.floor(Math.random() * 256);
-                g = Math.floor(Math.random() * 256);
-                b = Math.floor(Math.random() * 256);
-                //join the three random numbers together to form an rgb string
-                   rgb = `rgb(${r}, ${g}, ${b})`;
-                //return the rgb string
-                console.log(rgb);
-                owner = Math.floor(Math.random() * 9999999999);
-                return rgb;
-                
-            }
-        }
+
+        function getRandomColor() {
+  let r, g, b, brightness;
+  do {
+    r = Math.floor(Math.random() * 256);
+    g = Math.floor(Math.random() * 256);
+    b = Math.floor(Math.random() * 256);
+    brightness = getBrightness(r, g, b);
+  } while (brightness < 128);
+  rgb = `rgb(${r}, ${g}, ${b})`;
+  owner = Math.floor(Math.random() * 9999999999);
+  return rgb;
+}
+
+function getBrightness(r, g, b) {
+  return Math.sqrt(
+    r * r * 0.299 + g * g * 0.587 + b * b * 0.114
+  );
+}
 
       //give player money, draw it on canvas
       function drawMoney() {
       
       
        money += income/2;
-       document.getElementById("money").innerHTML = "Money: " + money;
-        document.getElementById("income").innerHTML = "Income: " + income;
+       const formattedMoney = money.toLocaleString();
+        document.getElementById("money").innerHTML = "Money: " + formattedMoney;
+       
+        document.getElementById("income").innerHTML = "Income: " + income + "/s";
         
       }
      function buyTank() {
       if(tanksOwned >= maxTanks){
+        showPopup();
+
           document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
           return;
         }
@@ -538,6 +664,8 @@ if(money >= tileCost){
       money -= 100;
       tanksOwned++;
       document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned + "/" + maxTanks;
+      showPopup();
+
         document.getElementById("popupText").innerHTML = "You bought a tank!";
         //update the cost of the tank
         document.getElementById("tankCost").innerHTML =  tankCost.toFixed(0);
@@ -545,6 +673,8 @@ if(money >= tileCost){
     }
     function buyFigher() {
       if(fightersOwned >= maxFighters){
+        showPopup();
+
           document.getElementById("popupText").innerHTML = "You have reached the maximum number of fighters!";
           return;
         }
@@ -555,9 +685,36 @@ if(money >= tileCost){
       fighterCost = fighterCost * 1.55.toFixed(2);
       fightersOwned++
       document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned +"/" + maxFighters;
-        document.getElementById("popupText").innerHTML = "You bought a fighter!";
+       
+      showPopup();
+document.getElementById("popupText").innerHTML = "You bought a fighter!";
         //update the cost of the fighter
        document.getElementById("fighterCost").innerHTML =  fighterCost.toFixed(0);
+      }
+    }
+    function buyBatallion(){
+      if(batallionsOwned >= maxBatallions){
+        showPopup();
+
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of batallions!";
+          return;
+        }
+        if(money <= batallionCost){
+          showPopup();
+          document.getElementById("popupText").innerHTML = "You do not have enough money to buy a batallion!";
+        }
+      if(money >= batallionCost){
+        
+      income += 200;
+      money -= 3000;
+      batallionCost = batallionCost * 1.55.toFixed(2);
+      batallionsOwned++;
+      document.getElementById("batallionsOwned").innerHTML = "Batallions Owned: " + batallionsOwned + "/" + maxBatallions;
+      showPopup();
+
+        document.getElementById("popupText").innerHTML = "You bought a batallion!";
+        //update the cost of the batallion
+        document.getElementById("batallionCost").innerHTML =  batallionCost.toFixed(0);
       }
     }
 
@@ -583,7 +740,18 @@ function getCellLevel(row, col) {
   // Return null if the cellsArray is not defined or the cell does not exist
   return null;
 }
+let timeoutId;
 
+function showPopup() {
+  const timeout = 2000;
+  // Clear the previous timeout
+  clearTimeout(timeoutId);
+  document.getElementById("popup").style.display = "block";
+  // Set a new timeout
+  timeoutId = setTimeout(function() {
+    document.getElementById("popup").style.display = "none";
+  }, timeout);
+}
         setInterval(drawMoney, 500);
 
 
