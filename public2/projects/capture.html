@@ -1,14 +1,16 @@
 <body onload="spawnRandom();"></body>
 <button onclick="show()" id="showButton" style="display: none">Show</button>
-<div id="moneyHolder"> <button onclick="hide()"> <span id="toggle"> Minimise</span></button>
-  <h1 id="moneyHolderText"> <i class="fas fa-coins"></i> <span id="money">Money: 0</span></h1>
+<div id="moneyHolder"> <button onclick="hide()"style="display: none;> <span id="toggle"> Minimise</span></button>
+  <h1 id="moneyHolderText"> <i class="fas fa-coins"></i> <span id="money">Money: <br>0</span></h1>
 
   <h2 id="incomeHolder"> <i class="fas fa-money-bill-wave"></i> <span id="income">Income: 10 </span></h2>
   <HR>  <h2 style="text-align: center;"> <i class="fa-solid fa-turn-up"></i> Upgrades</h2> 
-   <button onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $<span id="tankCost">100</span> <br> <span id="tanksOwned">Tanks Owned: 0/5 </span> </button> 
-    <button onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">1,000</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
-    <button onclick="buyBatallion()"> <i class="fa-solid fa-person-military-rifle"></i> Buy Batallion: $<span id="batallionCost">5,000</span> <br> <span id="batallionsOwned"> Batallions Owned: 0/5</span></button>
-    <button onclick="buyAirBase()"> <i class="fa-solid fa-tower-observation"></i> Buy Air Base: $<span id="airBaseCost">50,000</span> <br> <span id="airBasesOwned"> Air Bases Owned: 0/10</span></button>
+   <button id="tankButton" onclick="buyTank()"> <i class="fa-solid fa-gun"></i> Buy Tank: $<span id="tankCost">100</span> <br> <span id="tanksOwned">Tanks Owned: 0/5 </span> </button> 
+    <button  id="fighterButton" onclick="buyFigher()"> <i class="fa-solid fa-fighter-jet"></i> Buy Fighter: $<span id="fighterCost">1,000</span> <br> <span id="fightersOwned">Fighters Owned: 0/5 </span> </button>
+    <button id="batallionButton" onclick="buyBatallion()"> <i class="fa-solid fa-person-military-rifle"></i> Buy Batallion: $<span id="batallionCost">10,000</span> <br> <span id="batallionsOwned"> Batallions Owned: 0/5</span></button>
+    <button id="airBaseButton" onclick="buyAirBase()"> <i class="fa-solid fa-tower-observation"></i> Buy Air Base: $<span id="airBaseCost">50,000</span> <br> <span id="airBasesOwned"> Air Bases Owned: 0/10</span></button>
+    <button id="airDefenceButton" onclick="buyAirDefence()"> <i class="fa-solid fa-shield-halved"></i> Buy Air Defence: $<span id="airDefenceCost">100,000</span> <br> <span id="airDefencesOwned"> Air Defence Owned: 0/20</span></button>
+    <button id="navyBaseButton" onclick="buyNavyBase()"> <i class="fa-solid fa-ship"></i> Buy Navy Base: $<span id="navyBaseCost">500,000</span> <br> <span id="navyBasesOwned"> 0/15</span></button>
   </div>
 <div id="popup"> <h4 id="popupText">Watch me for important info </h4></div>
 <canvas id="myCanvas"> </canvas>
@@ -21,10 +23,10 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
     canvas {
         border: 1px solid #d3d3d3;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        height: 100%;
+       text-align: center;
+       background-color: #5BA6A0;
+
+        
     }
     #progress-bar {
             background-color: #ddd;
@@ -32,16 +34,18 @@
             width: 0%;
             transition: width 2s;
         }
-    #moneyHolder, #showButton {
-           position: absolute;
-            top: 0;
-            right: 0;
-            height: auto;
-            width: auto;
-            transition: width 2s;
-            z-index: 999;
-            padding: 20px;
-        }
+    #moneyHolder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 300px;
+  transition: width 1s ease-in-out;
+  z-index: 999;
+  padding: 20px;
+  background-color: #ddd;
+  overflow: auto;
+}
         #moneyHolder{
           background-color: #ddd;
 
@@ -51,13 +55,15 @@
   position: fixed;
   text-align: center;
   bottom: 0;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #ddd;
-  height: 100px;
-  width: 300px;
-  transition: width 2s;
+  height: auto;
+  width: auto;
+  padding: 30px;
+  border-radius: 10px;
+  border: 5px solid #000;
   z-index: 9;
 }
         body {
@@ -124,15 +130,18 @@ const firebaseConfig = {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         const tooltip = document.getElementById('tooltip');
-
+        const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
 
         // Set up progress bar
         const progressBar = document.getElementById("progress-bar");
-
+        const maxCellWidth = Math.floor(canvasWidth / 40);
+const maxCellHeight = Math.floor(canvasHeight / 20);
+const maxCellSize = Math.min(maxCellWidth, maxCellHeight);
         // Set up game variables
-        const cellSize = 50;
-        const numRows = Math.floor(canvas.height / cellSize);
-        const numCols = Math.floor(canvas.width / cellSize);
+        let cellSize = 50;
+        const numRows = 20;
+        const numCols = 40;
         const cells = [];
         let currentPlayer = "player1";
         let progress = 0;
@@ -156,6 +165,14 @@ const firebaseConfig = {
         var maxAirBases = 10;
         var airBasesOwned = 0;
         var airBaseCost = 50000;
+        var maxAirDefences = 10;
+        var airDefencesOwned = 0;
+        var airDefenceCost = 100000;
+        var maxNavyBases = 15;
+        var navyBasesOwned = 0;
+        var navyBaseCost = 500000;
+
+
 
 
    
@@ -196,56 +213,37 @@ const firebaseConfig = {
                     col: col,
                 });
                 basePos.push([row,col]);
+                //send to cells array
+                cellsArray.push([row,col]);
+                myObject = {
+                    row: row,
+                    col: col,
+                    level: 500,
+                    owner: currentPlayer,
+                    color: rgb,
+                    currentOwner: owner,
+                }
               }
 
-function drawCells(cells) {
-  // Clear the canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw the cells with borders
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      const cell = cells[row] && cells[row][col];
-      const color = cell ? cell.color : "white";
-      // Draw the cell with a border
-      ctx.fillStyle = color;
-      ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-      ctx.strokeStyle = "black";
-      ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
-      //if the color is the same as the rgb color, that means that the cell is owned by the player, so draw a border around it
-      if (color == rgb) {
-        // Draw a border around the cell
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "red";
-        ctx.strokeRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
-        //add the cell to the myCells array
-        myPosition = {
-          row: row,
-          col: col,
-          owner: currentPlayer,
-          currentOwner: owner,
-          level: 1,
-        };
-        myCells.push(myPosition);
-      }
-      // Draw the level number on the cell
-      if (cell && cell.level && cell.level < 500) {
-        ctx.fillStyle = "black";
-        ctx.font = "bold 16px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
-      }
-      //if level = 500, draw a crown on the cell
-      if (cell && cell.level == 500) {
-        ctx.fillStyle = "yellow";
-        ctx.font = "bold 16px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("👑", col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
-      }
-    }
+
+canvas.addEventListener("wheel", function(event) {
+  event.preventDefault(); // Prevent the default scroll behavior
+  const delta = Math.sign(event.deltaY); // Get the direction of the scroll
+  //zoom in or out depending on the direction of the scroll
+  if (delta > 0) {
+    cellSize = Math.max(20, cellSize - 1);
+  } else {
+    cellSize = Math.min(70, cellSize + 1);
   }
-  checkForLoss();
-}
+  // Redraw the canvas with the new cell size
+  //get snapshot of cells
+  database.ref('cells').once('value', (snapshot) => {
+    const cells = snapshot.val();
+    drawCells(cells);
+  });
+});
+
 
 //when a player loses their first cell, they lose the game
 function checkForLoss() {
@@ -346,12 +344,16 @@ function checkForLoss() {
     const col = Math.floor(x / cellSize);
     //get the tile cost
     const cellLevel = getCellLevel(row, col);
-    let tileCostPopupNumber = cellLevel * 1000;
-    if(tileCostPopupNumber== 500000){
-      tileCostPopupNumber = 100000;
-    }
+    let tileCostPopupNumber = cellLevel * 2000;
+    
     let tileCostTotal = tileCostPopupNumber.toLocaleString();
-   
+    expoCost2 = Math.pow(1.55, cellLevel * 1.5) * 1000;
+    expoCost2 = expoCost2.toLocaleString();
+    //set to 1 million if the cell is the base
+    if (cellLevel == 500) {
+      expoCost2 = 1000000;
+      expoCost2 = expoCost2.toLocaleString(); 
+    }
     cellLevelBBG = getCellLevel(row, col);
     
     if (cellLevel == null || cellLevel == undefined || cellLevel == 0) {
@@ -361,12 +363,22 @@ function checkForLoss() {
     tooltip.style.left = x + 30 +  'px';
     tooltip.style.top = y + 30 +  'px';
     tooltip.style.display = 'block';
-    tooltip.innerHTML = 'Tile cost: $' + tileCostTotal;
+    tooltip.innerHTML = 'Tile cost: $' + expoCost2;
+    if(cellLevel >= 10){
+      
+      tooltip.innerHTML = 'This tile is the max level. <br> Tile cost:' + '<strong> $'+ expoCost2 + '</strong>';
+    }
+   
     //when over your own cell, show the upgrade cost
     if (cells[row][col].owner == currentPlayer) {
-      tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
+      tooltip.innerHTML = 'Upgrade cost: $' + expoCost2;
+      if(cellLevel == 500){
+      tooltip.innerHTML = 'This your base. You cannot upgrade it.<br> Enemy Tile cost:' + '<strong> $'+ tileCostTotal + '</strong>';
+    }
     }
 
+    
+    
   });
   
   canvas.addEventListener('mouseout', () => {
@@ -381,33 +393,77 @@ canvas.addEventListener('click', (event) =>{
     const row = Math.floor(y / cellSize);
     const col = Math.floor(x / cellSize);
     cellLevelBBG = getCellLevel(row, col);
-    if(cellLevelBBG == 500){
-      cellLevelBBG = 100;
-    }
+    tileCostTotal = cellLevelBBG * 2000;
+   expoCost = Math.pow(1.55, cellLevelBBG* 1.5) * 1000;
+   expoCost = expoCost.toLocaleString();
   if (cells[row][col].owner == currentPlayer) {
-      tooltip.innerHTML = 'Upgrade cost: $' + cellLevelBBG * 1000;
+      if(cellLevelBBG == 500){
+      tooltip.innerHTML = 'This your base. You cannot upgrade it.<br> Enemy Tile cost:' + '<strong> $'+ tileCostTotal + '</strong>';
+    } else {
+      tooltip.innerHTML = 'Upgrade cost: $' + expoCost;
+
     }
+    }
+    
 })
 
-function spawnRandom(){
-        //spawn the player's first cell in a random location
-        var randomRow = Math.floor(Math.random() * numRows);
-        var randomCol = Math.floor(Math.random() * numCols);
-        row = randomRow;
-        col = randomCol;
-        //send to firebase
-        database.ref(`cells/${row}/${col}`).set({
-                    owner: currentPlayer,
-                    color: rgb,
-                    currentOwner: owner,
-                    level: 500,
-                    row: row,
-                    col: col,
-                });
-                basePos.push([row,col]);
-              }
 
 function drawCells(cells) {
+  // Define the symbols
+  const symbols = {
+    1: "α",
+    2: "Λ",
+    3: "β",
+    4: "γ",
+    5: "δ",
+    6: "ε",
+    7: "ζ",
+    8: "η",
+    9: "θ",
+    10: "ι",
+    11: "Ψ",
+    12: "Ω",
+    13: "Σ",
+    14: "Π",
+    15: "Φ",
+    16: "Γ",
+    17: "Δ",
+    18: "Θ",
+    19: "Λ",
+    20: "Ξ",
+    21: "ぁ",
+    22: "あ",
+    23: "ぃ",
+    24: "い",
+    25: "ぅ",
+    26: "う",
+    27: "ぇ",
+    28: "え",
+    29: "┳",
+    30: "┻",
+    31: "┏",
+    32: "┓",
+    33: "┗",
+    34: "┛",
+    35: "┣",
+    36: "⌘",
+    37: "⌥",
+    38: "⌃",
+    39: "⇧",
+    40: "⇪",
+    41: "⌫",
+    42: "⌦",
+    43: "↖",
+    44: "↘",
+    45: "⇞",
+    46: "⇟",
+    47: "⎋",
+    48: "⏏",
+    49: "⌧",
+    50: "⌦",
+
+  };
+
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -415,7 +471,7 @@ function drawCells(cells) {
   for (let row = 0; row < numRows; row++) {
     for (let col = 0; col < numCols; col++) {
       const cell = cells[row] && cells[row][col];
-      const color = cell ? cell.color : "white";
+      const color = cell ? cell.color : "#4C7A76";
       // Draw the cell with a border
       ctx.fillStyle = color;
       ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
@@ -437,15 +493,19 @@ function drawCells(cells) {
         };
         myCells.push(myPosition);
       }
-      // Draw the level number on the cell
-      if (cell && cell.level && cell.level < 500) {
+      if (cell && cell.level >= 0 && cell.level < 200) {
         ctx.fillStyle = "black";
         ctx.font = "bold 16px Arial";
         ctx.textAlign = "center";
-        ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 6);
+        ctx.fillText(symbols[cell.level], col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 + 10);
+        //draw level under the alpha
+        ctx.fillStyle = "black";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(cell.level, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 - 5);
       }
       //if level = 500, draw a crown on the cell
-      if (cell && cell.level == 500) {
+      if (cell && cell.level >= 500) {
         ctx.fillStyle = "yellow";
         ctx.font = "bold 16px Arial";
         ctx.textAlign = "center";
@@ -483,6 +543,8 @@ function checkForLoss() {
    //on disconnect, remove the player's cells from the database
     database.ref(`cells/${row}/${col}`).onDisconnect().remove();
     cellsArray = cells;
+    
+    
 
     //update myCells array with just the users cells
     //its the users cells if the owner is the same as the rgb color
@@ -520,16 +582,30 @@ canvas.addEventListener("click", function(event) {
   const row = Math.floor(event.clientY / cellSize);
     const col = Math.floor(event.clientX / cellSize);
     const cellLevelRequested = getCellLevel(row, col);
+  
+    
   // check if the user clicked on a cell that is already owned by the player
 if (cells[row][col].owner == currentPlayer) {
   // don't let them move
   // complete the timer
-  
+ 
+  if(cellLevelRequested == 500) {
+    //if the cell is level 500, the user can't upgrade it
+    progress = 1;
+    return;
+  }
 
+
+if (cellLevelRequested == 0) {
+  upgradeCost = 1000;
+} else {
+  upgradeCost = Math.pow(1.55, cellLevelRequested * 1.5) * 1000;
+  console.log("Upgrade cost: " + upgradeCost.toLocaleString());
+}
   // upgrade the cell. it will cost $1000
-  if (money >= 1000) {
+  if (money >= upgradeCost) {
    
-    money -= 700;
+    money -= upgradeCost;
 
     // get the cell's level from myCells
     let cellLevel;
@@ -541,7 +617,9 @@ if (cells[row][col].owner == currentPlayer) {
       }
     }
 
-   
+   if(cellLevel == "undefined" || cellLevel == null || cellLevel == 0) {
+     cellLevel = 0;
+   }
     database.ref(`cells/${row}/${col}`).set({
       owner: cells[row][col].owner,
       color: rgb,
@@ -552,6 +630,7 @@ if (cells[row][col].owner == currentPlayer) {
 
 
   }
+  
   // Check if the canvas is disabled
   if (!isDisabled) {
     
@@ -633,14 +712,15 @@ if (cells[row][col].owner == currentPlayer) {
 // Calculate the tile cost based on the cell level
 var tileCost;
     if (cellLevelRequested >= 1) {
-      tileCost = 1000 * cellLevelRequested;
-      if(tileCost > 10000){
-        tileCost = 10000;
+      tileCost = Math.pow(1.55, cellLevelRequested * 1.5) * 1000;
+      if(tileCost > 1000000){
+        tileCost = 1000000;
       }
+      
     }
 
     if(cellLevelRequested == 1){
-      tileCost = 1000;
+      tileCost = 2000;
     }
 
 
@@ -683,6 +763,7 @@ if(money >= tileCost){
 
 
 
+
         function getRandomColor() {
   let r, g, b, brightness;
   do {
@@ -706,14 +787,15 @@ function getBrightness(r, g, b) {
       function drawMoney() {
       
       
-       money += income/2;
+       money += income/8;
        const formattedMoney = Math.floor(money).toLocaleString();
-        document.getElementById("money").innerHTML = "Money: $" + formattedMoney;
+        document.getElementById("money").innerHTML = "Money: <br> $" + formattedMoney;
        
-        document.getElementById("income").innerHTML = "Income: $" + income + "/s";
+        document.getElementById("income").innerHTML = "Income: $" + income.toLocaleString() + "/s";
         
       }
      function buyTank() {
+      
       if(tanksOwned >= maxTanks){
         showPopup();
 
@@ -723,7 +805,7 @@ function getBrightness(r, g, b) {
       if(money >= tankCost){
       income += 10;
       money -= tankCost;
-      tankCost = tankCost * 1.55.toFixed(2);
+      tankCost = tankCost * 1.85.toFixed(2);
 
       tanksOwned++;
       document.getElementById("tanksOwned").innerHTML = "Tanks Owned: " + tanksOwned + "/" + maxTanks;
@@ -732,6 +814,7 @@ function getBrightness(r, g, b) {
         document.getElementById("popupText").innerHTML = "You bought a tank!";
         //update the cost of the tank
         document.getElementById("tankCost").innerHTML =  tankCost.toFixed(0);
+        checkMaxUpgrades();
      }
     }
     function buyFigher() {
@@ -749,7 +832,7 @@ function getBrightness(r, g, b) {
         
       income += 20;
       money -= fighterCost;
-      fighterCost = fighterCost * 1.55.toFixed(2);
+      fighterCost = fighterCost * 1.75.toFixed(2);
       fightersOwned++
       document.getElementById("fightersOwned").innerHTML = "Fighters Owned: " + fightersOwned +"/" + maxFighters;
        
@@ -757,6 +840,8 @@ function getBrightness(r, g, b) {
 document.getElementById("popupText").innerHTML = "You bought a fighter!";
         //update the cost of the fighter
        document.getElementById("fighterCost").innerHTML =  fighterCost.toFixed(0);
+       checkMaxUpgrades();
+
       }
     }
     function buyBatallion(){
@@ -774,7 +859,7 @@ document.getElementById("popupText").innerHTML = "You bought a fighter!";
         
       income += 200;
       money -= batallionCost;
-      batallionCost = batallionCost * 1.55.toFixed(2);
+      batallionCost = batallionCost * 1.65.toFixed(2);
       batallionsOwned++;
       document.getElementById("batallionsOwned").innerHTML = "Batallions Owned: " + batallionsOwned + "/" + maxBatallions;
       showPopup();
@@ -782,6 +867,8 @@ document.getElementById("popupText").innerHTML = "You bought a fighter!";
         document.getElementById("popupText").innerHTML = "You bought a batallion!";
         //update the cost of the batallion
         document.getElementById("batallionCost").innerHTML =  batallionCost.toFixed(0);
+        checkMaxUpgrades();
+
       }
     }
     function buyAirBase(){
@@ -807,8 +894,87 @@ document.getElementById("popupText").innerHTML = "You bought a fighter!";
         document.getElementById("popupText").innerHTML = "You bought an air base!";
         //update the cost of the air base
         document.getElementById("airBaseCost").innerHTML =  airBaseCost.toFixed(0);
+        checkMaxUpgrades();
+
       }
     }
+
+    function buyAirDefence(){
+      if(airDefencesOwned >= maxAirDefences){
+        showPopup();
+
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of air defences!";
+          return;
+        }
+        if(money <= airDefenceCost){
+          showPopup();
+          document.getElementById("popupText").innerHTML = "You do not have enough money to buy an air defence!";
+        }
+      if(money >= airDefenceCost){
+      income += 700;
+      money -= airDefenceCost;
+      airDefenceCost = airDefenceCost * 1.45.toFixed(2);
+      airDefencesOwned++;
+      document.getElementById("airDefencesOwned").innerHTML = "Air Defences Owned: " + airDefencesOwned + "/" + maxAirDefences;
+      showPopup();
+
+        document.getElementById("popupText").innerHTML = "You bought an air defence!";
+        //update the cost of the air defence
+        document.getElementById("airDefenceCost").innerHTML =  airDefenceCost.toFixed(0);
+        checkMaxUpgrades();
+
+      }
+      
+    }
+    function buyNavyBase(){
+      if(navyBasesOwned >= maxNavyBases){
+        showPopup();
+
+          document.getElementById("popupText").innerHTML = "You have reached the maximum number of navy bases!";
+          return;
+        }
+        if(money <= navyBaseCost){
+          showPopup();
+          document.getElementById("popupText").innerHTML = "You do not have enough money to buy a navy base!";
+        }
+      if(money >= navyBaseCost){
+      income += 1000;
+      money -= navyBaseCost;
+      navyBaseCost = navyBaseCost * 1.35.toFixed(2);
+      navyBasesOwned++;
+      document.getElementById("navyBasesOwned").innerHTML = "Navy Bases Owned: " + navyBasesOwned + "/" + maxNavyBases;
+      showPopup();
+
+        document.getElementById("popupText").innerHTML = "You bought a navy base!";
+        //update the cost of the navy base
+        document.getElementById("navyBaseCost").innerHTML =  navyBaseCost.toFixed(0);
+        checkMaxUpgrades();
+
+      }
+      
+    }
+
+function checkMaxUpgrades(){
+  if(tanksOwned >= maxTanks){
+    document.getElementById("tankButton").style.backgroundColor =  "green";
+  }
+  if(fightersOwned >= maxFighters){
+    document.getElementById("fighterButton").style.backgroundColor =  "green";
+  }
+  if(batallionsOwned >= maxBatallions){
+    document.getElementById("batallionButton").style.backgroundColor =  "green";
+  }
+  if(airBasesOwned >= maxAirBases){
+    document.getElementById("airBaseButton").style.backgroundColor =  "green";
+  }
+  if(airDefencesOwned >= maxAirDefences){
+    document.getElementById("airDefenceButton").style.backgroundColor = "green";
+  }
+  if(navyBasesOwned >= maxNavyBases){
+    document.getElementById("navyBaseButton").style.backgroundColor = "green";
+  }
+}
+
     function hide(){
       document.getElementById("moneyHolder").style.display = "none";
       document.getElementById("showButton").style.display = "block";
@@ -843,7 +1009,7 @@ function showPopup() {
     document.getElementById("popup").style.display = "none";
   }, timeout);
 }
-        setInterval(drawMoney, 500);
+        setInterval(drawMoney, 125);
 
 
         getRandomColor();
