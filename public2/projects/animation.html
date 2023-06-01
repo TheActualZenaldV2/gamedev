@@ -1,0 +1,85 @@
+<body>
+    <canvas id="myCanvas" style="border:1px solid #000000;"></canvas>
+</body>
+<style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+    animation: gradient 5s ease infinite;
+  }
+
+  
+</style>
+<script>
+const canvas = document.getElementById('myCanvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const ctx = canvas.getContext('2d');
+let text = 'Hello, World!';
+let textArray = text.split('');
+let i = 0;
+let scale = 1;
+let cursorVisible = true;
+animationComplete = false;
+
+setInterval(() => {
+    // Generate random RGB values
+    const r1 = Math.floor(Math.random() * 256);
+    const g1 = Math.floor(Math.random() * 256);
+    const b1 = Math.floor(Math.random() * 256);
+    const r2 = Math.floor(Math.random() * 256);
+    const g2 = Math.floor(Math.random() * 256);
+    const b2 = Math.floor(Math.random() * 256);
+
+    // Set canvas background to gradient
+    canvas.style.background = `linear-gradient(to right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
+
+    // Make it smooth
+    canvas.style.animation = 'gradient 5s ease infinite';
+  }, 100);
+function draw() {
+ 
+
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = '30px Arial';
+  ctx.fillStyle = '#ffffff';
+  const textWidth = ctx.measureText(textArray.slice(0, i).join('')).width;
+  const x = (canvas.width - textWidth * scale) / 2;
+  const y = (canvas.height - 30 * scale) / 2;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillText(textArray.slice(0, i).join('') + (cursorVisible ? '|' : ''), 0, 0);
+  ctx.restore();
+  i++;
+  if (i >= textArray.length) {
+    console.log('done');
+    animationComplete = true;
+  }
+  if (!animationComplete) {
+    setTimeout(() => {
+      requestAnimationFrame(draw);
+    }, 100);
+  }
+}
+
+setInterval(() => {
+  cursorVisible = !cursorVisible;
+  requestAnimationFrame(draw);
+}, 500);
+
+
+draw();
+</script>
