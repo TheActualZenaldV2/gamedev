@@ -1,0 +1,393 @@
+<div id="spinnerText"> <h3>Waiting For Players...</h3></div>
+<div id="spinner"> </div>
+
+<div id="game">
+<canvas id="canvas"> </canvas>
+</div>
+
+<div id="game-over" style="display: none;">
+    <h1>Game Over</h1>
+    <p id="disc">Your opponent has disconnected.</p>
+
+  </div>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+<style>
+    #game-over {
+    display: none;
+}
+#game {
+    display: none;
+}
+#spinnerText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+#spinner {
+  margin-top: 20px;
+  text-align: center;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #7983ff;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  background-color: #2f2f2f;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+    body {
+  background-color: #000;
+  color: #fff;
+  font-family: sans-serif;
+  text-align: center;
+}
+canvas {
+  border: 2px solid #fff;
+ cursor: none;
+  /* make the cursor a crosshair */
+}
+
+</style>
+<script>
+    // Initialize Firebase
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDdco84itwTiNqL15k67cB78wi2zpXoeTM",
+  authDomain: "filehostyt.firebaseapp.com",
+  databaseURL: "https://filehostyt-default-rtdb.firebaseio.com",
+  projectId: "filehostyt",
+  storageBucket: "filehostyt.appspot.com",
+  messagingSenderId: "902786583635",
+  appId: "1:902786583635:web:68d934b9b1e361f5e4caa6",
+  measurementId: "G-Y98MEH3RVF"
+};
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database service
+var database = firebase.database();
+var gameState;
+//pong game
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var ball = {};
+var player1 = {};
+var player2 = {};
+
+canvas.width = 900;
+canvas.height = 450;
+  // Create a linear gradient object
+  var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, "#FFC371"); // Start color
+  gradient.addColorStop(1, "#FF5F6D"); // End color
+
+// Initialize player number
+let playerNumber;
+const spinner = document.getElementById("spinner");
+
+
+
+
+// Limit the number of connections to 2
+firebase.database().ref(".info/connected").on("value", (snapshot) => {
+  if (snapshot.val() === true) {
+    const connectionRef = firebase.database().ref("connections").push(true);
+    connectionRef.onDisconnect().remove();
+    
+
+    firebase.database().ref("connections").once("value", (snapshot) => {
+      const numConnections = snapshot.numChildren();
+
+      if (numConnections <= 2) {
+        // Assign player number based on the number of connections
+        firebase.database().ref("players").once("value", (snapshot) => {
+          const playerNumbers = Object.keys(snapshot.val() || {});
+          const availableNumbers = [1, 2].filter(num => !playerNumbers.includes(num.toString()));
+          if (availableNumbers.length > 0) {
+            playerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+            console.log(`Player ${playerNumber} connected`);
+            canvas.addEventListener("mousemove", function(e) {
+    //get the mouse position on the canvas
+    mouseX = e.clientX - canvas.offsetLeft;
+    mouseY = e.clientY - canvas.offsetTop;
+    draw(mouseX, mouseY);
+    
+});
+          
+
+            // Store player number in Firebase
+            firebase.database().ref(`players/${playerNumber}`).set(true);
+
+            // Clear the board when a player disconnects
+            const playerRef = firebase.database().ref(`players/${playerNumber}`);
+            playerRef.onDisconnect().remove();
+            //clear the gameRef when a player disconnects
+            const gameRef = firebase.database().ref(`gameState`);
+            gameRef.onDisconnect().remove();
+
+
+          } else {
+            console.log("Both player numbers are already taken");
+            playerNumber = null;
+          }
+        });
+      } 
+      //if there are more than 2 players
+      else {
+        console.log("Too many connections, you are now a spectator.");
+        playerNumber = null;
+        //the user is now a spectator
+        spectator = true;
+        //show the site
+       document.getElementById("spinner").style.display = "none";
+       document.getElementById("game").style.display = "block";
+       document.getElementById("spinnerText").style.display = "none";
+        //document.getElementById("chatHolder").style.display = "block";
+//document.getElementById("spectator").innerHTML = "You are spectating this game."
+        //scroll to the bottom of the chat
+
+
+      }
+    });
+  }
+});
+
+firebase.database().ref("connections").on("value", (snapshot) => {
+    const numConnections = snapshot.numChildren();
+if(numConnections == 2){
+    document.getElementById("spinnerText").innerHTML = "Joining game..."
+    setTimeout(() => {
+              spinner.style.display = "none";
+             document.getElementById("game").style.display = "block";
+              document.getElementById("spinnerText").style.display = "none";
+             // document.getElementById("chatHolder").style.display = "block";
+            }, 500); 
+}
+
+});
+//get X AND Y of the ball from the database
+database.ref('gameState').on('value', function(snapshot){
+
+
+if(!snapshot.val()){
+    gameState = {
+        ball: {
+            x: 300,
+            y: 200,
+            dx: 4,
+            dy: 4
+        },
+        player1: {
+            y: 175,
+            score: 0,
+            number: 1
+        },
+        player2: {
+            y: 175,
+            score: 0,
+            number: 2
+        }
+    }
+    
+    database.ref('gameState').set(gameState);
+}
+else {
+    gameState = snapshot.val();
+    ball.x = gameState.ball.x;
+    ball.y = gameState.ball.y;
+    ball.dx = gameState.ball.dx;
+    ball.dy = gameState.ball.dy;
+    player1.y = gameState.player1.y;
+    player1.score = gameState.player1.score;
+    player2.y = gameState.player2.y;
+    player2.score = gameState.player2.score;
+    draw();
+    }
+});
+
+
+function draw(mouseX, mouseY) {
+// Set the global alpha value to create a fading trail
+ctx.globalAlpha = 0.1;
+   // Draw a star at mouse position
+ctx.beginPath();
+ctx.lineWidth = 3;
+ctx.moveTo(mouseX, mouseY - 10);
+ctx.lineTo(mouseX, mouseY + 10);
+ctx.moveTo(mouseX - 10, mouseY);
+ctx.lineTo(mouseX + 10, mouseY);
+ctx.moveTo(mouseX - 8, mouseY - 8);
+ctx.lineTo(mouseX + 8, mouseY + 8);
+ctx.moveTo(mouseX - 8, mouseY + 8);
+ctx.lineTo(mouseX + 8, mouseY - 8);
+ctx.strokeStyle = "#0095DD";
+ctx.stroke();
+ctx.closePath();
+
+
+
+
+        // Draw a transparent rectangle over the entire canvas
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Reset the global alpha value
+        ctx.globalAlpha = 1;
+
+        // Draw the ball
+        ctx.beginPath();
+        ctx.arc(gameState.ball.x, gameState.ball.y, ballRadius, 0, Math.PI*2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+
+        // Draw the paddles
+        ctx.beginPath();
+        ctx.rect(0, gameState.player1.y, 10, 50);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(canvas.width-10, gameState.player2.y, 10, 50);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+
+        // Draw the score
+        ctx.font = "20px Arial";
+        ctx.fontWeight = "bold";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText(" 1: "+gameState.player1.score, 8, 20);
+        ctx.fillText(" 2: "+gameState.player2.score, canvas.width-100, 20);
+        //draw line in the middle
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.moveTo(canvas.width/2, 0);
+        ctx.lineTo(canvas.width/2, canvas.height);
+        ctx.strokeStyle = "#0095DD";
+        ctx.stroke();
+        ctx.closePath();
+
+      }
+
+      
+
+      function checkCollision() {
+  if (gameState.ball.y + gameState.ball.dy > canvas.height - ballRadius || gameState.ball.y + gameState.ball.dy < ballRadius) {
+    gameState.ball.dy = -gameState.ball.dy;
+  }
+
+  // Check for collisions with the paddles
+  var paddlePadding = 10; // Adjust this value to add padding
+  var nextBallX = gameState.ball.x + gameState.ball.dx;
+  var nextBallY = gameState.ball.y + gameState.ball.dy;
+
+  if (
+    (nextBallX - ballRadius < paddlePadding && nextBallY > gameState.player1.y - paddlePadding && nextBallY < gameState.player1.y + 50 + paddlePadding) ||
+    (nextBallX + ballRadius > canvas.width - paddlePadding && nextBallY > gameState.player2.y - paddlePadding && nextBallY < gameState.player2.y + 50 + paddlePadding)
+  ) {
+    gameState.ball.dx = -gameState.ball.dx;
+  } else if (nextBallX - ballRadius < ballRadius || nextBallX + ballRadius > canvas.width - ballRadius) {
+    // Detect which side the ball went out of bounds on
+    if (nextBallX - ballRadius < ballRadius && !gameState.player2.scored) {
+      // Player 2 scored
+      gameState.player2.score++;
+      gameState.player2.scored = true;
+      database.ref('gameState/player2').set(gameState.player2).then(() => {
+      });
+    } else if (nextBallX + ballRadius > canvas.width - ballRadius && !gameState.player1.scored) {
+      // Player 1 scored
+      gameState.player1.score++;
+      gameState.player1.scored = true;
+      database.ref('gameState/player1').set(gameState.player1).then(() => {
+      });
+    }
+
+    // If score is 7, end the game
+    if (gameState.player1.score === 7 || gameState.player2.score === 7) {
+      gameState.player1.score = 0;
+      gameState.player2.score = 0;
+      database.ref('gameState').set(gameState).then(() => {
+        alert("Round Over");
+      });
+    }
+
+    // Check if the ball has finished moving out of bounds
+    if (nextBallX - ballRadius < 0 || nextBallX + ballRadius > canvas.width) {
+      setTimeout(() => {
+        // Put the ball back in the middle
+        gameState.ball.x = canvas.width / 2;
+        gameState.ball.y = canvas.height / 2;
+        // Reset the speed
+        gameState.ball.dx = 4;
+        gameState.ball.dy = 4;
+        // Reset the scored flag
+        gameState.player1.scored = false;
+        gameState.player2.scored = false;
+        // Update the database
+        database.ref('gameState').set(gameState).then(() => {
+        });
+      }, 50);
+    }
+  }
+}
+
+
+function updateBall(){
+    if(playerNumber ==1){
+        //check for collisions
+        checkCollision();
+        gameState.ball.x += gameState.ball.dx;
+        gameState.ball.y += gameState.ball.dy;
+      
+//add a max speed
+if(gameState.ball.dx > 8 || gameState.ball.dy > 8){
+    gameState.ball.dx = 8;
+    gameState.ball.dy = 8;
+}
+
+        
+        database.ref('gameState/ball').set(gameState.ball);
+    
+        
+        
+    }
+    
+}
+document.addEventListener("mousemove", function(event){
+    if(playerNumber == 1){
+        gameState.player1.y = event.clientY - canvas.offsetTop - 25;
+        // Prevent player 1 from going off screen
+        if (gameState.player1.y < 0) {
+            gameState.player1.y = 0;
+        } else if (gameState.player1.y > canvas.height - 50) {
+            gameState.player1.y = canvas.height - 50;
+        }
+        database.ref('gameState/player1').set(gameState.player1);
+    }
+    else if(playerNumber == 2){
+        gameState.player2.y = event.clientY - canvas.offsetTop - 25;
+        // Prevent player 2 from going off screen
+        if (gameState.player2.y < 0) {
+            gameState.player2.y = 0;
+        } else if (gameState.player2.y > canvas.height - 50) {
+            gameState.player2.y = canvas.height - 50;
+        }
+        database.ref('gameState/player2').set(gameState.player2);
+    }
+});
+setInterval(() => {
+    updateBall();
+}, 20);
+
+
+</script>
