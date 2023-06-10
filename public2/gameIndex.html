@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
+
+    <title>Animated Website</title>
+    <style>
+       
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Full-screen top section */
+        .top-section {
+            height: 100vh;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Different colored section below */
+        .bottom-section {
+            height: 100vh;
+            background-color: #727272;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            display: none;
+        }
+        #rotateAnimation {
+            -webkit-animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+	        animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+        }
+
+button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 2.5rem;
+    border-radius: 50%;
+    margin-top: 20px;
+    transition: all 0.3s ease-in-out;
+    -webkit-animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+button:active {
+    -webkit-animation: puff-out-center 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both;
+	        animation: puff-out-center 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both;
+}
+.about-us {
+  display: flex;
+  align-items: center;
+  margin: 50px 0;
+}
+
+.about-us img {
+  flex: 1;
+  max-width: 50%;
+  margin-right: 50px;
+}
+
+.about-us-text {
+    color: black;
+  flex: 1;
+  border-left: 10px solid black;
+  padding-left: 50px;
+}
+
+.about-us-text h2 {
+  font-size: 36px;
+  margin-top: 0;
+}
+
+.about-us-text p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+.animateOut {
+    -webkit-animation: text-blur-out 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: text-blur-out 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+.animateIn{
+    -webkit-animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+#continue2{
+    color: black;
+}
+
+.game-list {
+    overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 100px;
+    list-style: none;
+    width: auto;
+}
+
+.game-list li {
+    flex: 1 1 auto;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #333;
+    width: auto;
+
+}
+
+.game-list li a {
+    display: block;
+    text-align: center;
+    width: auto;
+
+}
+
+.game-list ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.game-list ul.show {
+    display: block;
+}
+
+.game-list ul.show li {
+    display: block;
+}
+
+#toggleBtn1{
+    /* place a bit away from other buttons */
+    margin-right: 1%;
+}
+
+
+
+    .rotate {
+  transform: rotate(180deg);
+}
+
+a {
+    padding: 5px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 2px solid #333;
+    transition: all 0.3s ease-in-out;
+   
+}
+li {
+    margin: 10px;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+
+}
+li:hover {
+    -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 6px 40px 4px rgba(0,0,0,0.74); 
+box-shadow: 0px 10px 13px -7px #000000, 0px 6px 40px 4px rgba(0,0,0,0.74);
+    cursor: pointer;
+}
+   
+   
+@-webkit-keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@-webkit-keyframes text-blur-out {
+  0% {
+    -webkit-filter: blur(0.01);
+            filter: blur(0.01);
+  }
+  100% {
+    -webkit-filter: blur(12px) opacity(0%);
+            filter: blur(12px) opacity(0%);
+  }
+}
+@keyframes text-blur-out {
+  0% {
+    -webkit-filter: blur(0.01);
+            filter: blur(0.01);
+
+  }
+  100% {
+    -webkit-filter: blur(12px) opacity(0%);
+            filter: blur(12px) opacity(0%);
+  }
+}
+@-webkit-keyframes puff-out-center {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+}
+@keyframes puff-out-center {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes puff-in-center {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes puff-in-center {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+    </style>
+</head>
+<body>
+    <section class="top-section">
+        <div id="rotateAnimation">
+        <h1>Wiggles Game Index</h1>
+        <h2> Multiplayer and Single Player Games</h2>
+        </div>
+        <button id="continue" onclick="continueWeb()"><i class="fas fa-arrow-right"></i></button>    </section>
+        <section class="bottom-section">
+            <div class="game-list">
+                <h2 id="toggleBtn1" onclick="toggleList('multiplayer')"> <i class="fa-solid fa-gamepad"></i> Multiplayer Games <i id="arrow" class="fa-solid fa-chevron-down"></i></h2>
+                <ul id="multiplayer" style="display: none;" ><br>
+                <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/finalProject/1v1.html"> <i class="fa-solid fa-users"></i> Diep.io </a></li> <br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/connectFour.html"><i class="fa-solid fa-users"></i> Connect Four </a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/capture.html"><i class="fa-solid fa-users"></i> Capture</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/pongMultiplayer.html"><i class="fa-solid fa-users"></i> Pong</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/TicTacToe.html"><i class="fa-solid fa-users"></i> Tic Tac Toe </a></li><br>
+
+                </ul>
+                <br> 
+                <h2 id="toggleBtn2" onclick="toggleList('singleplayer')"><i class="fa-solid fa-gamepad"></i> Single Player Games <i id="arrow2" class="fa-solid fa-chevron-down"></i></h2>
+                <ul id="singleplayer" style="display: none;"><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/floppy-bird.html"> <i class="fa-solid fa-user"></i> Floppy bird</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/rock-paper-scissors.html"> <i class="fa-solid fa-user"></i> Rock Paper Scissors</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/games/diep-clone.html"><i class="fa-solid fa-user"></i> Diep Singleplayer</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/diamondRun.html"><i class="fa-solid fa-user"></i> Diamond Run</a></li><br>
+                  <li><a href="https://theactualzenaldv2.github.io/gamedev/public2/projects/aiTicTacToe.html"><i class="fa-solid fa-user"></i> AI Tic Tac Toe </a></li><br>
+
+                </ul>
+              </div>
+        </section>
+ 
+
+    <script>
+        function continueWeb() {
+           
+            document.querySelector('.top-section').classList.add('animateOut');
+
+            setTimeout(() => {
+                document.querySelector('.top-section').style.display = 'none';
+                document.querySelector('.bottom-section').classList.add('animateIn');
+            document.querySelector('.bottom-section').style.display = 'flex';
+            //HTML FOR ANOTHER CONTINUE BUTTON IF NEEDED
+           // <button id="continue2" onclick="continueWeb2()"><i class="fas fa-arrow-right"></i></button>
+
+            }, 1200);
+        }
+
+        function toggleList(id) {
+             //toggle visibility of list
+    var list = document.getElementById(id);
+    if (list.style.display == 'none') {
+      list.style.display = 'block';
+      //animate list in
+        list.classList.remove('animateOut');
+        list.classList.add('animateIn');
+    }
+    else {
+      //animate list out
+        list.classList.remove('animateIn');
+        list.classList.add('animateOut');
+        setTimeout(() => {
+            list.style.display = 'none';
+        }, 1200);
+    }
+}
+
+
+
+
+       
+    </script>
+</body>
+</html>
