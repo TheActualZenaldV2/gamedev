@@ -82,6 +82,7 @@ var ball = {};
 var player1 = {};
 var player2 = {};
 
+
 canvas.width = 900;
 canvas.height = 450;
   // Create a linear gradient object
@@ -131,7 +132,6 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
             playerRef.onDisconnect().remove();
             //clear the gameRef when a player disconnects
             const gameRef = firebase.database().ref(`gameState`);
-            gameRef.onDisconnect().remove();
 
 
           } else {
@@ -160,9 +160,52 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
   }
 });
 
+
+
+// Listen for changes to the players object in Firebase
+firebase.database().ref("players").on("value", (snapshot) => {
+  const numPlayers = snapshot.numChildren();
+  if (numPlayers === 2) {
+    // Both players exist, start watching for player disconnection
+    firebase.database().ref("connections").on("value", (snapshot) => {
+      const playerNumbers = Object.keys(snapshot.val() || {});
+      if (playerNumbers.length === 2) {
+        // Both players are still connected
+      } else if (playerNumbers.length === 1) {
+        // One player has disconnected, call the handleDisconnect function
+        handleDisconnect();
+       
+      }
+    });
+  }
+});
+
+timer = 0;
+setInterval(() => {
+  timer++;
+}, 1);
+// Function to handle player disconnection
+function handleDisconnect() {
+
+
+if(timer > 1000){
+resetGame();
+//game over screen
+document.getElementById("game-over").style.display = "block";
+document.getElementById("game").style.display = "none";
+setTimeout(() => {
+  location.reload();
+}, 2000);
+}
+}
+
+
 firebase.database().ref("connections").on("value", (snapshot) => {
     const numConnections = snapshot.numChildren();
 if(numConnections == 2){
+  //reset the game
+  resetGame();
+
     document.getElementById("spinnerText").innerHTML = "Joining game..."
     setTimeout(() => {
               spinner.style.display = "none";
@@ -173,6 +216,29 @@ if(numConnections == 2){
 }
 
 });
+function resetGame(){
+  //reset the game
+  gameState = {
+        ball: {
+            x: 300,
+            y: 200,
+            dx: 4,
+            dy: 4
+        },
+        player1: {
+            y: 175,
+            score: 0,
+            number: 1
+        },
+        player2: {
+            y: 175,
+            score: 0,
+            number: 2
+        }
+    }
+    
+    database.ref('gameState').set(gameState);
+}
 //get X AND Y of the ball from the database
 database.ref('gameState').on('value', function(snapshot){
 
