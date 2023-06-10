@@ -367,6 +367,7 @@ ctx.closePath();
     (nextBallX + ballRadius > canvas.width - paddlePadding && nextBallY > gameState.player2.y - paddlePadding && nextBallY < gameState.player2.y + 50 + paddlePadding)
   ) {
     gameState.ball.dx = -gameState.ball.dx;
+    
   } else if (nextBallX - ballRadius < ballRadius || nextBallX + ballRadius > canvas.width - ballRadius) {
     // Detect which side the ball went out of bounds on
     if (nextBallX - ballRadius < ballRadius && !gameState.player2.scored) {
@@ -421,16 +422,32 @@ function updateBall(){
     if(playerNumber ==1){
         //check for collisions
         checkCollision();
-        gameState.ball.x += gameState.ball.dx;
-        gameState.ball.y += gameState.ball.dy;
-      
-//add a max speed
-if(gameState.ball.dx > 8 || gameState.ball.dy > 8){
-    gameState.ball.dx = 8;
-    gameState.ball.dy = 8;
-}
+    // Update angle variation at certain intervals
+    if (Math.random() < 0.01) { // Adjust the probability to control the frequency of angle changes
+      angleVariation = (Math.random() * 0.2 - 0.1) * Math.PI / 30; // Random value between -0.1 and 0.1 radians
+    }
 
-        
+    // Add randomness to the ball's movement
+    const speed = 7; // Base speed of the ball
+
+    // Calculate new direction using trigonometry
+    const angle = Math.atan2(gameState.ball.dy, gameState.ball.dx); // Current angle
+    const newAngle = angle + angleVariation; // New angle with variation
+    const newDx = Math.cos(newAngle) * speed; // New dx based on new angle and speed
+    const newDy = Math.sin(newAngle) * speed; // New dy based on new angle and speed
+
+    // Update ball position
+    gameState.ball.x += newDx;
+    gameState.ball.y += newDy;
+
+    // Limit the maximum speed
+    if (Math.abs(newDx) > 8 || Math.abs(newDy) > 8) {
+      gameState.ball.dx = Math.sign(newDx) * 8;
+      gameState.ball.dy = Math.sign(newDy) * 8;
+    } else {
+      gameState.ball.dx = newDx;
+      gameState.ball.dy = newDy;
+    }
         database.ref('gameState/ball').set(gameState.ball);
     
         
