@@ -81,6 +81,7 @@ var ballRadius = 10;
 var ball = {};
 var player1 = {};
 var player2 = {};
+gameStarted = false;
 
 
 canvas.width = 900;
@@ -115,6 +116,7 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
           if (availableNumbers.length > 0) {
             playerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
             console.log(`Player ${playerNumber} connected`);
+            
             canvas.addEventListener("mousemove", function(e) {
     //get the mouse position on the canvas
     mouseX = e.clientX - canvas.offsetLeft;
@@ -166,6 +168,9 @@ firebase.database().ref(".info/connected").on("value", (snapshot) => {
 firebase.database().ref("players").on("value", (snapshot) => {
   const numPlayers = snapshot.numChildren();
   if (numPlayers === 2) {
+    
+    gameStarted = true;
+    
     // Both players exist, start watching for player disconnection
     firebase.database().ref("connections").on("value", (snapshot) => {
       const playerNumbers = Object.keys(snapshot.val() || {});
@@ -379,13 +384,17 @@ ctx.closePath();
     }
 
     // If score is 7, end the game
+    if(gameStarted === true){
     if (gameState.player1.score === 7 || gameState.player2.score === 7) {
       gameState.player1.score = 0;
       gameState.player2.score = 0;
       database.ref('gameState').set(gameState).then(() => {
-        alert("Round Over");
+        
+        alert("Round Over. Press OK to start a new round.");
+        
       });
     }
+  }
 
     // Check if the ball has finished moving out of bounds
     if (nextBallX - ballRadius < 0 || nextBallX + ballRadius > canvas.width) {
