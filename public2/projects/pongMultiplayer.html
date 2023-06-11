@@ -422,13 +422,16 @@ function updateBall(){
     if(playerNumber ==1){
         //check for collisions
         checkCollision();
+        angleVariation = 0;
+         speed = 7; // Base speed of the ball
+
     // Update angle variation at certain intervals
-    if (Math.random() < 0.01) { // Adjust the probability to control the frequency of angle changes
-      angleVariation = (Math.random() * 0.2 - 0.1) * Math.PI / 30; // Random value between -0.1 and 0.1 radians
+    if (Math.random() < 0.05) { // Adjust the probability to control the frequency of angle changes
+      angleVariation = (Math.random() * 0.2 - 0.1) * Math.PI / 2; // Random value between -0.1 and 0.1 radians
+      
     }
 
     // Add randomness to the ball's movement
-    const speed = 7; // Base speed of the ball
 
     // Calculate new direction using trigonometry
     const angle = Math.atan2(gameState.ball.dy, gameState.ball.dx); // Current angle
@@ -448,6 +451,14 @@ function updateBall(){
       gameState.ball.dx = newDx;
       gameState.ball.dy = newDy;
     }
+
+    //round the ball position to nearest integer 2 decimal places
+    gameState.ball.x = Math.round(gameState.ball.x * 100) / 100;
+    gameState.ball.y = Math.round(gameState.ball.y * 100) / 100;
+    //round DY and DX to nearest integer 2 decimal places
+    gameState.ball.dy = Math.round(gameState.ball.dy * 100) / 100;
+    gameState.ball.dx = Math.round(gameState.ball.dx * 100) / 100;
+
         database.ref('gameState/ball').set(gameState.ball);
     
         
