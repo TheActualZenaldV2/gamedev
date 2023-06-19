@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+    body {
+        overflow: hidden;
+    }
+</style>
+<head>
+  <title>Three.js 3D Game</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  
+</head>
+<body>
+  <script>
+    // Create the scene
+    const scene = new THREE.Scene();
+
+    // Create the camera
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    // Create the renderer
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Handle keyboard input
+    const keyboard = {};
+    document.addEventListener('keydown', event => {
+      keyboard[event.code] = true;
+    });
+    document.addEventListener('keyup', event => {
+      keyboard[event.code] = false;
+    });
+
+    // Create the player
+    const playerGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const playerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const player = new THREE.Mesh(playerGeometry, playerMaterial);
+    player.position.set(0, 0.5, 0);
+    scene.add(player);
+   // Create the enemies
+const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
+const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const enemies = [];
+for (let i = 0; i < 10; i++) {
+  const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+  enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+  scene.add(enemy);
+  enemies.push(enemy);
+}
+time = 0;
+setInterval(() => {
+    time++
+}, 100);
+enemyIintervalTime = time;
+enemyInterval = Math.random() * 1000 - enemyIintervalTime;
+// Create a new enemy every 5 seconds
+setInterval(() => {
+  const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+  enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+  scene.add(enemy);
+  enemies.push(enemy);
+}, enemyInterval);
+
+    
+   
+    //add bullets
+const bullets = [];
+const bulletGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+const bulletMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+//on click, create a bullet and add it to the bullets array
+document.addEventListener('click', () => {
+  const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
+  bullet.position.set(player.position.x, player.position.y, player.position.z);
+  bullet.velocity = new THREE.Vector3(mouseX, 0, mouseY).normalize().multiplyScalar(0.1);
+  bullets.push(bullet);
+  scene.add(bullet);
+});
+
+//update bullet positions in the render loop
+function render() {
+  requestAnimationFrame(render);
+
+  //update bullet positions
+  bullets.forEach((bullet) => {
+    bullet.position.add(bullet.velocity);
+  });
+
+  //render the scene
+  renderer.render(scene, camera);
+}
+render();
+
+    // Position the camera
+    camera.position.set(0, 1.5, 5);
+
+    // Add event listeners for the mousemove event to detect mouse movement
+let mouseX = 0;
+let mouseY = 0;
+document.addEventListener('mousemove', (event) => {
+    mouseX = event.clientX / window.innerWidth - 0.5;
+    mouseY = event.clientY / window.innerHeight - 0.5;
+});
+
+
+// Add a jumping variable to keep track of whether the player is currently jumping
+let jumping = false;
+
+// Add a jump function that moves the player up and down over a period of time
+function jump() {
+  if (!jumping) {
+    jumping = true;
+    const jumpHeight = 2;
+    const jumpDuration = 500;
+    const startPosition = player.position.y;
+    let currentTime = 0;
+
+    function animateJump() {
+      currentTime += 10;
+      const progress = currentTime / jumpDuration;
+      const newY = startPosition + jumpHeight * Math.sin(progress * Math.PI);
+      player.position.y = newY;
+
+      if (progress < 1) {
+        setTimeout(animateJump, 10);
+      } else {
+        player.position.y = startPosition;
+        jumping = false;
+      }
+    }
+
+    animateJump();
+  }
+}
+
+// Add event listeners for the keydown and keyup events to detect when the player jumps
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space') {
+    jump();
+  }
+});
+   
+// In the animate function, update the camera rotation based on the mouse movement
+function animate() {
+
+  requestAnimationFrame(animate);
+
+  // Rotate the camera based on the mouse movement
+  const cameraRotationSpeed = 0.1;
+  camera.rotation.y += (mouseX - camera.rotation.y) * cameraRotationSpeed;
+  camera.rotation.x += (mouseY - camera.rotation.x) * cameraRotationSpeed;
+
+  // Move the player
+  const speed = 0.1;
+  if (keyboard['ArrowUp'] || keyboard['KeyW']) {
+    player.position.z -= speed;
+  }
+  if (keyboard['ArrowDown'] || keyboard['KeyS']) {
+    player.position.z += speed;
+  }
+  if (keyboard['ArrowLeft'] || keyboard['KeyA']) {
+    player.position.x -= speed;
+  }
+  if (keyboard['ArrowRight'] || keyboard['KeyD']) {
+    player.position.x += speed;
+  }
+
+  // Limit player movement to map boundaries
+  const halfSize = 10;
+  player.position.x = Math.min(Math.max(player.position.x, -halfSize), halfSize);
+  player.position.z = Math.min(Math.max(player.position.z, -halfSize), halfSize);
+
+  // Check if the player hits an enemy
+  for (let i = 0; i < enemies.length; i++) {
+    const enemy = enemies[i];
+    const distance = enemy.position.distanceTo(player.position);
+    if (distance < 1.5) {
+      scene.remove(enemy);
+      enemies.splice(i, 1);
+      i--;
+    }
+  }
+
+  //check if the enemy hits a bullet
+    for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+        for (let j = 0; j < bullets.length; j++) {
+        const bullet = bullets[j];
+        const distance = enemy.position.distanceTo(bullet.position);
+        if (distance < 0.5) {
+            scene.remove(enemy);
+            scene.remove(bullet);
+            enemies.splice(i, 1);
+            bullets.splice(j, 1);
+            i--;
+            j--;
+        }
+        }
+    }
+
+  // Update the camera position to follow the player
+  camera.position.set(player.position.x, player.position.y + 3.5, player.position.z + 5);
+  camera.lookAt(player.position);
+
+  renderer.render(scene, camera);
+
+}
+    animate();
+//make the enemies move smoothly
+function animateEnemies() {
+    requestAnimationFrame(animateEnemies);
+    enemies.forEach((enemy) => {
+      enemy.position.x += (player.position.x - enemy.position.x) * 0.0025;
+      enemy.position.z += (player.position.z - enemy.position.z) * 0.0025;
+    });
+
+
+    }
+    animateEnemies();
+
+  
+
+
+
+
+
+    // Create the map geometry
+const mapGeometry = new THREE.PlaneGeometry(20, 20);
+
+// Create the map material
+const mapMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+// Create the map mesh
+const map = new THREE.Mesh(mapGeometry, mapMaterial);
+map.position.set(0, 0, 0);
+map.rotation.set(-Math.PI / 2, 0, 0);
+
+// Add the map to the scene
+scene.add(map);
+// Load the skybox texture
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('https://i.imgur.com/jRq1TTG.jpg');
+
+// Create the skybox geometry
+const skyboxGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
+
+// Create the skybox material with the loaded texture
+const skyboxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+
+// Create the skybox mesh
+const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+
+// Add the skybox to the scene
+scene.add(skybox);
+
+// Position the camera to view the map
+camera.position.set(0, 10, 0);
+camera.lookAt(map.position);
+
+
+//resize the game when the window resizes
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+
+
+
+
+  </script>
+</body>
+</html>
