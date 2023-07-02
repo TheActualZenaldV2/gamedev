@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>3D First Person Shooter</title>
+	<body>
+		<div id="background"></div>
 <div id="preGame">
     <div class="menu" id="startMenu">
       <h1>Game Menu</h1>
@@ -26,7 +28,9 @@
    <li> Space To Jump</li>
    <li> Left Click to Shoot</li>
    <li> Move Mouse to Look Around</li>
-   <li> Avoid Touching Enemies, They Kill You</li> <br>
+   <li> Avoid Touching Enemies, They Kill You</li>
+	    <li> Shoot Enemies Before They Shoot You</li>
+	    <br>
     <button onclick="closeControls();">Back</button>
     </div>
 </div>
@@ -61,16 +65,27 @@
       </div>
     </div>
 </div>
+</body>
 
 <style>
   /* import poppins font */
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  #background{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	z-index: -1;
+  }
   body {
     margin: 0;
     overflow: hidden;
     font-family: 'Poppins', sans-serif;
-    background-color: #8BC6EC;
-background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+
+
+
 
   }
   canvas {
@@ -292,7 +307,7 @@ background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
       // Set up the scene, camera, and renderer
       const scene = new THREE.Scene();
       // Create the camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 camera.position.set(0, 1.6, -3);
 camera.lookAt(0, 1.6, 0);
 
@@ -1309,6 +1324,32 @@ function detectCollisions() {
   }
   return false;
 }
+
+//detect collison between bullets and walls
+function detectBulletCollisions() {
+  for (let bullet of bullets) {
+	const originPoint = bullet.position.clone();
+	for (let box of boundingBoxes) {
+	  if (box.containsPoint(originPoint)) {
+		return true;
+	  }
+	}
+  }
+  return false;
+}
+function detectEnemyBulletCollisions() {
+  for (let bullet of enemyBullets) {
+    // Origin point of enemy bullet
+    const originPoint = bullet.position.clone();
+    for (let box of boundingBoxes) {
+      if (box.containsPoint(originPoint)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
  // Create the enemies
  const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
     const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -1338,6 +1379,7 @@ setInterval(() => {
 }, Math.random() * 1000 + 5000 - time);
 
 
+
    function moveEnemies() {
   // Move enemies towards player
   for (let enemy of enemies) {
@@ -1346,6 +1388,27 @@ setInterval(() => {
 
   }
 }
+let enemyBullets = [];
+function enemyShooting() {
+  // Give each enemy 10% chance of shooting every second
+  for (let enemy of enemies) {
+    if (Math.random() < 0.1) {
+      const bullet = new THREE.Mesh(bulletGeometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+      // Set bullet velocity in direction of player
+      const playerPosition = controls.getObject().position.clone();
+      const enemyPosition = enemy.position.clone();
+      const direction = playerPosition.sub(enemyPosition).normalize();
+      bullet.position.copy(enemyPosition);
+      bullet.velocity = direction.multiplyScalar(0.1);
+      scene.add(bullet);
+      enemyBullets.push(bullet);
+    }
+  }
+}
+
+setInterval(() => {
+	enemyShooting();
+}, 500);
 // Add bullets
 const bullets = [];
 const bulletGeometry = new THREE.SphereGeometry(0.1, 8, 8);
@@ -1430,12 +1493,20 @@ document.addEventListener('keydown', (event) => {
 
 
 
-      // Set up the controls
-      const controls = new THREE.PointerLockControls(camera, document.body);
-      document.addEventListener("click", () => {
-        controls.lock();
-      });
-      scene.add(controls.getObject());
+
+
+// Set up the controls
+const controls = new THREE.PointerLockControls(camera, document.body);
+
+const lockControls = () => {
+  controls.lock();
+  document.removeEventListener("click", lockControls);
+};
+
+document.addEventListener("click", lockControls);
+
+scene.add(controls.getObject());
+	
       controls.mouseSensitivity = userSenstivity;
 
 
@@ -1457,28 +1528,18 @@ const jumpSpeed = 0.2;
 const jumpHeight = 0.9;
 // Load the skybox texture
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('https://i.imgur.com/zsA7KNO.jpg');
+const texture = textureLoader.load('https://i.imgur.com/1pJKDTj.jpg');
 
 // Create the skybox geometry
 const skyboxGeometry = new THREE.SphereGeometry(1000, 32, 32);
 
 // Create the skybox material with the loaded texture
-const skyboxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
-
+const skyboxMaterial = new THREE.MeshStandardMaterial({ map: texture, side: THREE.BackSide });
 // Create the skybox mesh
 const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-
+skybox.position.set(0, 500, 0);
 // Add the skybox to the scene
 scene.add(skybox);
-const mapTexture = textureLoader.load("map.png");
-
-// Create the map plane
-const mapGeometry = new THREE.PlaneGeometry(10, 10);
-const mapMaterial = new THREE.MeshBasicMaterial({ map: mapTexture });
-const map = new THREE.Mesh(mapGeometry, mapMaterial);
-map.rotation.x = -Math.PI / 2;
-map.position.y = 0.1;
-scene.add(map);
 
 // Set up the animation loop
 function animate() {
@@ -1487,6 +1548,11 @@ function animate() {
  bullets.forEach((bullet) => {
         bullet.position.add(bullet.velocity);
       });
+
+	  //enemy bullets 
+	  enemyBullets.forEach((enemyBullet) => {
+		enemyBullet.position.add(enemyBullet.velocity);
+	  });
   // Move the player based on keyboard input
  let speed = 0.05;
   
@@ -1573,6 +1639,7 @@ function animate() {
 
   }
  moveEnemies();
+
  //bullet collisions with enemies
   bullets.forEach((bullet) => {
         for (let enemy of enemies) {
@@ -1586,9 +1653,21 @@ function animate() {
           }
         }
       });
+//collision detection for enemy bullets
+enemyBullets.forEach((enemyBullet) => {
+		if (enemyBullet.position.distanceTo(controls.getObject().position) < 0.5) {
+		  health -= 10;
+		  scene.remove(enemyBullet);
+		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
+		  document.getElementById("health-bar-number").innerHTML = "Health: " + health;
+
+
+		}
+	  });
 
       if (health < 0  && gameOver == false || health == 0 && gameOver == false) {
   gameOver = true;
+  
   document.getElementById("endGame").style.display = "block";
   //hide the canvas
   document.getElementById("canvas").style.display = "none";
@@ -1599,14 +1678,50 @@ function animate() {
   //hide UI
   document.getElementById("gameUI").style.display = "none";
   document.getElementById("score-holder").innerHTML = score;
-  //dont let the user point lock again
-  document.removeEventListener("click", pointerLock);
+  controls.unlock();
+  
 }
 
-//change health bar color based on health
+updateHealth();
+
+//detect bullet collisions with walls
+bullets.forEach((bullet) => {
+		if (detectBulletCollisions(bullet)) {
+		  scene.remove(bullet);
+		  bullets.splice(bullets.indexOf(bullet), 1);
+		}
+	  });
+//detect enemy bullet collisions with walls
+enemyBullets.forEach((enemyBullet) => {
+		if (detectBulletCollisions(enemyBullet)) {
+		  scene.remove(enemyBullet);
+		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
+		}
+	  });
+
+
+}
+
+function updateHealth(){
+	//change health bar color based on health
 //health bar is a class called health section
+
 const healthBarValue = document.getElementById("health-bar-value");
 const healthSections = healthBarValue.querySelectorAll(".health-section");
+  const numSections = healthSections.length;
+  const sectionWidth = 100 / numSections;
+  const remainingSections = Math.floor((health / 100) * numSections);
+  for (let i = 0; i < numSections; i++) {
+    if (i < remainingSections) {
+      healthSections[i].style.width = sectionWidth + "%";
+    } else {
+      healthSections[i].style.width = "0";
+    }
+    //update the health bar value
+    document.getElementById("health-bar-number").innerHTML = "Health: " + health;
+  }
+
+
 if (health > 80) {
   for (let i = 0; i < healthSections.length; i++) {
     healthSections[i].style.backgroundColor = "green";
@@ -1628,10 +1743,7 @@ if (health > 80) {
     healthSections[i].style.backgroundColor = "red";
   }
 }
-
 }
-
-
 
 setInterval(() => {
   setTimeout(() => {
@@ -1639,21 +1751,7 @@ setInterval(() => {
       for (let enemy of enemies) {
         if (enemy.position.distanceTo(controls.getObject().position) < 0.5) {
           health--;
-          const healthBarValue = document.getElementById("health-bar-value");
-const healthSections = healthBarValue.querySelectorAll(".health-section");
-
-  const numSections = healthSections.length;
-  const sectionWidth = 100 / numSections;
-  const remainingSections = Math.floor((health / 100) * numSections);
-  for (let i = 0; i < numSections; i++) {
-    if (i < remainingSections) {
-      healthSections[i].style.width = sectionWidth + "%";
-    } else {
-      healthSections[i].style.width = "0";
-    }
-    //update the health bar value
-    document.getElementById("health-bar-number").innerHTML = "Health: " + health;
-  }
+          updateHealth();
 
         }
       }
