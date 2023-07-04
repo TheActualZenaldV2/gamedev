@@ -25,6 +25,7 @@
     <div id="controlsMenu" class="menu" style="display: none;">
       <h1> Controls</h1>
    <li> Use WASD to move </li>
+   <li> Shift To Dash </li>
    <li> Space To Jump</li>
    <li> Left Click to Shoot</li>
    <li> Move Mouse to Look Around</li>
@@ -42,13 +43,18 @@
   </div>
 </div>
 
+<div id="popup-holder" style="display: none;"> <h2 id="popup-text"> </h2></div>
 
 
 <div id="gameUI">
     <div id="crosshair"></div>
     <div id="hud">
-      <div id="ammo-count"><i class="fa-solid fa-crosshairs"></i><span id="ammo-count-value">10</span></div>
-      <div id="score"><i class="fa-solid fa-star"></i><span id="score-value">0</span></div>
+      <div id="ammo-count"><i class="fa-solid fa-crosshairs"></i><span id="ammo-count-value">Ammo: 10</span></div>
+      <div id="score"><i class="fa-solid fa-star"></i><span id="score-value">Score: 0</span></div> 
+	  <div class="progress-bar-container">
+		<div id="dash-background"><i class="fa-solid fa-person-running"></i> Dash</div>
+		<div id="dash-progress-bar" class="progress-bar"> </div>
+	  </div>
       <div id="health-bar">
         <div id="health-bar-number">Health: 100</div>
         <div id="health-bar-value"> <i class="fa-solid fa-heart" style="color: #ffffff;"></i>
@@ -63,12 +69,15 @@
         </div>
       </div>
     </div>
+
 </div>
+
 </body>
 
 <style>
   /* import poppins font */
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  
   #background{
 	position: absolute;
 	width: 100%;
@@ -112,135 +121,319 @@
   #crosshair::after {
     transform: rotate(90deg);
   }
-  #hud {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        font-size: 24px;
-        color: white;
-        text-shadow: 1px 1px 1px black;
-      }
-      #ammo-count,
-      #score {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        color: white;
-        text-shadow: 1px 1px 1px black;
-      }
-      #ammo-count-value,
-      #score-value {
-        margin-left: 5px;
-      }
-      #hud {
-  background-color: rgba(122, 122, 122, 0.8);
+
+  
+
+.menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.menu h1 {
+  color: #fff;
+  font-size: 36px;
+  margin-top: 0;
+}
+
+.menu button {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.menu button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+li {
+  color: white;
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+}
+
+label {
+  color: white;
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+}
+
+p {
+  color: white;
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+}
+
+#hud {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 20px;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+
+#ammo-count,
+#score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+
+#ammo-count-value,
+#score-value {
+  margin-left: 10px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+#hud {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 20px;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  font-family: 'Roboto', sans-serif;
+  background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
+}
+
+#ammo-count,
+#score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+
+#ammo-count-value,
+#score-value {
+  margin-left: 10px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+#hud {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 20px;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  font-family: 'Roboto', sans-serif;
+  background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+}
+
+#ammo-count,
+#score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  opacity: 0;
+  animation: slide-in 0.5s forwards;
+}
+
+#ammo-count-value,
+#score-value {
+  margin-left: 10px;
+}
+
+#hud {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#ammo-count {
   padding: 10px;
   border-radius: 10px;
-}
-#ammo-count {
-  padding: 5px;
-  border-radius: 5px;
+  margin: auto;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
 #score {
-  padding: 5px;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.5);
 }
+
 #health-bar {
-    width: 200px;
-    height: 20px;
-    padding: 12px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
-  #health-bar-value {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 5px;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .health-section {
-    width: 20%;
-    height: 100%;
-    background-color: rgba(0, 255, 98, 0.5);
-    border-radius: 6px;
-    transition: width 0.2s ease-in-out;
-    margin: 2.5px
-  }
-  #health-bar-value-inner {
-    width: 80%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 3%;
-  }
-  #health-bar-number {
-    z-index: 99;
-  }
-  .menu {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-      }
+  width: 450px;
+  height: 40px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  opacity: 0;
+  animation: slide-in 0.5s forwards;
+}
 
-      .menu h1 {
-        color: #fff;
-        font-size: 36px;
-        margin-top: 0;
-      }
+#health-bar-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-      .menu button {
-        background-color: #fff;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        font-size: 24px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 10px;
-      }
+.health-section {
+  width: 25%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+  margin: 5px;
+ 
+}
 
-      .menu button:hover {
-        background-color: #000;
-        color: #fff;
-      }
-      li {
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 1px black;
+#health-bar-value-inner {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5%;
+}
 
-      }
-      label {
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 1px black;
-      }
-      p {
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 1px black;
-      }
+#health-bar-number {
+  z-index: 99;
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.progress-bar-container {
+  margin-bottom: 0px;
+  width: 35%;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  position: relative;
+  opacity: 0;
+  animation: slide-in 0.5s forwards;
+}
+
+#dash-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  border-radius: 10px;
+
+}
+
+#dash-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+  z-index: 2;
+}
+
+.progress-bar {
+  width: 50px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+}
+#popup-text {
+	  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+  z-index: 999;
+}
+
+/* Animations */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.health-section:hover {
+  animation: pulse 0.5s infinite alternate;
+}
+
 </style>
     </style>
   </head>
@@ -352,6 +545,38 @@ camera.updateProjectionMatrix();
 			"widthSegments": 1,
 			"heightSegments": 1,
 			"depthSegments": 1
+		},
+		{
+			"uuid": "97b63134-686e-4a46-9ede-801dff0150a4",
+			"type": "LatheGeometry",
+			"points": [
+				{
+					"x": 0,
+					"y": -0.5
+				},
+				{
+					"x": 0.5,
+					"y": 0
+				},
+				{
+					"x": 0,
+					"y": 0.5
+				}],
+			"segments": 12,
+			"phiStart": 0,
+			"phiLength": 6.283185307179586
+		},
+		{
+			"uuid": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+			"type": "CylinderGeometry",
+			"radiusTop": 1,
+			"radiusBottom": 1,
+			"height": 1,
+			"radialSegments": 32,
+			"heightSegments": 1,
+			"openEnded": false,
+			"thetaStart": 0,
+			"thetaLength": 6.283185307179586
 		}],
 	"materials": [
 		{
@@ -363,70 +588,6 @@ camera.updateProjectionMatrix();
 			"emissive": 7039851,
 			"envMapIntensity": 1,
 			"vertexColors": true,
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "642ff8aa-a3b6-41a7-908b-1f85c31340c0",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "54a87d7b-bbf6-4120-9b5e-57565b5e265b",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "2447863e-2351-4509-804d-50f7842cfcbc",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "a271fc73-c2b3-4e53-9450-920afeb147a6",
-			"type": "MeshNormalMaterial",
 			"depthFunc": 3,
 			"depthTest": true,
 			"depthWrite": true,
@@ -761,7 +922,39 @@ camera.updateProjectionMatrix();
 			"stencilZPass": 7680
 		},
 		{
+			"uuid": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
 			"uuid": "7edc1e23-33c2-42c2-a998-8df429d6e922",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "642ff8aa-a3b6-41a7-908b-1f85c31340c0",
 			"type": "MeshNormalMaterial",
 			"depthFunc": 3,
 			"depthTest": true,
@@ -793,55 +986,7 @@ camera.updateProjectionMatrix();
 			"stencilZPass": 7680
 		},
 		{
-			"uuid": "706e84af-a454-434f-87ee-36e46c1bf31d",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "152aebf7-7b6c-418c-b595-31a1731a8214",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "bd542e7c-77ba-47c1-b36d-c344b315485c",
-			"type": "MeshNormalMaterial",
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
-			"uuid": "d08b245d-4c16-4f6f-ad6d-64a49a348186",
+			"uuid": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd",
 			"type": "MeshNormalMaterial",
 			"depthFunc": 3,
 			"depthTest": true,
@@ -869,147 +1014,27 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [7.932056841443746e-15,0,35.72280823540765,0,0,3.9037274670948845,0,0,-3.1384631203652242,0,6.968788036332772e-16,0,-43.41843073509929,2,0.30681450107626096,1],
+				"matrix": [7.932056841443746e-15,0,35.72280823540765,0,0,3.9037274670948845,0,0,-3.1384631203652242,0,6.968788036332772e-16,0,-73.20075505615131,2,0.30681450107626096,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "1028b2b1-1829-44c5-91ae-671c95b1ff13",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,41.605257908292515,2,-0.3344763381706516,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "642ff8aa-a3b6-41a7-908b-1f85c31340c0"
 			},
 			{
 				"uuid": "16089d95-8e9c-400a-ad71-8d6801e27a62",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-49.147257330309685,-5.9462602331555025e-15,0.5959710774339351,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.035659953711531855,2,31.486453738606293,1],
+				"matrix": [-22.986590349959975,-2.7811164959862007e-15,0.2787407428521874,0,-6.892462910491453e-16,5.628536856140962,-6.809390035840391e-16,0,-0.27955943812692263,-2.8233135584380774e-15,-23.05410474598699,0,-16.262042984714554,1.1050143366204939,30.70510041287323,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "2972b615-1bec-4c49-b126-61048b97d288",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-0.13602928979179407,-8.331404261581523e-18,17.88945838581072,0,-4.781773338103943e-16,3.9037274670948845,-1.8179751871722645e-18,0,-3.1383723929207132,-3.844381913974468e-16,-0.0238638061871,0,22.707525177461292,1.9999999999999984,24.157056131685984,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "3d3008e1-6b84-4b96-8403-a4b575f7f698",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-0.13602928979179407,-8.331404261581523e-18,17.88945838581072,0,-4.781773338103943e-16,3.9037274670948845,-1.8179751871722645e-18,0,-3.1383723929207132,-3.844381913974468e-16,-0.0238638061871,0,-22.914673249987654,1.9999999999999927,24.64752099683631,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "3f7b014a-3a12-467f-87c1-8a96fbcf3814",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-17.889975553514176,-2.1908901298435535e-15,2.6830665847964366e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321355e-16,0,0,-3.843508814597286e-16,-3.1384631203652242,0,-33.183178836559534,1.9999999999999916,17.492646831532994,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "afcaa773-e216-46cb-b1bc-48e0459fa289",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-72.33045654032452,-8.857926208297516e-15,1.0847830978075004e-30,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321355e-16,0,0,-3.843508814597286e-16,-3.1384631203652242,0,57.459758312104306,1.9999999999999987,-16.99838400490104,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "1034df75-5fdb-4b60-8a41-0290a025bf20",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-0.16860925840862565,-1.032683399433925e-17,22.174109093565775,0,-4.781773338103943e-16,3.9037274670948845,-1.8179751871722645e-18,0,-3.729420679718759,-4.568392662086287e-16,-0.028358066267637996,0,23.106309343224602,1.9999999999999984,-28.28777210539717,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "b9c31366-5e57-45d6-9d6e-f69f2d5d31de",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-57.755641817414876,-6.9877770364913075e-15,0.7003583506293756,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.8455383566196966,1.9999999999999918,-35.3008515201797,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "8963beb7-22a1-45df-b7c4-5e13355806d7",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-0.13602928979179407,-8.331404261581523e-18,17.88945838581072,0,-4.781773338103943e-16,3.9037274670948845,-1.8179751871722645e-18,0,-3.1383723929207132,-3.844381913974468e-16,-0.0238638061871,0,-22.535283034544683,1.9999999999999927,-25.24677369174982,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "d60e89fb-99e9-428c-9f2c-893898e52978",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-27.289461473549533,-3.341995164403745e-15,4.092763680852978e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321355e-16,0,0,-3.843508814597286e-16,-3.1384631203652242,0,-34.952413255604995,1.9999999999999871,-16.99838400490104,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
-			},
-			{
-				"uuid": "88d4fe78-c6b2-466d-9a0b-5af81c70649b",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-50.588810807891264,-6.195342522855507e-15,7.587106390236483e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,49.27723886573345,5.952347120249387,-31.337270051617104,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "54a87d7b-bbf6-4120-9b5e-57565b5e265b"
-			},
-			{
-				"uuid": "98486641-18df-45f6-af7e-cc8f8df68e3f",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-17.74856236926754,-2.1735720094990654e-15,2.661858004149311e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-33.29637068387053,5.952347120249385,30.901823146533644,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "2447863e-2351-4509-804d-50f7842cfcbc"
-			},
-			{
-				"uuid": "ceec2b15-a55c-449e-96b3-e360898676bb",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [-17.74856236926754,-2.1735720094990654e-15,2.661858004149311e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-33.29637068387053,5.952347120249377,-30.5055374427193,1],
-				"up": [0,1,0],
-				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "a271fc73-c2b3-4e53-9450-920afeb147a6"
 			},
 			{
 				"uuid": "e7824de6-7bb4-45e4-84c4-2000b2254b3d",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-12.547880978677842,-1.5366722276619778e-15,1.8818807249448738e-31,0,-7.8536139850451e-15,64.12962488868702,-7.8536139850451e-15,0,0,-1.8335889682016863e-15,-14.972390157540136,0,-35.17136782405482,11.90616177980057,-30.5055374427193,1],
+				"matrix": [-12.547880978677842,-1.536672227661978e-15,1.881880724944874e-31,0,-7.853613985045102e-15,64.12962488868702,-7.853613985045102e-15,0,4.0978100263736326e-47,-1.8335889682016867e-15,-14.972390157540136,0,-35.17136782405482,11.90616177980057,-30.5055374427193,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "b773ade2-1786-41a4-a139-b4b70657c190"
@@ -1069,7 +1094,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-7.207216232851958,-4.593961587840061e-16,157.48075173362506,0,-2.402952125934261e-15,18.859163488856975,-5.495762630583811e-17,0,-27.6810235202219,-3.5306866577979654e-15,-1.266841311466146,0,80.05652579298778,5.952347120249394,-3.4983589821475984,1],
+				"matrix": [-3.500435210601317e-14,-3.4516956111280725e-45,157.64558710098655,0,-5.259904577836978e-30,18.859163488856975,-4.129268255529053e-46,0,-27.709997294036594,-7.728441492374334e-30,-6.152855401628042e-15,0,80.05652579298778,5.952347120249394,-3.4983589821475984,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "f4cb52ff-91e5-4dc2-b3e9-9de7bce3f3fb"
@@ -1079,7 +1104,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-7.207216232851958,-4.593961587840061e-16,157.48075173362506,0,-2.402952125934261e-15,18.859163488856975,-5.495762630583811e-17,0,-27.6810235202219,-3.5306866577979654e-15,-1.266841311466146,0,-90.24326195850237,5.952347120249373,-11.292247322291393,1],
+				"matrix": [-3.500435210601317e-14,-3.4516956111280725e-45,157.64558710098655,0,-5.259904577836978e-30,18.859163488856975,-4.129268255529053e-46,0,-27.709997294036594,-7.728441492374334e-30,-6.152855401628042e-15,0,-86.99318973400052,5.952347120249373,-11.292247322291393,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "661f4ab6-d1e1-41a9-98ad-44b359aee536"
@@ -1089,7 +1114,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1.6966788275633788,1.0814823794517028e-16,-37.07315676159135,0,-6.532077098216339e-15,51.26590271505499,-1.4939434218862083e-16,0,-27.6810235202219,-3.5306866577979654e-15,-1.266841311466146,0,-106.49686308728619,20.270022310416447,-12.036104692846854,1],
+				"matrix": [1.6966788275633369,1.0814823794516842e-16,-37.07315676159133,0,-6.5320770982163365e-15,51.26590271505499,-1.4939434218861831e-16,0,-27.6810235202219,-3.5306866577979642e-15,-1.2668413114661154,0,-106.49686308728619,20.270022310416447,-12.036104692846854,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "de75d46e-e890-407d-896a-7c179cfe5324"
@@ -1099,7 +1124,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1.6966788275633788,1.0814823794517028e-16,-37.07315676159135,0,-6.532077098216339e-15,51.26590271505499,-1.4939434218862083e-16,0,-27.6810235202219,-3.5306866577979654e-15,-1.266841311466146,0,107.26502634279174,20.270022310416476,-2.253143013368108,1],
+				"matrix": [1.6966788275633369,1.0814823794516842e-16,-37.07315676159133,0,-6.5320770982163365e-15,51.26590271505499,-1.4939434218861831e-16,0,-27.6810235202219,-3.5306866577979642e-15,-1.2668413114661154,0,107.26502634279174,20.270022310416476,-2.253143013368108,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "a14741e2-c94a-4aa3-bfc5-899e4c37f49b"
@@ -1129,7 +1154,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.5577407455229383,1.9999999999999947,-11.567378895094595,1],
+				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.038054936219769187,-3.843226260384432e-16,-3.1382323973412047,0,-0.5577407455229383,1.5801236219340087,-11.567378895094595,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "61318bfa-e9da-4532-9841-14641bee6d5b"
@@ -1139,7 +1164,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.2746681093500887,1.9999999999999976,11.77644468952957,1],
+				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.038054936219769187,-3.843226260384432e-16,-3.1382323973412047,0,-0.2746681093500887,1.7038116118599007,11.77644468952957,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "ce47758c-4f3d-4145-aa07-265cafc1eace"
@@ -1149,7 +1174,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-3.3224090011999044e-15,-3.276148215251243e-46,-14.962799939776271,0,-1.0887669533663299e-30,3.9037274670948845,8.547323913722921e-47,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,16.34426246279509,1.999999999999996,0.06175307214117787,1],
+				"matrix": [-3.3224090011999044e-15,-3.276148215251243e-46,-14.962799939776271,0,-1.0887669533663299e-30,3.9037274670948845,8.547323913722921e-47,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,16.34426246279509,1.5760286377739248,0.06175307214117787,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "93b571be-6031-4784-817c-1d1ae07e70ee"
@@ -1159,7 +1184,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-3.3224090011999044e-15,-3.276148215251243e-46,-14.962799939776271,0,-1.0887669533663299e-30,3.9037274670948845,8.547323913722921e-47,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,-16.64127413018708,1.999999999999996,0.06175307214118497,1],
+				"matrix": [-3.3224090011999044e-15,-3.276148215251243e-46,-14.962799939776271,0,-1.0887669533663299e-30,3.9037274670948845,8.547323913722921e-47,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,-16.64127413018708,1.703305029185056,0.06175307214118497,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "241664ae-f5d1-4284-8e5a-842d45a2eb8b"
@@ -1169,7 +1194,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-6.0331008399212855,-7.299367158158153e-16,0.07315878450084023,0,-1.4884273649199455e-15,12.154825335931092,-1.4704877776462883e-15,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.2746681093500891,5.6888131165006,11.77644468952957,1],
+				"matrix": [-6.0331008399212935,-7.299367158158156e-16,0.07315878450084023,0,-1.488427364919945e-15,12.154825335931092,-1.470487777646288e-15,0,-0.038054936219769187,-3.843226260384434e-16,-3.1382323973412083,0,-0.2746681093500891,5.6888131165006,11.77644468952957,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "217da436-a916-42e9-b489-57050319e26e"
@@ -1179,7 +1204,7 @@ camera.updateProjectionMatrix();
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-6.0331008399212855,-7.299367158158153e-16,0.07315878450084023,0,-1.4884273649199455e-15,12.154825335931092,-1.4704877776462883e-15,0,-0.03805493621976919,-3.8432262603844325e-16,-3.138232397341205,0,-0.5580122163094966,5.688813116500597,-11.589765962369857,1],
+				"matrix": [-6.0331008399212935,-7.299367158158156e-16,0.07315878450084023,0,-1.488427364919945e-15,12.154825335931092,-1.470487777646288e-15,0,-0.038054936219769187,-3.843226260384434e-16,-3.1382323973412083,0,-0.5580122163094966,5.688813116500597,-11.589765962369857,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "7a270282-e655-442a-8428-a8cad621930b"
@@ -1205,94 +1230,544 @@ camera.updateProjectionMatrix();
 				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
 			},
 			{
-				"uuid": "54d5ee94-5026-471e-8aeb-4f6f7082d649",
+				"uuid": "4eac6231-738e-4a16-aa8d-5fd269fac6f1",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-72.33045654032452,-8.857926208297516e-15,1.0847830978075004e-30,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321355e-16,0,0,-3.843508814597286e-16,-3.1384631203652242,0,57.459758312104306,2.0000000000000027,15.61671512441675,1],
+				"matrix": [-34.967147984101885,-4.2306279702916334e-15,0.4240197722289816,0,-2.73051503149274e-17,0.2229798649711986,-2.6976049185346032e-17,0,0.0035919825880025053,3.6275981989120745e-17,0.2962158723182675,0,-0.11130535450200618,-0.039848869775855,-12.04410641559252,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+				"material": "217da436-a916-42e9-b489-57050319e26e"
 			},
 			{
-				"uuid": "47146d15-0576-4617-b183-dbbb97bdd767",
+				"uuid": "957c7664-2ed2-4616-98e0-5c3edc426946",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [-50.588810807891264,-6.195342522855507e-15,7.587106390236483e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,49.27723886573345,5.952347120249395,30.75043681015503,1],
+				"matrix": [-34.594634630246645,-4.185558083126583e-15,0.4195025886277976,0,-2.7305150314927406e-17,0.2229798649711986,-2.6976049185346032e-17,0,0.0035919825880025044,3.6275981989120745e-17,0.2962158723182675,0,-0.11130535450200618,-0.039848869775855,12.537318443361137,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "ecfa9940-d1d8-47a2-bc87-c15c1356aef4",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [2.7462178004089655,0,0,0,0,5.7851861835403575,0,0,0,0,3.505315539006467,0,0,14.872610074326317,11.901039382593384,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "33ab7b3b-7640-4b29-9406-17789dc4f01f",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [2.7462178004089655,0,0,0,0,5.7851861835403575,0,0,0,0,3.505315539006467,0,0,14.872610074326317,-11.606231485634458,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "1406d143-a286-4b65-8957-18a283cceb86",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-0.07683810568404781,4.6800180807406496e-18,-25.288098417478494,0,2.7162236283170345e-17,0.2229798649711986,-4.126624964863962e-20,0,-0.29623628262328067,3.608611499398549e-17,0.0009001165060289554,0,-17.42727210195511,-0.039848869775855,0.34832248274263833,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "2bb6ae42-ad00-48a0-bad9-e75f1e202cf0",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-0.07683810568404781,4.6800180807406496e-18,-25.288098417478494,0,2.7162236283170345e-17,0.2229798649711986,-4.126624964863962e-20,0,-0.29623628262328067,3.608611499398549e-17,0.0009001165060289554,0,17.200928757031427,-0.039848869775855,0.34832248274263833,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "bf86bc8b-96e0-4cfc-9d12-2839aa8c2690",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [9.469633880958241,0,0,0,0,14.621487748571145,0,0,0,0,11.068576524705188,0,33.5369696857737,55.76407516798785,29.277530019953396,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "e4146310-7216-4656-824e-b307558c577a",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [9.469633880958241,0,0,0,0,14.621487748571145,0,0,0,0,11.068576524705188,0,-35.18763727534692,52.998315841401826,-30.175067819767644,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "fa664cc3-05f7-4c6a-8f64-fde1e4e4c9f9",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-36.527954965120415,5.952347120249396,31.18313840782419,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
 			},
 			{
-				"uuid": "2d4a529e-48e6-447c-8f2b-4e6a1a45dd9b",
+				"uuid": "28c74377-8852-4f7a-9e83-56827ebad5c7",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,68.69542285477645,2,-0.3344763381706569,1],
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-69.99046414046487,2.0000000000000027,31.01517845641162,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "42299cf1-3af9-4fca-a9ec-1e4e73bb913e",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,-48.16936090878246,2,-0.3344763381706516,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "642ff8aa-a3b6-41a7-908b-1f85c31340c0"
+			},
+			{
+				"uuid": "34704b46-38d0-427a-bf96-9b232c9144cf",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,-76.92917816176461,2,-0.3344763381706569,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "561a59d2-df54-4dbf-ae63-caba866c1a46"
 			},
 			{
-				"uuid": "2b35fc8d-af1a-4596-8a07-eefe595d55c5",
+				"uuid": "2d309984-2c29-4efb-92f0-a256193f4c21",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1.781594906041485e-15,0,8.023590154973606,0,0,15.587641024357756,0,0,-6.504776851640533,0,1.4443506061480111e-15,0,60.68873039367003,2,-0.33447633817065536,1],
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-71.76596123279002,5.952347120249395,31.18313840782419,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "706e84af-a454-434f-87ee-36e46c1bf31d"
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
 			},
 			{
-				"uuid": "1897d452-4b3f-4eeb-aecd-414ec97bb840",
+				"uuid": "d2bb2fc9-16ef-47c3-9785-d0862a3e6350",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1.781594906041485e-15,0,8.023590154973606,0,0,15.587641024357756,0,0,-6.504776851640533,0,1.4443506061480111e-15,0,49.38383407267673,2,-0.3344763381706536,1],
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-36.527954965120415,5.952347120249396,-31.15693889984447,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "3da4d00c-8f86-4e9f-bebd-626c9823933f",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-71.76596123279002,5.952347120249395,-31.524694146343304,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "05a30869-59df-4fcc-90ba-e78d3ac9eedc",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-36.77659285892271,2.0000000000000027,31.109096432356868,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
 			},
 			{
-				"uuid": "07d621a7-4d86-41a3-bd7e-181a7fe2baf9",
+				"uuid": "73cf1589-a6f5-4b65-bf7c-858c51120cc0",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [7.343655889246214e-16,0,3.30728859263464,0,0,15.587641024357756,0,0,-4.626421378461744,0,1.0272719071972568e-15,0,58.59459228877436,2,-0.3344763381706549,1],
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,-17.873513844437927,2.38545453456571,31.18313840782419,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "152aebf7-7b6c-418c-b595-31a1731a8214"
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
 			},
 			{
-				"uuid": "18e3373b-b395-4290-934b-7542f7b36829",
+				"uuid": "44a54f5f-b3b7-4ecc-b2f4-208ab63baf9d",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [7.343655889246214e-16,0,3.30728859263464,0,0,15.587641024357756,0,0,-4.626421378461744,0,1.0272719071972568e-15,0,51.37292430330758,2,-0.3344763381706536,1],
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,18.19345744810121,2.38545453456571,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "622da363-77cf-4d16-8dab-4fd290a4f98c",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959975,-2.7811164959862007e-15,0.2787407428521874,0,-6.892462910491453e-16,5.628536856140962,-6.809390035840391e-16,0,-0.27955943812692263,-2.8233135584380774e-15,-23.05410474598699,0,16.519493294425732,1.1050143366204939,30.70510041287323,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
 				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
 			},
 			{
-				"uuid": "08afa65b-a10f-40d0-99fc-3686a9177582",
+				"uuid": "71667a9b-7656-4e60-bd2b-e5254c7ae163",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1.781594906041485e-15,0,8.023590154973606,0,0,15.587641024357756,0,0,-6.504776851640533,0,1.4443506061480111e-15,0,33.519515592749286,2,-0.3344763381706509,1],
+				"matrix": [-164.92326347335722,-2.0197274671758256e-14,2.473452777826865e-30,0,-4.780687347321356e-16,3.9037274670948845,-4.780687347321354e-16,0,0,-3.8600769369276494e-15,-31.519920189357343,0,-8.802778881677874,2.0000000000000027,75.1323005622754,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "bd542e7c-77ba-47c1-b36d-c344b315485c"
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
 			},
 			{
-				"uuid": "3d0f9e44-1145-4106-9be7-9dac21b32e3a",
+				"uuid": "f622ccba-3e29-406f-bdd8-878a6bdd4450",
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [7.343655889246214e-16,0,3.30728859263464,0,0,15.587641024357756,0,0,-4.626421378461744,0,1.0272719071972568e-15,0,30.91587893693002,2,-0.33447633817065003,1],
+				"matrix": [-164.92326347335722,-2.0197274671758256e-14,2.473452777826865e-30,0,-4.780687347321356e-16,3.9037274670948845,-4.780687347321354e-16,0,0,-3.8600769369276494e-15,-31.519920189357343,0,-8.802778881677874,2.0000000000000027,-74.67176143526635,1],
 				"up": [0,1,0],
 				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
-				"material": "d08b245d-4c16-4f6f-ad6d-64a49a348186"
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "7c3bbd01-6d1e-4c7b-a147-29aa4f335c79",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,-17.873513844437927,2.38545453456571,-30.933730874803615,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "4f01f58b-6220-4f10-9221-4932c0e21442",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959975,-2.7811164959862007e-15,0.2787407428521874,0,-6.892462910491453e-16,5.628536856140962,-6.809390035840391e-16,0,-0.27955943812692263,-2.8233135584380774e-15,-23.05410474598699,0,-16.262042984714554,1.1050143366204939,-30.882889592824178,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "6c893138-ef88-4730-913b-1c81190456bc",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-36.77659285892271,2.0000000000000027,-31.503719158830645,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "a4ba1f9a-347d-4355-84ee-17cd2af9320d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-69.99046414046487,2.0000000000000027,-31.732162300101294,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "86417870-259b-4f4c-9b33-c0d2425f263f",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,18.19345744810121,2.38545453456571,-31.66647578345569,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "e184dc81-4ad6-4c9a-84c9-c2d97026e67b",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959975,-2.7811164959862007e-15,0.2787407428521874,0,-6.170423056841731e-16,5.038903225804849,-6.0960527210413335e-16,0,-0.27955943812692263,-2.8233135584380774e-15,-23.05410474598699,0,16.519493294425732,1.1050143366204939,-32.14111308562484,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "56de02f6-6596-4928-8f6b-0a39f778cb6d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,37.836450256890366,2,-0.3344763381706516,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "642ff8aa-a3b6-41a7-908b-1f85c31340c0"
+			},
+			{
+				"uuid": "3368bd10-a959-480c-98d8-2570f4983206",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,67.72737440132441,2,-0.3344763381706569,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "561a59d2-df54-4dbf-ae63-caba866c1a46"
+			},
+			{
+				"uuid": "ea9010fa-a55d-49f5-9953-a8e20d31f291",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,35.58807229270299,5.952347120249396,-31.15693889984447,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "256fa0d8-51ec-4102-8367-671b13c32b93",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,69.65072504011387,5.952347120249395,-31.524694146343304,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "d679fcb1-e2f7-45eb-a0a5-e8ca53d46408",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,35.42892916822767,2.0000000000000027,-31.503719158830645,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "08dd919d-d0f1-4139-9ae2-4ba9defcc5ff",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,66.93330022120873,2.0000000000000027,-31.732162300101294,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "ff58188e-31ac-4383-8d68-390bd60406e3",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,36.42768817546292,5.952347120249396,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "27428601-a93a-4d65-a1c0-1055eb55d7c6",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,36.89151287897299,2.0000000000000027,31.109096432356868,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "7e245dfd-ec2d-4a72-a79b-f81cd0cbc186",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,71.35898557786092,5.952347120249395,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "6e4ada86-ed23-40a1-8c4f-06c12650ba73",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,68.52391971428983,2.0000000000000027,31.01517845641162,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "42dd3d5f-a09a-412f-a317-cc81ee556b59",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [8.136225202956574,0,0,0,0,12.397439675464325,0,0,0,0,9.497135767776626,0,14.575733170032457,14.138296534542782,-30.10629979651295,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "fab16964-b33b-4c39-9652-4236c3ca406d",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [8.136225202956574,0,0,0,0,12.420811794275963,0,0,0,0,9.467042354393026,0,-15.96617268028309,14.290886418677637,30.94055653058794,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "646ca399-5e30-4c9a-8811-14c71d472cd2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.462773815510165,-2.75089640531355e-15,3.368876477553199e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-2.1480214621303708e-47,-1.922289433172268e-15,-15.696684419627285,0,-48.424214484285244,1.0798933206360974,-0.449221096675096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "6ebca84e-9b49-4e36-81b2-4218c34c1c4c",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [3.5402471727395747e-15,0,15.9438558479494,0,0,3.9037274670948845,0,0,-7.9193570079364015,0,1.7584504980875163e-15,0,-69.78374290298282,2,-0.4831628665772524,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "dcb50b46-6965-464e-9096-ac60f8278ad2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [3.5402471727395747e-15,0,15.9438558479494,0,0,3.9037274670948845,0,0,-7.9193570079364015,0,1.7584504980875163e-15,0,60.789325995364166,2,-0.4831628665772524,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "ca46a594-7db7-4959-9f7c-97fd670ab090",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [7.932056841443746e-15,0,35.72280823540765,0,0,3.9037274670948845,0,0,-3.1384631203652242,0,6.968788036332772e-16,0,65.66301369157914,2,0.30681450107626096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "08598b5b-9f7b-4ac5-8fe9-aa19709007e4",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.462773815510165,-2.75089640531355e-15,3.368876477553199e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-2.1480214621303708e-47,-1.922289433172268e-15,-15.696684419627285,0,38.01842033203198,1.0798933206360974,-0.449221096675096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "3a4b16cc-d98f-4e5c-a672-02e32ccdab29",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.9562475714490035,0,0,0,0,9.258013767689528,0,0,0,0,3.1433300935130912,0,-54.57721970781459,0,54.00571034905892,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3f03926e-4793-4e06-b897-f4b45cb36d1c",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [3.8221661239515625,0,0,0,0,9.258013767689528,0,0,0,0,3.9559894059752327,0,0.17731261621362648,0,50.82703143099926,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3c6095c9-06e9-453f-ad22-f9802228a2ae",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [3.015911036386662,0,0,0,0,9.258013767689528,0,0,0,0,2.989373476046219,0,54.1069169519656,0,53.47458142240422,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3eb1b4ba-eedc-4633-a850-dadd50890d46",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.878445929061107,0,0,0,0,9.258013767689528,0,0,0,0,2.956989462468081,0,54.1069169519656,0,-53.4233853385458,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3d2ca052-d288-4a0b-b894-480545464e2c",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [4.039851775478013,0,0,0,0,9.258013767689528,0,0,0,0,3.9172626991891204,0,0.17731261621362648,0,-52.064235132856865,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "e3d6c318-7353-4691-bb71-f73470cf3d1d",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.918497290794087,0,0,0,0,9.258013767689528,0,0,0,0,3.134661982102363,0,-54.57721970781459,0,-53.338325827181954,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "5545ff4c-f462-4aa9-9f3f-fd0ac406c3c1",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.770569742095003,0,0,0,0,28.752834007543818,0,0,0,0,2.461327267205207,0,0.17731261621362648,8.072152251763246,-52.064235132856865,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "8519c9f6-fc26-401a-a38a-9dfebafe07b9",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.770569742095003,0,0,0,0,28.752834007543818,0,0,0,0,2.461327267205207,0,0.05871483449492931,8.072152251763246,50.94451662073768,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "805dcd6b-8e12-4320-b6a7-5cd0b4468caa",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [65.12724558383655,7.975787284152904e-15,-9.767522368218013e-31,0,-1.174299266372613e-14,95.88881195706435,-1.174299266372613e-14,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,18.339003550533896,-128.67866373641397,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "d094aa03-334e-4b82-b34d-b75b187f0455"
+			},
+			{
+				"uuid": "d8eacf7f-c9e8-486a-b6f9-a88e6979af51",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [65.12724558383655,7.975787284152904e-15,-9.767522368218013e-31,0,-1.174299266372613e-14,95.88881195706435,-1.174299266372613e-14,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,18.339003550533896,126.47331896058091,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "d094aa03-334e-4b82-b34d-b75b187f0455"
 			}]
 	}
 }
@@ -1303,18 +1778,21 @@ camera.updateProjectionMatrix();
 });
 
 
-// Create bounding boxes for collision detection
+// Create bounding boxes for collision detection with padding
 const boundingBoxes = [];
 scene.traverse((node) => {
   if (node.isMesh) {
     const box = new THREE.Box3().setFromObject(node);
+    // Add padding to the box
+    const padding = new THREE.Vector3(0.7, 0.7, 0.7);
+    box.expandByVector(padding);
     boundingBoxes.push(box);
   }
 });
 
 // Detect collisions
 function detectCollisions() {
-  //get origin point but take into account velocity
+  // Get origin point but take into account velocity
   const originPoint = controls.getObject().position.clone();
   for (let box of boundingBoxes) {
     if (box.containsPoint(originPoint)) {
@@ -1323,6 +1801,7 @@ function detectCollisions() {
   }
   return false;
 }
+
 
 //detect collison between bullets and walls
 function detectBulletCollisions() {
@@ -1349,16 +1828,18 @@ function detectEnemyBulletCollisions() {
   return false;
 }
 
- // Create the enemies
- const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
+
+	// Create the enemies
+	const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
     const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const enemies = [];
+    let enemies = [];
     for (let i = 0; i < 10; i++) {
       const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
       enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
       scene.add(enemy);
       enemies.push(enemy);
     }
+ 
    
   //set time variable to higher as time goes on
 let time = 0;
@@ -1380,7 +1861,8 @@ setInterval(() => {
 
 
    function moveEnemies() {
-  // Move enemies towards player
+	
+  // enemies towards player
   for (let enemy of enemies) {
     //move in direction of player slowly 
     enemy.position.lerp(controls.getObject().position, 0.01);
@@ -1423,15 +1905,17 @@ document.addEventListener('mousedown', () => {
   shootTimeout = setInterval(() => {
     if (ammoCount > 0) { // Check if there is ammo left
       const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
-      //set bullet posiiton to camera position
+      // Set bullet position to camera position
       bullet.position.copy(camera.position);
-      //add velocity to bullet
+      // Add velocity to bullet
       bullet.velocity = new THREE.Vector3();
-      //set bullet velocity in direction of camera
+      // Set bullet velocity in direction of camera
       camera.getWorldDirection(bullet.velocity);
-      bullet.velocity.multiplyScalar(0.2);
-if (!bullet.velocity || bullet.velocity.length() === 0) return; 
-     bullets.push(bullet);
+      bullet.velocity.multiplyScalar(0.1);
+      
+      if (!bullet.velocity || bullet.velocity.length() === 0) return; // Check if bullet velocity is zero
+
+      bullets.push(bullet);
       scene.add(bullet);
 
       ammoCount--; // Decrement ammo count
@@ -1447,18 +1931,22 @@ if (!bullet.velocity || bullet.velocity.length() === 0) return;
 document.addEventListener('mouseup', () => {
   clearInterval(shootTimeout);
 });
-//on click shoot with 150ms delay
+
+// On click, shoot with 150ms delay
 document.addEventListener('click', () => {
   setTimeout(() => {
     if (ammoCount > 0) { // Check if there is ammo left
       const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
-      //set bullet posiiton to camera position
+      // Set bullet position to camera position
       bullet.position.copy(camera.position);
-      //add velocity to bullet
+      // Add velocity to bullet
       bullet.velocity = new THREE.Vector3();
-      //set bullet velocity in direction of camera
+      // Set bullet velocity in direction of camera
       camera.getWorldDirection(bullet.velocity);
       bullet.velocity.multiplyScalar(0.2);
+	  console.log(bullet.velocity);
+
+      if (!bullet.velocity || bullet.velocity.length() === 0) return; // Check if bullet velocity is zero
 
       bullets.push(bullet);
       scene.add(bullet);
@@ -1472,10 +1960,10 @@ document.addEventListener('click', () => {
   }, 150);
 });
 
-
 // On key press, reload if 'r' is pressed
 document.addEventListener('keydown', (event) => {
   if (event.key === 'r') {
+	if(ammoCount == 10) return; // Check if ammo count is already full 
     setTimeout(() => {
       ammoCount = 10; // Reset ammo count
     ammoCountElement.textContent = `Ammo: ${ammoCount}`; // Update ammo count element
@@ -1510,7 +1998,7 @@ scene.add(controls.getObject());
 
 
       // Set up the lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
       scene.add(ambientLight);
       const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
       directionalLight.position.set(1, 1, 0);
@@ -1527,7 +2015,7 @@ const jumpSpeed = 0.2;
 const jumpHeight = 0.9;
 // Load the skybox texture
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('https://i.imgur.com/1pJKDTj.jpg');
+const texture = textureLoader.load('https://i.imgur.com/C2FAB2q.jpg');
 
 // Create the skybox geometry
 const skyboxGeometry = new THREE.SphereGeometry(1000, 32, 32);
@@ -1539,21 +2027,62 @@ const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 skybox.position.set(0, 500, 0);
 // Add the skybox to the scene
 scene.add(skybox);
+// Define variables for movement
+// Define variables for movement and timer
+let velocity = new THREE.Vector3();
+let speed = 0.05;
+let lastShiftTime = 0;
+let shiftAvailable = true;
+var timeSinceLastShift;
+
 
 // Set up the animation loop
 function animate() {
   requestAnimationFrame(animate);
  // Update bullet positions
  bullets.forEach((bullet) => {
-        bullet.position.add(bullet.velocity);
-      });
+  bullet.position.add(bullet.velocity);
+
+  if (!bullet.velocity || bullet.velocity.length() === 0) {
+    // Remove bullet from the scene and bullets array
+    scene.remove(bullet);
+    bullets.splice(bullets.indexOf(bullet), 1);
+  }
+});
+
+bullets.forEach((bullet) => {
+  bullet.position.add(bullet.velocity);
+
+  if (!bullet.velocity || bullet.velocity.length() === 0) {
+    // Remove bullet from the scene and bullets array
+    scene.remove(bullet);
+    bullets.splice(bullets.indexOf(bullet), 1);
+  }
+});
+
+  
+
+	  
+    
 
 	  //enemy bullets 
 	  enemyBullets.forEach((enemyBullet) => {
 		enemyBullet.position.add(enemyBullet.velocity);
 	  });
-  // Move the player based on keyboard input
- let speed = 0.05;
+
+	  //if they can dash, update dash-progress
+	  if (timeSinceLastShift > 5000) {
+		document.getElementById("dash-progress-bar").style.color = "white"
+document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person-running"></i> Dash Ready';
+		//size 15px
+		document.getElementById("dash-progress-bar").style.fontSize = "25px";
+		document.getElementById("dash-progress-bar").style.textAlign = "center";
+
+	  } else {
+		document.getElementById("dash-progress-bar").innerHTML = "";
+	  }
+	
+
   
   const forward = new THREE.Vector3(
     controls.getObject().matrix.elements[8],
@@ -1585,20 +2114,45 @@ function animate() {
     keyboard.set(event.key, false);
    
   });
+// Check for shift key and timer
+const currentTime = Date.now();
+   timeSinceLastShift = currentTime - lastShiftTime;
+  if (keyboard.get("Shift") && shiftAvailable && timeSinceLastShift > 5000) {
+    speed = 0.18;
+	document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person-running"></i> Dashing';
+	document.getElementById("dash-progress-bar").style.color = "red";
+   setTimeout(() => {
+    shiftAvailable = false;
+	lastShiftTime = currentTime;
 
+    setTimeout(() => {
+      shiftAvailable = true;
+    }, 1500);
+    const intervalId = setInterval(() => {
+      const progress = (Date.now() - lastShiftTime) / 1500;
+      if (progress >= 1) {
+        clearInterval(intervalId);
+      }
+    }, 50);
+   }, 1500);
+  } else {
+    speed = 0.05;
+  }
+ 
+  // Move the user
   if (keyboard.get("w")) {
-    velocity.add(backward);
+	velocity.add(backward);
   }
   if (keyboard.get("s")) {
-    velocity.add(forward);
+	velocity.add(forward);
+  
   }
   if (keyboard.get("a")) {
-    velocity.add(right);
+	velocity.add(right);
   }
   if (keyboard.get("d")) {
-    velocity.add(left);
+	velocity.add(left);
   }
-
   if (isJumping) {
     jumpVelocity -= 0.006;
     controls.getObject().position.y += jumpVelocity /2;
@@ -1682,6 +2236,7 @@ enemyBullets.forEach((enemyBullet) => {
 }
 
 updateHealth();
+updateProgressBar();
 
 //detect bullet collisions with walls
 bullets.forEach((bullet) => {
@@ -1765,7 +2320,35 @@ setInterval(() => {
 
 
 animate();
+function updateProgressBar() {
+  const progressBar = document.getElementById("dash-progress-bar");
+  const progress = timeSinceLastShift;
+  if (progress <= 0) {
+    progressBar.style.width = "0%";
+    progressBar.style.backgroundColor = "red"
+  } else if (progress < 1000) {
+    progressBar.style.width = "10%";
+    progressBar.style.backgroundColor = "limegreen";
+  } else {
+    const progressPercentage = Math.min(Math.floor((progress - 1000) / 500) * 10, 100);
+    progressBar.style.width = `${progressPercentage}%`;
+    progressBar.style.backgroundColor = "#4CAF50";
+	
+  }
+  if(timeSinceLastShift > 5000){
+	progressBar.style.width = `${100}%`;
 
+  }
+}
+
+const popupText = document.getElementById("popup-text");
+if(score == 0){
+popupText.innerHTML = "Use WASD to move";
+popupText.style.display = "inline-block";
+setTimeout(() => {
+	popupText.innerHTML = "";
+}, 1500);
+}
 
 
 //on window resize
