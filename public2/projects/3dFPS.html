@@ -17,8 +17,6 @@
       <button onclick="toggleUI()"> <span id="ui"> Show UI Enabled</span></button> <br> <br>
       <label id="fov" for="fov-slider"><span id="fovValue"> FOV: 90</label>
   <input type="range" id="fov-slider" min="30" max="150" value="90" onchange="updateFOV(this.value);"> <br> <br>
-  <label for="sensitivity-slider"> <span id="sensitivity"> Sensitivity: 1</span></label>
-  <input type="range" id="sensitivity-slider" min="0.1" max="2" step="0.1" value="1" onchange="updateSensitivity(this.value);"> <br> <br>
       <button onclick="closeOptions();">Back</button>
   </div>
 
@@ -1944,7 +1942,6 @@ document.addEventListener('click', () => {
       // Set bullet velocity in direction of camera
       camera.getWorldDirection(bullet.velocity);
       bullet.velocity.multiplyScalar(0.2);
-	  console.log(bullet.velocity);
 
       if (!bullet.velocity || bullet.velocity.length() === 0) return; // Check if bullet velocity is zero
 
@@ -1976,25 +1973,24 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-
-
-
-
-
-
-// Set up the controls
 const controls = new THREE.PointerLockControls(camera, document.body);
+
 
 const lockControls = () => {
   controls.lock();
-  document.removeEventListener("click", lockControls);
 };
 
 document.addEventListener("click", lockControls);
 
 scene.add(controls.getObject());
+
+
+
+
+
+
+
 	
-      controls.mouseSensitivity = userSenstivity;
 
 
       // Set up the lighting
@@ -2035,12 +2031,21 @@ let lastShiftTime = 0;
 let shiftAvailable = true;
 var timeSinceLastShift;
 
+setInterval(() => {
+	//check bullets array
+	//if a bullet doesn't have a velocity, remove it from the scene
+	bullets.forEach((bullet) => {
+		if (!bullet.velocity || bullet.velocity.x === 0 && bullet.velocity.y === 0 && bullet.velocity.z === 0) {
+		    bullet.position.add(bullet.velocity);
 
+		}
+	  });
+}, 
+100);
 // Set up the animation loop
 function animate() {
-  requestAnimationFrame(animate);
- // Update bullet positions
- bullets.forEach((bullet) => {
+	 // Update bullet positions
+	 bullets.forEach((bullet) => {
   bullet.position.add(bullet.velocity);
 
   if (!bullet.velocity || bullet.velocity.length() === 0) {
@@ -2059,6 +2064,8 @@ bullets.forEach((bullet) => {
     bullets.splice(bullets.indexOf(bullet), 1);
   }
 });
+  requestAnimationFrame(animate);
+
 
   
 
@@ -2220,7 +2227,7 @@ enemyBullets.forEach((enemyBullet) => {
 
       if (health < 0  && gameOver == false || health == 0 && gameOver == false) {
   gameOver = true;
-  
+  document.removeEventListener("click", lockControls);
   document.getElementById("endGame").style.display = "block";
   //hide the canvas
   document.getElementById("canvas").style.display = "none";
