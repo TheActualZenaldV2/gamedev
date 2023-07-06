@@ -2305,6 +2305,13 @@ setInterval(() => {
 	  });
 }, 
 100);
+
+
+
+let fps = 0;
+      let frameCount = 0;
+      let lastTime = performance.now();
+      const fpsCounter = document.getElementById("fps-counter");
 // Set up the animation loop
 function animate() {
 	 // Update bullet positions
@@ -2316,6 +2323,18 @@ function animate() {
   bullet.position.add(bullet.velocity);
 });
 
+        const currentTime = performance.now();
+        const elapsedTime = currentTime - lastTime;
+        frameCount++;
+        if (elapsedTime >= 1000) {
+          fps = frameCount / (elapsedTime / 1000);
+          frameCount = 0;
+          lastTime = currentTime;
+          fpsCounter.textContent = `FPS: ${Math.round(fps)}`;
+        }
+		
+		
+      
 
 animationId = requestAnimationFrame(animate);
 
@@ -2375,7 +2394,6 @@ document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person
    
   });
 // Check for shift key and timer
-const currentTime = Date.now();
 if(!isPaused){
    timeSinceLastShift = currentTime - lastShiftTime;
 }
@@ -2661,28 +2679,10 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 animate();
-let fps = 0;
-      let frameCount = 0;
-      let lastTime = performance.now();
-      const fpsCounter = document.getElementById("fps-counter");
 
-      function updateFPS() {
-        const currentTime = performance.now();
-        const elapsedTime = currentTime - lastTime;
-        frameCount++;
-        if (elapsedTime >= 1000) {
-          fps = frameCount / (elapsedTime / 1000);
-          frameCount = 0;
-          lastTime = currentTime;
-          fpsCounter.textContent = `FPS: ${Math.round(fps)}`;
-        }
-		if(!isPaused){
-        requestAnimationFrame(updateFPS);
-		}
-		
-      }
 
-      requestAnimationFrame(updateFPS);
+     
+
 
       }
     </script>
