@@ -8,29 +8,34 @@
 <div id="preGame">
     <div class="menu" id="startMenu">
       <h1>Game Menu</h1>
-      <button onclick="startGame();">Start Game</button>
-      <button onclick="openOptions();">Options</button>
-      <button onclick="openControls()">Controls</button>
+      <button onclick="startGame();"><i class="fa-solid fa-play"></i> Start Game </button>
+      <button onclick="openControls()"><i class="fa-solid fa-gamepad"></i> How To Play</button>
+	  <button onclick="openOptions();"><i class="fa-solid fa-gears"></i> Change Controls</button>
     </div>
  <div class="menu" id="optionsMenu" style="display: none;">
       <h1>Options</h1>
-      <button onclick="toggleUI()"> <span id="ui"> Show UI Enabled</span></button> <br> <br>
+      <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <span id="ui"> UI Enabled </span></button> <br> <br>
+<label> <input type="checkbox" id="spawn-enemies" checked> Spawn Enemies</label> <br> <br>
       <label id="fov" for="fov-slider"><span id="fovValue"> FOV: 90</label>
   <input type="range" id="fov-slider" min="30" max="150" value="90" onchange="updateFOV(this.value);"> <br> <br>
-      <button onclick="closeOptions();">Back</button>
+  <label id="difficulty" for="difficulty-slider"><span id="difficultyValue"> Difficulty: 2.5</label>
+<input type="range" id="difficulty-slider" min="1" max="5" value="2.5" step="0.5" onchange="updateDifficulty(this.value);"><br><br>
+<button onclick="resetSettings();"id="resetSettingsBtn">Reset</button>
+  <button onclick="closeOptions();">Continue</button>
   </div>
 
-    <div id="controlsMenu" class="menu" style="display: none;">
-      <h1> Controls</h1>
-   <li> Use WASD to move </li>
-   <li> Shift To Dash </li>
-   <li> Space To Jump</li>
-   <li> Left Click to Shoot</li>
-   <li> Move Mouse to Look Around</li>
-   <li> Avoid Touching Enemies, They Kill You</li> 
-   <li> Shoot Enemies Before They Shoot You</li> 
-    <button onclick="closeControls();">Back</button>
-    </div>
+<div id="controlsMenu" class="menu" style="display: none;">
+  <h1>Controls</h1>
+  <ul>
+    <li>Use WASD to move</li>
+    <li>Shift to dash</li>
+    <li>Space to jump</li>
+    <li>Left click to shoot</li>
+    <li>Move mouse to look around</li>
+    <li>Avoid touching enemies, they kill you</li>
+    <li>Shoot enemies before they shoot you</li>
+  </ul>
+  <button onclick="closeControls();">Back</button>
 </div>
 
 <div id="endGame" style="display: none;">
@@ -41,21 +46,27 @@
   </div>
 </div>
 
-<div id="popup-holder" style="display: none;"> <h2 id="popup-text"> </h2></div>
 
 
-<div id="gameUI">
+<div id="gameUI" style="display: none;">
+	<div id="fps-counter"></div>
+	<div id="popup-holder" style="display: none;"> <h2 id="popup-text"> </h2></div>
+
+	<button id="pause-button"><i class="fas fa-pause"></i></button>
+	<h1 id="pausedText" style="display: none;"> Game Is Paused</h1>
     <div id="crosshair"></div>
     <div id="hud">
+		<div id="money"><i class="fa-solid fa-money-bill-1-wave"></i> <span id="money-count">Money: $0</span></div>
+
       <div id="ammo-count"><i class="fa-solid fa-crosshairs"></i><span id="ammo-count-value">Ammo: 10</span></div>
       <div id="score"><i class="fa-solid fa-star"></i><span id="score-value">Score: 0</span></div> 
 	  <div class="progress-bar-container">
-		<div id="dash-background"><i class="fa-solid fa-person-running"></i> Dash</div>
+		<div id="dash-background"><i class="fa-solid fa-person-running"></i> Dash Cooldown</div>
 		<div id="dash-progress-bar" class="progress-bar"> </div>
 	  </div>
       <div id="health-bar">
-        <div id="health-bar-number">Health: 100</div>
-        <div id="health-bar-value"> <i class="fa-solid fa-heart" style="color: #ffffff;"></i>
+        <div id="health-bar-number"><i class="fa-solid fa-heart" style="color: #ffffff;"></i>Health: 100</div>
+        <div id="health-bar-value"> 
           
           <div id="health-bar-value-inner">
           <div class="health-section"></div>
@@ -73,54 +84,63 @@
 </body>
 
 <style>
-  /* import poppins font */
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-  
-  #background{
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center;
-	z-index: -1;
-  }
-  body {
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+ /* import poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
+#background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;
+}
 
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
 
+button {
+  transition: 0.2s ease-in-out;
+}
 
-  }
-  canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  #crosshair {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: calc(50% - 10px);
-    left: calc(50% - 10px);
-  }
-  #crosshair::before,
-  #crosshair::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 2px;
-    background-color: #ffffff;
-    top: calc(50% - 1px);
-    left: calc(50% - 5px);
-  }
-  #crosshair::after {
-    transform: rotate(90deg);
-  }
+button:active {
+  transform: scale(0.9);
+}
 
-  
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#crosshair {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: calc(50% - 10px);
+  left: calc(50% - 10px);
+}
+
+#crosshair::before,
+#crosshair::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background-color: #ffffff;
+  top: calc(50% - 1px);
+  left: calc(50% - 5px);
+}
+
+#crosshair::after {
+  transform: rotate(90deg);
+}
 
 .menu {
   position: absolute;
@@ -133,8 +153,17 @@
   text-align: center;
 }
 
+.menu h1,
+li,
+label,
+p {
+  color: white;
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+}
+
+
 .menu h1 {
-  color: #fff;
   font-size: 36px;
   margin-top: 0;
 }
@@ -154,138 +183,62 @@
   background-color: #000;
   color: #fff;
 }
-
-li {
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 1px black;
-}
-
-label {
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 1px black;
-}
-
-p {
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 1px black;
-}
-
-#hud {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 20px;
-  font-size: 32px;
-  color: white;
-  text-shadow: 1px 1px 1px black;
-}
-
 #ammo-count,
-#score {
+#score, #money {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 32px;
   color: white;
   text-shadow: 1px 1px 1px black;
-}
-
-#ammo-count-value,
-#score-value {
-  margin-left: 10px;
-}
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-#hud {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 20px;
-  font-size: 32px;
-  color: white;
-  text-shadow: 1px 1px 1px black;
-  font-family: 'Roboto', sans-serif;
-  background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
-}
-
-#ammo-count,
-#score {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  color: white;
-  text-shadow: 1px 1px 1px black;
-}
-
-#ammo-count-value,
-#score-value {
-  margin-left: 10px;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-#hud {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 20px;
-  font-size: 32px;
-  color: white;
-  text-shadow: 1px 1px 1px black;
-  font-family: 'Roboto', sans-serif;
-  background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
-  opacity: 0;
-  animation: fade-in 0.5s forwards;
-}
-
-#ammo-count,
-#score {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  color: white;
-  text-shadow: 1px 1px 1px black;
-  opacity: 0;
-  animation: slide-in 0.5s forwards;
-}
-
-#ammo-count-value,
-#score-value {
-  margin-left: 10px;
-}
-
-#hud {
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#ammo-count {
+  width: 100%;
   padding: 10px;
   border-radius: 10px;
   margin: auto;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-#score {
-  padding: 10px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
+
+
+#ammo-count,
+#score,
+#money,
+#hud {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+
+#ammo-count-value,
+#score-value,
+#money-count,
+#ammo-count-value,
+#score-value {
+  margin-left: 10px;
+}
+
+#hud {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  gap: 20px;
+  font-family: 'Roboto', sans-serif;
+  background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius:15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #health-bar {
-  width: 450px;
+  width: 100%;
   height: 40px;
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.8);
@@ -298,6 +251,18 @@ p {
   animation: slide-in 0.5s forwards;
 }
 
+.health-section {
+  width: 25%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+  margin: 5px;
+  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47); 
+box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
+
+}
+
 #health-bar-value {
   position: absolute;
   top: 0;
@@ -308,16 +273,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.health-section {
-  width: 25%;
-  height: 100%;
-  background-color: rgba(255, 0, 0, 0.8);
-  border-radius: 10px;
-  transition: width 0.2s ease-in-out;
-  margin: 5px;
- 
 }
 
 #health-bar-value-inner {
@@ -337,7 +292,7 @@ p {
 
 .progress-bar-container {
   margin-bottom: 0px;
-  width: 35%;
+  width: 55%;
   height: 50px;
   background-color: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
@@ -355,27 +310,15 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  font-size: 19px;
   color: white;
   text-shadow: 1px 1px 1px black;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
   border-radius: 10px;
-
 }
 
-#dash-progress-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  transition: width 0.2s ease-in-out;
-  z-index: 2;
-}
-
+#dash-progress-bar,
 .progress-bar {
   width: 50px;
   height: 100%;
@@ -383,18 +326,116 @@ p {
   border-radius: 10px;
   transition: width 0.2s ease-in-out;
 }
-#popup-text {
-	  position: absolute;
+
+#dash-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+#pause-button {
+  position: absolute;
+  margin-top: 10px;
+  right: 10px;
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#pause-button i {
+  font-size: 30px;
+  color: #fff;
+}
+
+#pause-button.play i::before {
+  content: "\f04b";
+}
+
+#pause-button.pause i::before {
+  content: "\f04c";
+}
+
+#uiBtn:hover {
+  color: black;
+  transition: 0.3s ease-in-out;
+}
+
+#controlsMenu {
+  position: absolute;
   top: 50%;
-  left: 50%;
+ left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'Roboto', sans-serif;
-  font-size: 32px;
+  width: 400px;
+  padding: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: none;
+}
+
+#controlsMenu h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+#controlsMenu li {
+  font-size: 20px;
   color: white;
   text-shadow: 1px 1px 1px black;
-  opacity: 0;
-  animation: fade-in 0.5s forwards;
+}
+#hud {
+	-webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 0px -5px 18px 21px rgba(0,0,0,0); 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 0px -5px 18px 21px rgba(0,0,0,0);
+}
+#fps-counter {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        font-size: 24px;
+		font-weight: bold;
+        color: rgb(5, 255, 5);
+        text-shadow: 1px 1px 1px black;
+        z-index: 9999;
+      }
+
+	  #pausedText {
+	z-index: 999;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: 'Roboto', sans-serif;
+	font-size: 32px;
+	color: rgb(144, 144, 144);
+	text-shadow: 1px 1px 1px rgb(255, 255, 255);
+	background-color: black;
+	padding: 50px;
+	border-radius: 10px;
+}
+#popup-holder {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  color: rgb(0, 0, 0);
+  color: rgba(255,255,255,.8);
+text-shadow: 0 0 15px rgba(255,255,255,.5), 0 0 10px rgba(255,255,255,.5);
   z-index: 999;
+  animation: pulse 0.5s infinite alternate;
 }
 
 /* Animations */
@@ -446,7 +487,49 @@ p {
       showUI = true;
       let userFov;
       let userSenstivity;
-      
+	  let userDifficulty;
+	  let spawnEnemies;
+	  let ui;
+	  let spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
+
+	 
+      //get settings from local storage
+	  if(localStorage.getItem("fov")){
+		userFov = localStorage.getItem("fov");
+		//update slider in html
+		document.getElementById("fov-slider").value = userFov;
+		document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
+
+	  }
+	  if(localStorage.getItem("difficulty")){
+		userDifficulty = localStorage.getItem("difficulty");
+		//update slider in html
+		document.getElementById("difficulty-slider").value = userDifficulty/2;
+		document.getElementById("difficultyValue").innerHTML = "Difficulty: " + userDifficulty/2;
+
+	  }
+	  if(localStorage.getItem("ui")){
+		showUI = localStorage.getItem("ui");
+		if(showUI == "true"){
+			showUI = true;
+			document.getElementById("ui").innerHTML = "UI Enabled";
+			document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
+		}else{
+			showUI = false;
+			document.getElementById("ui").innerHTML = "UI Disabled";
+			document.getElementById("uiBtn").style.backgroundColor = "red"
+		}
+	}
+	if(localStorage.getItem("enemies")){
+		spawnEnemies = localStorage.getItem("enemies");
+		if(spawnEnemies == "true"){
+			spawnEnemies = true;
+			document.getElementById("spawn-enemies").checked = true;
+		} if(spawnEnemies == "false"){
+			spawnEnemies = false;
+			document.getElementById("spawn-enemies").checked = false;
+		}
+	}
 
       function startGame(){
         gameStart = true;
@@ -463,18 +546,17 @@ p {
       }
       function toggleUI(){
         if(showUI == false){
-          document.getElementById("ui").innerHTML = "Show UI Enabled";
+          document.getElementById("ui").innerHTML = "UI Enabled";
           showUI = true;
+		  document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
         }else{
           document.getElementById("gameUI").style.display = "none";
-          document.getElementById("ui").innerHTML = "Show UI Disabled";
+          document.getElementById("ui").innerHTML = "UI Disabled";
           showUI = false;
+		  document.getElementById("uiBtn").style.backgroundColor = "red"
         }
       }
-      function closeOptions(){
-        document.getElementById("optionsMenu").style.display = "none";
-        document.getElementById("startMenu").style.display = "block";
-      }
+     
       function openControls(){
         document.getElementById("controlsMenu").style.display = "block";
         document.getElementById("startMenu").style.display = "none";
@@ -487,12 +569,59 @@ p {
         userFov = value;
         document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
       }
-      function updateSensitivity(value1) {
-  userSenstivity = value1;
-  mouseSensitivity = userSenstivity;
-  document.getElementById("sensitivity").innerHTML = "Sensitivity: " + userSenstivity;
+      function updateDifficulty(value1) {
+  userDifficulty = value1 *2;
+
+  document.getElementById("difficultyValue").innerHTML = "Difficulty: " + value1;
 }
+function resetSettings(){
+	userDifficulty = 5;
+	userFov = 90;
+	showUI = true;
+	spawnEnemies = true;
+	document.getElementById("fov-slider").value = userFov;
+	document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
+	document.getElementById("difficulty-slider").value = userDifficulty/2;
+	document.getElementById("difficultyValue").innerHTML = "Difficulty: " + userDifficulty/2;
+	document.getElementById("ui").innerHTML = "UI Enabled";
+	document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
+	document.getElementById("spawn-enemies").checked = true;
+
+
+	localStorage.setItem("fov", userFov);
+	localStorage.setItem("difficulty", userDifficulty);
+	localStorage.setItem("ui", showUI);
+	localStorage.setItem("enemies", spawnEnemies);
+	document.getElementById("resetSettingsBtn").textContent = "Settings Reset";
+	setTimeout(() => {
+		document.getElementById("resetSettingsBtn").textContent = "Reset";
+
+	}, 1500);
+
+}
+function closeOptions(){
+        document.getElementById("optionsMenu").style.display = "none";
+        document.getElementById("startMenu").style.display = "block";
+		//save settings to local storage
+		if(userDifficulty == undefined || userDifficulty == null || userDifficulty == 0 || userDifficulty == NaN || userFov == undefined || userFov == null || userFov == 0 || userFov == NaN){
+			userDifficulty = 2.5;
+			userFov = 90;
+		
+      }
+		localStorage.setItem("fov", userFov);
+		localStorage.setItem("difficulty", userDifficulty);
+		localStorage.setItem("ui", showUI);
+		localStorage.setItem("enemies", spawnEnemies);
+		
+	}
+
+	 // Add an event listener to the checkbox to update spawnEnemies when its state changes
+	 spawnEnemiesCheckbox.addEventListener("change", () => {
+    spawnEnemies = spawnEnemiesCheckbox.checked;
+	localStorage.setItem("spawnEnemies", spawnEnemiesCheckbox.checked);
+  });
      function gameStartFunction(){
+
 
       // Set up the scene, camera, and renderer
       const scene = new THREE.Scene();
@@ -507,9 +636,12 @@ if(!userFov){
 }
 camera.fov = userFov;
 camera.updateProjectionMatrix();
+if(!userDifficulty){
+	  userDifficulty = 5;
+}
       let score = 0;
       let health = 100;
-      let enemyNumber = 5;
+      let enemyNumber = userDifficulty;
       let gameOver = false;
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1775,6 +1907,45 @@ camera.updateProjectionMatrix();
   scene.add(object);
 });
 
+const pauseButton = document.getElementById("pause-button");
+let isPaused = false;
+function pauseGame(){
+	if (isPaused) {
+    // Resume the game
+    isPaused = false;
+    pauseButton.classList.remove("play");
+    pauseButton.classList.add("pause");
+    // Enable user input and show UI elements here
+
+    animate(); // Restart the animation loop
+	//unfocus element 
+	pauseButton.blur();
+	document.getElementById("pausedText").style.display = "none";
+
+  } else {
+    // Pause the game
+    isPaused = true;
+	pauseButton.classList.remove("pause");
+    pauseButton.classList.add("play");
+	document.getElementById("pausedText").style.display = "block";
+    // Disable user input and hide UI elements here
+    cancelAnimationFrame(animationId); // Stop the animation loop
+  }
+}
+pauseButton.addEventListener("click", () => {
+	pauseGame();
+});
+
+let animationId;
+
+//when user presses escape key pause the game
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+
+      pauseGame();
+   
+  }
+});
 
 // Create bounding boxes for collision detection with padding
 const boundingBoxes = [];
@@ -1826,44 +1997,72 @@ function detectEnemyBulletCollisions() {
   return false;
 }
 
+let enemies = [];
+let enemySpeed = 0.01; // Set initial enemy speed
 
+  //if spawn enemies is enabled
+  let spawnEnemies = false;
+ let spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
+  //if disabled send to local storage
+  if (!spawnEnemiesCheckbox.checked) {
+
+	localStorage.setItem("spawnEnemies", false);
+  }
+
+  if (spawnEnemiesCheckbox.checked) {
 	// Create the enemies
 	const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
     const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    let enemies = [];
+	setTimeout(() => {
+		
     for (let i = 0; i < 10; i++) {
       const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
       enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
       scene.add(enemy);
       enemies.push(enemy);
     }
- 
-   
-  //set time variable to higher as time goes on
-let time = 0;
-setInterval(() => {
-  time += 10;
-}, 100);
+	}, 3500);
+    spawnEnemies = true;
 
-// Create enemies at random intervals
-setInterval(() => {
-  const numEnemies = Math.floor(Math.random() * enemyNumber) + 1; // Generate a random number of enemies between 1 and 5
-  for (let i = 0; i < numEnemies; i++) {
-    const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
-    enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
-    scene.add(enemy);
-    enemies.push(enemy);
+    
+
+    //set time variable to higher as time goes on
+    let time = 0;
+    setInterval(() => {
+      time += 10;
+    }, 100);
+
+    // Create enemies at random intervals
+    setInterval(() => {
+      if (spawnEnemiesCheckbox.checked) {
+        const numEnemies = Math.floor(Math.random() * userDifficulty) + 1; // Generate a random number of enemies between 1 and 5
+        for (let i = 0; i < numEnemies; i++) {
+          const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+          enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+          scene.add(enemy);
+          enemies.push(enemy);
+        }
+      }
+    }, Math.random() * 1000 + 5000 - time);
+
+    let enemySpeed;
+    setInterval(() => {
+      enemySpeed = Math.random() * 0.01 + 0.01; // Generate a random enemy speed between 0.01 and 0.02
+    }, 1000);
   }
-}, Math.random() * 1000 + 5000 - time);
 
-
+  // Add an event listener to the checkbox to update spawnEnemies when its state changes
+  spawnEnemiesCheckbox.addEventListener("change", () => {
+    spawnEnemies = spawnEnemiesCheckbox.checked;
+	localStorage.setItem("spawnEnemies", spawnEnemiesCheckbox.checked);
+  });
 
    function moveEnemies() {
 	
   // enemies towards player
   for (let enemy of enemies) {
     //move in direction of player slowly 
-    enemy.position.lerp(controls.getObject().position, 0.01);
+    enemy.position.lerp(controls.getObject().position, enemySpeed);
 
   }
 }
@@ -1959,7 +2158,7 @@ document.addEventListener('click', () => {
 
 // On key press, reload if 'r' is pressed
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'r') {
+  if (event.key === 'r' || event.key === 'R') {
 	if(ammoCount == 10) return; // Check if ammo count is already full 
     setTimeout(() => {
       ammoCount = 10; // Reset ammo count
@@ -2047,24 +2246,14 @@ function animate() {
 	 // Update bullet positions
 	 bullets.forEach((bullet) => {
   bullet.position.add(bullet.velocity);
-
-  if (!bullet.velocity || bullet.velocity.length() === 0) {
-    // Remove bullet from the scene and bullets array
-    scene.remove(bullet);
-    bullets.splice(bullets.indexOf(bullet), 1);
-  }
 });
-
-bullets.forEach((bullet) => {
+ // Update bullet positions
+ bullets.forEach((bullet) => {
   bullet.position.add(bullet.velocity);
-
-  if (!bullet.velocity || bullet.velocity.length() === 0) {
-    // Remove bullet from the scene and bullets array
-    scene.remove(bullet);
-    bullets.splice(bullets.indexOf(bullet), 1);
-  }
 });
-  requestAnimationFrame(animate);
+
+
+animationId = requestAnimationFrame(animate);
 
 
   
@@ -2146,20 +2335,19 @@ const currentTime = Date.now();
     speed = 0.05;
   }
  
-  // Move the user
-  if (keyboard.get("w")) {
-	velocity.add(backward);
-  }
-  if (keyboard.get("s")) {
-	velocity.add(forward);
-  
-  }
-  if (keyboard.get("a")) {
-	velocity.add(right);
-  }
-  if (keyboard.get("d")) {
-	velocity.add(left);
-  }
+ // Move the user
+if (keyboard.get("w") || keyboard.get("W")) {
+  velocity.add(backward);
+}
+if (keyboard.get("s") || keyboard.get("S")) {
+  velocity.add(forward);
+}
+if (keyboard.get("a") || keyboard.get("A")) {
+  velocity.add(right);
+}
+if (keyboard.get("d") || keyboard.get("D")) {
+  velocity.add(left);
+}
   if (isJumping) {
     jumpVelocity -= 0.006;
     controls.getObject().position.y += jumpVelocity /2;
@@ -2200,19 +2388,24 @@ const currentTime = Date.now();
   }
  moveEnemies();
 
- //bullet collisions with enemies
-  bullets.forEach((bullet) => {
-        for (let enemy of enemies) {
-          if (bullet.position.distanceTo(enemy.position) < 0.5) {
-            scene.remove(enemy);
-            enemies.splice(enemies.indexOf(enemy), 1);
-            scene.remove(bullet);
-            bullets.splice(bullets.indexOf(bullet), 1);
-            score ++;
-            document.getElementById("score-value").innerHTML = "Score: " + score;
-          }
-        }
-      });
+//bullet collisions with enemies
+for (let i = 0; i < bullets.length; i++) {
+  const bullet = bullets[i];
+  for (let j = 0; j < enemies.length; j++) {
+    const enemy = enemies[j];
+    if (bullet.position.distanceTo(enemy.position) < 0.5) {
+      scene.remove(enemy);
+      enemies.splice(j, 1);
+      scene.remove(bullet);
+      bullets.splice(i, 1);
+      score++;
+      document.getElementById("score-value").innerHTML = "Score: " + score;
+      // Exit the inner loop to prevent checking for collisions with the removed enemy
+      break;
+    }
+  }
+}
+	  
 //collision detection for enemy bullets
 enemyBullets.forEach((enemyBullet) => {
 		if (enemyBullet.position.distanceTo(controls.getObject().position) < 0.5) {
@@ -2254,7 +2447,7 @@ bullets.forEach((bullet) => {
 	  });
 //detect enemy bullet collisions with walls
 enemyBullets.forEach((enemyBullet) => {
-		if (detectBulletCollisions(enemyBullet)) {
+		if (detectEnemyBulletCollisions(enemyBullet)) {
 		  scene.remove(enemyBullet);
 		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
 		}
@@ -2279,7 +2472,7 @@ const healthSections = healthBarValue.querySelectorAll(".health-section");
       healthSections[i].style.width = "0";
     }
     //update the health bar value
-    document.getElementById("health-bar-number").innerHTML = "Health: " + health;
+    document.getElementById("health-bar-number").innerHTML = '<i class="fa-solid fa-heart" style="color: #ffffff;"></i> ' + "Health: " + health;
   }
 
 
@@ -2289,7 +2482,7 @@ if (health > 80) {
   }
 } else if (health > 60 && health <= 80) {
   for (let i = 0; i < healthSections.length; i++) {
-    healthSections[i].style.backgroundColor = "yellowgreen";
+    healthSections[i].style.backgroundColor = "greenyellow";
   }
 } else if (health > 40 && health <= 60) {
   for (let i = 0; i < healthSections.length; i++) {
@@ -2326,37 +2519,65 @@ setInterval(() => {
 
 
 
-animate();
+
 function updateProgressBar() {
   const progressBar = document.getElementById("dash-progress-bar");
   const progress = timeSinceLastShift;
   if (progress <= 0) {
     progressBar.style.width = "0%";
-    progressBar.style.backgroundColor = "red"
+    progressBar.style.backgroundColor = "red";
   } else if (progress < 1000) {
     progressBar.style.width = "10%";
     progressBar.style.backgroundColor = "limegreen";
   } else {
-    const progressPercentage = Math.min(Math.floor((progress - 1000) / 500) * 10, 100);
-    progressBar.style.width = `${progressPercentage}%`;
+    const progressPercentage = Math.min(Math.floor((progress - 1000) / 500) * 10, 100) + 10;
+    progressBar.style.width = `${progressPercentage}% `;
     progressBar.style.backgroundColor = "#4CAF50";
-	
   }
-  if(timeSinceLastShift > 5000){
-	progressBar.style.width = `${100}%`;
-
+  if (timeSinceLastShift > 5000) {
+    progressBar.style.width = `${100}%`;
   }
+  progressBar.style.transition = "width 0.5s ease-in-out, background-color 0.5s ease-in-out";
 }
 
+if(!localStorage.getItem("tutorial")){
+	
 const popupText = document.getElementById("popup-text");
+const popupHolder = document.getElementById("popup-holder");
 if(score == 0){
 popupText.innerHTML = "Use WASD to move";
-popupText.style.display = "inline-block";
+popupHolder.style.display = "block";
 setTimeout(() => {
-	popupText.innerHTML = "";
+	popupText.innerHTML = "Use the mouse to look around";
 }, 1500);
+setTimeout(() => {
+	popupText.innerHTML = "Click to shoot";
+}, 3000);
+setTimeout(() => {
+	popupText.innerHTML = "Press space to jump";
+}, 4500);
+setTimeout(() => {
+	popupText.innerHTML = "Press shift to dash";
+}, 6000);
+setTimeout(() => {
+	popupText.innerHTML = "Press R to reload";
+}, 7500);
+setTimeout(() => {
+	popupText.innerHTML = "Press escape to pause";
+}, 9000);
+setTimeout(() => {
+	popupHolder.style.display = "none";
+	localStorage.setItem("tutorial", true);
+}, 10500);
+}
 }
 
+	
+let money = 0;
+setInterval(() => {
+	money += 0.50;
+	document.getElementById("money-count").innerHTML = "Money: $" + money;
+}, 500);
 
 //on window resize
 window.addEventListener('resize', () => {
@@ -2364,6 +2585,28 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+animate();
+let fps = 0;
+      let frameCount = 0;
+      let lastTime = performance.now();
+      const fpsCounter = document.getElementById("fps-counter");
+
+      function updateFPS() {
+        const currentTime = performance.now();
+        const elapsedTime = currentTime - lastTime;
+        frameCount++;
+        if (elapsedTime >= 1000) {
+          fps = frameCount / (elapsedTime / 1000);
+          frameCount = 0;
+          lastTime = currentTime;
+          fpsCounter.textContent = `FPS: ${Math.round(fps)}`;
+        }
+        requestAnimationFrame(updateFPS);
+		
+      }
+
+      requestAnimationFrame(updateFPS);
+
       }
     </script>
   </body>
