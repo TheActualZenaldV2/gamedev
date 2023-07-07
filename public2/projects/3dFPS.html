@@ -304,6 +304,8 @@ p {
   position: relative;
   opacity: 0;
   animation: slide-in 0.5s forwards;
+  box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
+
 }
 
 .health-section {
@@ -313,8 +315,7 @@ p {
   border-radius: 10px;
   transition: width 0.2s ease-in-out;
   margin: 5px;
-  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47); 
-box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
+ 
 
 }
 
@@ -331,8 +332,9 @@ box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
 }
 
 #health-bar-value-inner {
-  width: 80%;
+  width: 90%;
   height: 80%;
+  margin-right: 3%;
   display: flex;
   justify-content: center;
   align-items: center;
