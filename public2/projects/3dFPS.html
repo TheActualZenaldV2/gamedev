@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -3108,6 +3108,10 @@ function switchTab(tab) {
 
 shopClose.addEventListener("click", () => {
   closeShop();
+  pauseGame();
+  
+ 
+
   
   document.addEventListener("click", lockControls);
 });
@@ -3115,7 +3119,7 @@ if (coolPineapplePizza == true) {
   let shopOpen = false;
   let intervalId = null;
   document.addEventListener("keydown", (event) => {
-    if (event.key === "b") {
+    if (event.key === "b" || event.key === "B") {
       if (shop.classList.contains("active")) {
         if (!shopOpen) {
           shopOpen = true;
