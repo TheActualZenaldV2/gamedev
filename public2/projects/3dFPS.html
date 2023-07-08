@@ -56,6 +56,7 @@
 
 	<button id="pause-button"><i class="fas fa-pause"></i></button>
 	<button id="fullscreen-button" onclick="fullscreen()"><i class="fa-solid fa-maximize"></i></button>
+	<button id="shopButton" onclick=""><i class="fa-solid fa-shop"></i></button>
 	<h1 id="pausedText" style="display: none;"> Game Is Paused</h1>
     <div id="crosshair"></div>
     <div id="hud">
@@ -83,55 +84,81 @@
     </div>
 
 </div>
-
-
 <div id="shop">
 	<div id="shop-header">
-	  <h2>Shop</h2>
-	  <span id="shop-close"><i class="fa-solid fa-circle-xmark"></i></span>
+		<div>
+			<h2><i class="fa-solid fa-shop"></i> Shop (Demo Only)</h2>
+		</div>
+		<h2 id="shopMoney"><i class="fa-solid fa-tag"></i> Money: <span id="shopMoneyCount"> $0</span></h2>
+		<span id="shop-close"><i class="fa-solid fa-circle-xmark"></i></span>
+	</div>
+	<div id="shop-tabs">
+		<button id="player-tab"class="active"><i class="fa-solid fa-person-running"></i> Player Upgrades</button>
+		<button id="weapon-tab"><i class="fa-solid fa-person-rifle"></i> Weapon Upgrades</button>
+		<button id="powerups-tab"><i class="fa-solid fa-bolt"></i> Powerups</button>
 	</div>
 
-<div id="shop-tabs">
-		<button id="player-tab"><i class="fa-solid fa-person-running"></i> Player Upgrades</button>
-
-	  <button id="weapon-tab" class="active"><i class="fa-solid fa-person-rifle" ></i> Weapon Upgrades</button>
-</div>
-
-<div id="shop-content">
-	  <div id="weapon-upgrades">
-		<h3>Weapon Upgrades</h3>
-		<button id="more-ammo"><i class="fa-solid fa-rotate"></i> More Ammo: <br> 
-<div id="ammoDetails">
-	<br>
-			Current: <span id="currentAmmo">10</span> <i class="fa-solid fa-crosshairs"></i><br>
-			<span id="shopUpgradeAmmoCount">+5</span>: <span id="shopAmmoCost">$50</span> 
-</div>
-			<br> <i class="fa-solid fa-gun"></i> Level : <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-			<br></button> 
-			
-		<button id="more-damage"><i class="fa-solid fa-fire"></i> More Damage <br> 
-<div id="damageDetails">
-	<br>
-			Current: <span id="currentDamage">10</span> <i class="fa-solid fa-fire"></i><br>
-			<span id="shopUpgradeDamageCount">+5</span>: <span id="shopDamageCost">$50</span>
-</div>
-		<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-	</button>
-	  </div>
-	  <div id="player-upgrades" style="display: none;">
-		<h3>Player Upgrades</h3>
-		<button id="more-health"><i class="fa-solid fa-heart-circle-plus"></i> More Health: 
-			<div id="healthDetails">
+	<div id="shop-content">
+		<div id="weapon-upgrades">
+			<h3>Weapon Upgrades</h3>
+			<button id="more-ammo">
+				<i class="fa-solid fa-rotate"></i> More Ammo: <br> 
+				<div id="ammoDetails">
+					<br>
+					Current: <span id="currentAmmo">10</span> <i class="fa-solid fa-crosshairs"></i><br>
+					<span id="shopUpgradeAmmoCount">+10</span>: <span id="shopAmmoCost">$250</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-gun"></i> Level : <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
 				<br>
-				Current: <span id="currentHealth">100</span> <i class="fa-solid fa-heart"></i><br>
-				<span id="shopHealthCount">+50</span>: <span id="shopHealthCost">$50</span>
-			</div>
-			<br> <i class="fa-solid fa-heart"></i> Level: <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>
+			</button> 
+			
+			<button id="more-damage">
+				<i class="fa-solid fa-fire"></i> More Damage <br> 
+				<div id="damageDetails">
+					<br>
+					Current: <span id="currentDamage">10</span> <i class="fa-solid fa-fire"></i><br>
+					<span id="shopUpgradeDamageCount">+7</span>: <span id="shopDamageCost">$150</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+			</button>
+		</div>
 
-		</button>
-	  </div>
+		<div id="player-upgrades" style="display: none;">
+			<h3>Player Upgrades</h3>
+			<button id="more-health">
+				<i class="fa-solid fa-heart-circle-plus"></i> More Health:
+				<div id="healthDetails">
+					<br>
+					Current: <span id="currentHealth">100</span> <i class="fa-solid fa-heart"></i><br>
+					<span id="shopHealthCount">+15</span>: <span id="shopHealthCost">$30</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-heart-circle-exclamation"></i> Level: <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>
+			</button>
+			<button id="faster-movement">
+				<i class="fa-solid fa-person-running"></i> Faster Movement: <br> 
+				<div id="movementDetails">
+					<br>
+					Current: <span id="currentMovement">1.0x</span> <i class="fa-solid fa-person-running"></i><br>
+					<span id="shopMovementCount">+0.5x</span>: <span id="shopMovementCost">$20</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>
+			</button>
+		</div>
+	</div>
 </div>
-  </div>
+
 </body>
 
 <style>
@@ -424,8 +451,22 @@ p {
   justify-content: center;
   align-items: center;
 }
+#shopButton{
+	position: absolute;
+  margin-top: 150px;
+  right:10px;
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-#pause-button i, #fullscreen-button i {
+#pause-button i, #fullscreen-button i, #shopButton i {
   font-size: 30px;
   color: #fff;
 }
@@ -484,11 +525,14 @@ box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 0px -
       }
 
 	  #pausedText {
+		animation: fade-in 1s forwards;
+		
 	z-index: 999;
 	position: absolute;
-	top: 50%;
+	top: 0;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	
 	font-family: 'Roboto', sans-serif;
 	font-size: 32px;
 	color: rgb(144, 144, 144);
@@ -523,12 +567,13 @@ top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
 width: 600px;
-height: 300px;
+height: auto;
 background-color: #1f1f1f;
 border-radius: 10px;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 z-index: 9999;
 font-family: 'Poppins', sans-serif;
+animation: fade-in 1s forwards;
 
 }
 
@@ -537,19 +582,26 @@ display: block;
 }
 
 #shop-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 10px;
-background-color: #222;
-color: #fff;
-border-top-left-radius: 10px;
-border-top-right-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #222;
+  color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 #shop-header h2 {
-margin: 0;
-font-size: 20px;
+  margin: 0;
+  font-size: 20px;
+}
+
+#shopMoney {
+  font-size: 20px;
+  position: absolute;
+  right: 10%;
+
 }
 
 #shop-close {
@@ -575,6 +627,8 @@ border: none;
 cursor: pointer;
 color: #fff;
 font-size: 14px;
+width: 100%;
+height: 100%;
 }
 
 #shop-tabs button.active {
@@ -621,18 +675,85 @@ text-align: center;
 #shop-content button:hover {
 background-color: #555;
 }
-#shopUpgradeAmmoCount, #shopUpgradeDamageCount, #shopHealthCount {
+#shopUpgradeAmmoCount, #shopUpgradeDamageCount, #shopHealthCount, #shopMovementCount {
 	margin-left: 80px;
 }
-#ammoDetails, #damageDetails, #healthDetails {
+#ammoDetails, #damageDetails, #healthDetails, #movementDetails {
 	font-size: 15px;
 	text-shadow: 5px 5px 5px rgba(96, 96, 96,0.8);
 	border-radius: 5px;
 	color: #fff;
 	padding: 5px;
 }
-#ammoDetails i, #damageDetails i{
+#ammoDetails i, #damageDetails i, #healthDetails i, #movementDetails i{
 	font-size: 20px;
+}
+#shop button:active{
+	transform: scale(1.0);
+}
+#shop button:hover{
+	background-color: #555;
+}.buyButtonIcon {
+  display: inline-block;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  padding: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease-in-out;
+}
+
+.buyButtonIcon:hover {
+  transform: scale(1.1);
+}
+
+.buyButton {
+	margin-left: 10px;
+  color: rgb(12, 12, 12);
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.buyButton:hover {
+  background-color: #ddd;
+}
+
+.buyButton:active {
+  background-color: #ccc;
+  transform: matrix(1, 0, 0, 1, 0, 2);
+}
+	
+#shop button:disabled{
+	background-color: #333;
+	color: #fff;
+}
+#shop button:disabled:hover{
+	background-color: #333;
+	color: #fff;
+}
+#shop {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+#shop.active {
+  opacity: 1;
+}
+
+#shop.fading-in {
+  opacity: 0;
+}
+
+#shop.fading-out {
+  opacity: 0;
+  animation:  fade-out 1s forwards;
 }
 /* Animations */
 
@@ -642,6 +763,14 @@ background-color: #555;
   }
   to {
     opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+	opacity: 1;
+  }
+  to {
+	opacity: 0;
   }
 }
 
@@ -687,7 +816,7 @@ background-color: #555;
 	  let spawnEnemies;
 	  let ui;
 	  let spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
-	  let coolPineapplePizza = false;
+	  let coolPineapplePizza = true;
 
 function enableDevAccess() {
   let code = prompt("Enter the code to enable developer access:");
@@ -2203,7 +2332,10 @@ function pauseGame(){
     isPaused = true;
 	pauseButton.classList.remove("pause");
     pauseButton.classList.add("play");
-	document.getElementById("pausedText").style.display = "block";
+	
+		document.getElementById("pausedText").style.display = "block";
+
+	
     // Disable user input and hide UI elements here
     cancelAnimationFrame(animationId); // Stop the animation loop
   }
@@ -2229,7 +2361,7 @@ scene.traverse((node) => {
   if (node.isMesh) {
     const box = new THREE.Box3().setFromObject(node);
     // Add padding to the box
-    const padding = new THREE.Vector3(0.7, 0.7, 0.7);
+    const padding = new THREE.Vector3(0.32, 0.32, 0.32);
     box.expandByVector(padding);
     boundingBoxes.push(box);
   }
@@ -2372,9 +2504,11 @@ const ammoCountElement = document.getElementById('ammo-count-value'); // Get amm
 ammoCountElement.textContent = `Ammo: ${ammoCount}`; // Update ammo count element
 
 let shootTimeout = null; // Initialize shoot timeout variable
-
+canvas = document.getElementById("canvas");
 // On mousedown, start shooting
+
 document.addEventListener('mousedown', () => {
+	if(isPaused) return;
   shootTimeout = setInterval(() => {
     if (ammoCount > 0) { // Check if there is ammo left
       const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
@@ -2402,11 +2536,13 @@ document.addEventListener('mousedown', () => {
 
 // On mouseup, stop shooting
 document.addEventListener('mouseup', () => {
+	if(isPaused) return;
   clearInterval(shootTimeout);
 });
 
 // On click, shoot with 150ms delay
 document.addEventListener('click', () => {
+	if(isPaused) return;
   setTimeout(() => {
     if (ammoCount > 0) { // Check if there is ammo left
       const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
@@ -2436,6 +2572,7 @@ document.addEventListener('click', () => {
 });
 
 function reloadWeapon(){
+	if(isPaused) return;
 	if(ammoCount == 10) return; // Check if ammo count is already full 
     setTimeout(() => {
       ammoCount = 10; // Reset ammo count
@@ -2448,6 +2585,7 @@ function reloadWeapon(){
 }
 // On key press, reload if 'r' is pressed
 document.addEventListener('keydown', (event) => {
+	if(isPaused) return;
   if (event.key === 'r' || event.key === 'R') {
 	reloadWeapon();
   }
@@ -2717,6 +2855,7 @@ enemyBullets.forEach((enemyBullet) => {
 		  scene.remove(enemyBullet);
 		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
 		  document.getElementById("health-bar-number").innerHTML = "Health: " + health;
+		  document.getElementById("currentHealth").innerHTML = health;
 
 
 		}
@@ -2889,6 +3028,7 @@ setInterval(() => {
   if (!isPaused) {
     money += 0.50;
     document.getElementById("money-count").innerHTML = "Money: $" + money.toFixed(2);
+	document.getElementById("shopMoneyCount").innerHTML = "$" +money.toFixed(2);
   }
 }, 500);
 
@@ -2898,61 +3038,133 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 animate();
 
 const shop = document.getElementById("shop");
       const shopClose = document.getElementById("shop-close");
       const weaponTab = document.getElementById("weapon-tab");
       const playerTab = document.getElementById("player-tab");
+	  const powerupsTab = document.getElementById("powerups-tab");
       const weaponUpgrades = document.getElementById("weapon-upgrades");
       const playerUpgrades = document.getElementById("player-upgrades");
-
+	const shopManualButton = document.getElementById("shopButton")
       function openShop() {
         shop.classList.add("active");
       }
 
-      function closeShop() {
-        shop.classList.remove("active");
-      }
+     function closeShop() {
+  if (!shop.classList.contains("fading-out")) {
+    shop.classList.add("fading-out");
+    setTimeout(() => {
+      shop.classList.remove("active");
+      shop.classList.remove("fading-out");
 
-      function switchTab(tab) {
-        if (tab === "weapon") {
-          weaponTab.classList.add("active");
-          playerTab.classList.remove("active");
-          weaponUpgrades.style.display = "block";
-          playerUpgrades.style.display = "none";
-        } else if (tab === "player") {
-          weaponTab.classList.remove("active");
-          playerTab.classList.add("active");
-          weaponUpgrades.style.display = "none";
-          playerUpgrades.style.display = "block";
-        }
-      }
+    }, 1000);
+  }
+}
 
-      shopClose.addEventListener("click", closeShop);
-	  if(coolPineapplePizza == true){
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "b") {
-         //if shop is open, close it
-		  if (shop.classList.contains("active")) {
-			closeShop();
-			pauseGame();
-			document.addEventListener("click", lockControls);
-		  } else {
-			openShop();
-			pauseGame();
-			document.removeEventListener("click", lockControls);
-document.exitPointerLock();
-		  }
+function openShop() {
+  if (!shop.classList.contains("active") && !shop.classList.contains("fading-out")) {
+    shop.classList.add("active");
+    shop.classList.add("fading-in");
+	
+    setTimeout(() => {
+      shop.classList.remove("fading-in");
+	  
+    }, 1000);
+  }
+}
+
+function switchTab(tab) {
+  if (tab === "weapon") {
+    weaponTab.classList.add("active");
+    playerTab.classList.remove("active");
+	powerupsTab.classList.remove("active");
+    weaponUpgrades.style.display = "block";
+    playerUpgrades.style.display = "none";
+    weaponUpgrades.style.animation = "fade-in 1s ease-in-out";
+    playerUpgrades.style.animation = "none";
+  } else if (tab === "player") {
+    weaponTab.classList.remove("active");
+    playerTab.classList.add("active");
+	powerupsTab.classList.remove("active");
+    weaponUpgrades.style.display = "none";
+    playerUpgrades.style.display = "block";
+    playerUpgrades.style.animation = "fade-in 1s ease-in-out";
+    weaponUpgrades.style.animation = "none";
+  }
+  else if (tab === "powerups"){
+	  weaponTab.classList.remove("active");
+	playerTab.classList.remove("active");
+	powerupsTab.classList.add("active");
+	weaponUpgrades.style.display = "none";
+	playerUpgrades.style.display = "none";
+	playerUpgrades.style.animation = "none";
+	weaponUpgrades.style.animation = "none";
+
+  }
+}
+
+shopClose.addEventListener("click", () => {
+  closeShop();
+  
+  document.addEventListener("click", lockControls);
+});
+if (coolPineapplePizza == true) {
+  let shopOpen = false;
+  let intervalId = null;
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "b") {
+      if (shop.classList.contains("active")) {
+        if (!shopOpen) {
+          shopOpen = true;
+          pauseGame();
+		  document.addEventListener("click", lockControls);
+          document.exitPointerLock();
+        } else {
+          shopOpen = false;
         }
-      });
-	}
+        closeShop();
+      } else {
+        openShop();
+        pauseGame();
+        document.removeEventListener("click", lockControls);
+        document.exitPointerLock();
+      }
+    }
+  });
+
+  intervalId = setInterval(() => {
+    if (!shop.classList.contains("active")) {
+      shopOpen = false;
+    }
+  }, 250);
+}
       weaponTab.addEventListener("click", () => {
         switchTab("weapon");
       });
       playerTab.addEventListener("click", () => {
         switchTab("player");
       });
+	  powerupsTab.addEventListener("click", () => {
+		  switchTab("powerups");
+	  });
+	  
+	  shopManualButton.addEventListener("click", () => {
+		  if (shop.classList.contains("active")) {
+			closeShop();
+			pauseGame();
+			document.addEventListener("click", lockControls);
+			//unfocus element
+			shopManualButton.blur();
+		  } else {
+			openShop();
+			pauseGame();
+			document.removeEventListener("click", lockControls);
+document.exitPointerLock();
+		  } 
+		});
      
 
 
