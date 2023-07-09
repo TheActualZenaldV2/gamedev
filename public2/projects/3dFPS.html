@@ -5,7 +5,9 @@
     <title>Zombies Demo</title>
 	<body>
 		<div id="background"></div>
-<div id="preGame">
+
+<!-- Game Menus-->
+
     <div class="menu" id="startMenu">
       <h1>3D Zombie Shooter Demo</h1>
       <button onclick="startGame();"><i class="fa-solid fa-play"></i> Start Game </button>
@@ -14,14 +16,17 @@
 	  <button onclick="openDemo();"><i class="fa-solid fa-inbox"></i> </button>
     </div>
  <div class="menu" id="optionsMenu" style="display: none;">
-      <h1>Options</h1> <HR>
-      <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <span id="ui"> UI Enabled </span></button> <br> <br>
-<label> <input type="checkbox" id="spawn-enemies" checked> Spawn Enemies</label> <br> <br>
-      <label id="fov" for="fov-slider"><span id="fovValue"> FOV: 90</label>
+      <h1><i class="fa-solid fa-screwdriver-wrench"></i> Options</h1> <HR>
+      <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <i class="fa-solid fa-cookie-bite"></i> <span id="ui"> UI Enabled </span></button> <br> <br>
+<label> <input type="checkbox" id="spawn-enemies" checked> <i class="fa-solid fa-biohazard"></i> Spawn Enemies</label> <br> 
+<label> <input type="checkbox" id="antialias"> Anti-Aliasing</label><br><br>
+      <label id="fov" for="fov-slider"><i class="fa-solid fa-magnifying-glass"></i> <span id="fovValue">  FOV: 90</label>
   <input type="range" id="fov-slider" min="30" max="150" value="90" onchange="updateFOV(this.value);"> <br> <br>
-  <label id="difficulty" for="difficulty-slider"><span id="difficultyValue"> Difficulty: 2.5</label>
+  <label id="difficulty" for="difficulty-slider"><i class="fa-solid fa-angles-up"></i> <span id="difficultyValue"> Difficulty: 2.5</label>
 <input type="range" id="difficulty-slider" min="1" max="5" value="2.5" step="0.5" onchange="updateDifficulty(this.value);"><br><br>
-<button onclick="resetSettings();"id="resetSettingsBtn">Reset</button>
+<label id="resolution" for="resolution-slider"><i class="fa-solid fa-pen"></i> Resolution: 1 </label><input type="range" id="resolution-slider" min="0.1" max="2.5" value="1" step="0.1" onchange="updateResolution(this.value);"><br><br>
+
+<button onclick="resetSettings();"id="resetSettingsBtn"><i class="fa-solid fa-trash-can"></i> Reset</button>
   <button onclick="closeOptions();">Save <i class="fa-solid fa-angles-right"></i></button>
   </div>
 
@@ -61,7 +66,7 @@
 		<button onclick="closeDemo();">Close <i class="fa-solid fa-angles-right"></i></button>
 	</div>
 </div>
-
+<!-- Game Overlays below-->
 
 <div id="gameUI" style="display: none;">
 	<div id="fps-counter"></div>
@@ -95,7 +100,7 @@
         </div>
       </div>
     </div>
-
+<!-- Game Shop HTML-->
 </div>
 <div id="shop">
 	<div id="shop-header">
@@ -169,6 +174,36 @@
 				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>
 			</button>
 		</div>
+
+		<div id="powerups-upgrades" style="display: none;">
+		<h3> Powerups</h3>
+			<button id="more-dash">
+				<i class="fa-solid fa-person-running"></i> More Dash: <br> 
+				<div id="dashDetails">
+					<br>
+					Current: <span id="currentDash">1.5s</span> <i class="fa-solid fa-person-running"></i><br>
+					<span id="shopDashCount">+1s</span>: <span id="shopDashCost">$500</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i>  
+				</button>
+				<button id="nuke">
+				<i class="fa-solid fa-bomb"></i> Nuke: <br>
+				<div id="nukeDetails">
+					<br>
+					Kill All Zombies<span id="currentNuke"></span> <i class="fa-solid fa-bomb"></i><br>
+					<span id="shopNukeCount">+1</span>: <span id="shopNukeCost">$2500</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+					<br> Nukes: <span id="nukeCount"><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i></span>
+
+
+
+			
 	</div>
 </div>
 
@@ -234,7 +269,9 @@ canvas {
 }
 
 .menu {
-  position: absolute;
+	-webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5); 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5);
+ position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -507,9 +544,10 @@ p {
   padding: 20px;
   background-color: #333;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
   display: none;
+  -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5); 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5);
 }
 
 #controlsMenu h1 {
@@ -691,17 +729,17 @@ text-align: center;
 #shop-content button:hover {
 background-color: #555;
 }
-#shopUpgradeAmmoCount, #shopUpgradeDamageCount, #shopHealthCount, #shopMovementCount {
+#shopUpgradeAmmoCount, #shopUpgradeDamageCount, #shopHealthCount, #shopMovementCount, #shopDashCount, #shopNukeCount {
 	margin-left: 80px;
 }
-#ammoDetails, #damageDetails, #healthDetails, #movementDetails {
+#ammoDetails, #damageDetails, #healthDetails, #movementDetails, #dashDetails, #nukeDetails {
 	font-size: 15px;
 	text-shadow: 5px 5px 5px rgba(96, 96, 96,0.8);
 	border-radius: 5px;
 	color: #fff;
 	padding: 5px;
 }
-#ammoDetails i, #damageDetails i, #healthDetails i, #movementDetails i{
+#ammoDetails i, #damageDetails i, #healthDetails i, #movementDetails i, #dashDetails i {
 	font-size: 20px;
 }
 #shop button:active{
@@ -832,8 +870,11 @@ background-color: #555;
 	  let userDifficulty;
 	  let spawnEnemies;
 	  let ui;
-	  let spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
+	  const spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
+	  const antialiasCheckbox = document.getElementById("antialias");
 	  let coolPineapplePizza = true;
+	  let antialias = false;
+	  let userResolution;
 
 function enableDevAccess() {
   let code = prompt("Enter the code to enable developer access:");
@@ -904,6 +945,24 @@ function closeDemo(){
 			document.getElementById("spawn-enemies").checked = false;
 		}
 	}
+	if(localStorage.getItem("resolution")){
+		userResolution = localStorage.getItem("resolution");
+		document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + userResolution;
+		document.getElementById("resolution-slider").value = userResolution;
+		userResolution = userResolution;
+	}
+	if(localStorage.getItem("antialias")){
+		antialias = localStorage.getItem("antialias");
+		if(antialias == "true"){
+			antialias = true;
+			document.getElementById("antialias").checked = true;
+		} if(antialias == "false"){
+			antialias = false;
+			document.getElementById("antialias").checked = false;
+		}
+	}
+
+
 
       function startGame(){
         gameStart = true;
@@ -941,18 +1000,36 @@ function closeDemo(){
       }
       function updateFOV(value){
         userFov = value;
+		if(value > 150.0){
+		console.log("Fuck you");
+		userFov = 150;
+	}
         document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
       }
       function updateDifficulty(value1) {
   userDifficulty = value1 *2;
-
+  if(value1 > 5.0){
+		console.log("Fuck you");
+		value1 = 5;
+	}
   document.getElementById("difficultyValue").innerHTML = "Difficulty: " + value1;
+}
+function updateResolution(value){
+	userResolution = value;
+	if(value > 2.5){
+		console.log("Fuck you");
+		userResolution = 2.5;
+	}
+	document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + value;
+	localStorage.setItem("resolution", userResolution);
 }
 function resetSettings(){
 	userDifficulty = 5;
 	userFov = 90;
 	showUI = true;
 	spawnEnemies = true;
+	antialias = false;
+	userResolution = 1;
 	document.getElementById("fov-slider").value = userFov;
 	document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
 	document.getElementById("difficulty-slider").value = userDifficulty/2;
@@ -960,16 +1037,22 @@ function resetSettings(){
 	document.getElementById("ui").innerHTML = "UI Enabled";
 	document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
 	document.getElementById("spawn-enemies").checked = true;
+	document.getElementById("antialias").checked = false;
+	document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + userResolution;
+	document.getElementById("resolution-slider").value = userResolution;
 
 
 	localStorage.setItem("fov", userFov);
 	localStorage.setItem("difficulty", userDifficulty);
 	localStorage.setItem("ui", showUI);
 	localStorage.setItem("enemies", spawnEnemies);
-	document.getElementById("resetSettingsBtn").textContent = "Settings Reset";
+	localStorage.setItem("antialias", antialias);
+	localStorage.setItem("resolution", userResolution);
+	document.getElementById("resetSettingsBtn").innerHTML = '<i class="fa-solid fa-trash-can-arrow-up"></i>' +  " Settings Reset";
+
 
 	setTimeout(() => {
-		document.getElementById("resetSettingsBtn").textContent = "Reset";
+		document.getElementById("resetSettingsBtn").innerHTML = '<i class="fa-solid fa-trash-can"></i>' + " Reset";
 
 	}, 1500);
 
@@ -995,6 +1078,11 @@ function closeOptions(){
     spawnEnemies = spawnEnemiesCheckbox.checked;
 	localStorage.setItem("spawnEnemies", spawnEnemiesCheckbox.checked);
   });
+  antialiasCheckbox.addEventListener("change", () => {
+	antialias = antialiasCheckbox.checked;
+	localStorage.setItem("antialias", antialiasCheckbox.checked);
+	  });
+
      function gameStartFunction(){
 
 
@@ -1009,17 +1097,29 @@ camera.lookAt(0, 1.6, 0);
 if(!userFov){
   userFov = 90;
 }
+if(!userResolution){
+	userResolution = 1;
+}
 camera.fov = userFov;
 camera.updateProjectionMatrix();
 if(!userDifficulty){
 	  userDifficulty = 5;
 }
+
       let score = 0;
       let health = 100;
       let enemyNumber = userDifficulty;
       let gameOver = false;
-      const renderer = new THREE.WebGLRenderer();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+//if antialias is enabled 
+if(antialias == true){
+	renderer = new THREE.WebGLRenderer({ antialias: true });
+}else{
+	renderer = new THREE.WebGLRenderer({ antialias: false });
+}
+
+//set low resolution for performance
+renderer.setPixelRatio(window.devicePixelRatio * userResolution);
+ renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
      //give the canvas id of canvas
@@ -2468,6 +2568,7 @@ let enemySpeed = 0.01; // Set initial enemy speed
 
     // Create enemies at random intervals
     setInterval(() => {
+		if(isPaused) return;
       if (spawnEnemiesCheckbox.checked) {
         const numEnemies = Math.floor(Math.random() * userDifficulty) + 1; // Generate a random number of enemies between 1 and 5
         for (let i = 0; i < numEnemies; i++) {
@@ -2502,6 +2603,8 @@ let enemySpeed = 0.01; // Set initial enemy speed
 }
 let enemyBullets = [];
 function enemyShooting() {
+	if(isPaused) return;
+
   // Give each enemy 10% chance of shooting every second
   for (let enemy of enemies) {
     if (Math.random() < 0.1) {
@@ -2711,6 +2814,7 @@ document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
 // Set up the animation loop
 function animate() {
+	if(gameOver) return;
 	 // Update bullet positions
 	 bullets.forEach((bullet) => {
   bullet.position.add(bullet.velocity);
@@ -2927,6 +3031,7 @@ enemyBullets.forEach((enemyBullet) => {
 }
 
 function updateHealth(){
+	if(gameOver) return;
 	//change health bar color based on health
 //health bar is a class called health section
 
@@ -3052,6 +3157,7 @@ setTimeout(() => {
 let money = 0;
 setInterval(() => {
   if (!isPaused) {
+	if(gameOver) return;
     money += 0.50;
     document.getElementById("money-count").innerHTML = "Money: $" + money.toFixed(2);
 	document.getElementById("shopMoneyCount").innerHTML = "$" +money.toFixed(2);
@@ -3074,7 +3180,8 @@ const shop = document.getElementById("shop");
 	  const powerupsTab = document.getElementById("powerups-tab");
       const weaponUpgrades = document.getElementById("weapon-upgrades");
       const playerUpgrades = document.getElementById("player-upgrades");
-	const shopManualButton = document.getElementById("shopButton")
+	const shopManualButton = document.getElementById("shopButton");
+	const powerupsUpgrades = document.getElementById("powerups-upgrades");
       function openShop() {
         shop.classList.add("active");
       }
@@ -3085,6 +3192,7 @@ const shop = document.getElementById("shop");
     setTimeout(() => {
       shop.classList.remove("active");
       shop.classList.remove("fading-out");
+	  document.getElementById("pause-button").disabled = false;
 
     }, 1000);
   }
@@ -3094,6 +3202,8 @@ function openShop() {
   if (!shop.classList.contains("active") && !shop.classList.contains("fading-out")) {
     shop.classList.add("active");
     shop.classList.add("fading-in");
+	//disable manual pause button
+	document.getElementById("pause-button").disabled = true;
 	
     setTimeout(() => {
       shop.classList.remove("fading-in");
@@ -3111,6 +3221,7 @@ function switchTab(tab) {
     playerUpgrades.style.display = "none";
     weaponUpgrades.style.animation = "fade-in 1s ease-in-out";
     playerUpgrades.style.animation = "none";
+	powerupsUpgrades.style.display = "none";
   } else if (tab === "player") {
     weaponTab.classList.remove("active");
     playerTab.classList.add("active");
@@ -3119,11 +3230,14 @@ function switchTab(tab) {
     playerUpgrades.style.display = "block";
     playerUpgrades.style.animation = "fade-in 1s ease-in-out";
     weaponUpgrades.style.animation = "none";
+	powerupsUpgrades.style.display = "none";
   }
   else if (tab === "powerups"){
 	  weaponTab.classList.remove("active");
 	playerTab.classList.remove("active");
 	powerupsTab.classList.add("active");
+	powerupsUpgrades.style.animation = "fade-in 1s ease-in-out";
+	powerupsUpgrades.style.display = "block";
 	weaponUpgrades.style.display = "none";
 	playerUpgrades.style.display = "none";
 	playerUpgrades.style.animation = "none";
@@ -3146,6 +3260,7 @@ if (coolPineapplePizza == true) {
   let intervalId = null;
   document.addEventListener("keydown", (event) => {
     if (event.key === "b" || event.key === "B") {
+		if(gameOver) return;
       if (shop.classList.contains("active")) {
         if (!shopOpen) {
           shopOpen = true;
@@ -3195,7 +3310,9 @@ if (coolPineapplePizza == true) {
 document.exitPointerLock();
 		  } 
 		});
-     
+     if(gameOver){
+		document.getElementById("fps-counter").style.display = "none";
+	 }
 
 
       }
