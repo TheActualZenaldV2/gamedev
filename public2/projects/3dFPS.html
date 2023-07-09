@@ -14,7 +14,7 @@
 	  <button onclick="openDemo();"><i class="fa-solid fa-inbox"></i> </button>
     </div>
  <div class="menu" id="optionsMenu" style="display: none;">
-      <h1>Options</h1>
+      <h1>Options</h1> <HR>
       <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <span id="ui"> UI Enabled </span></button> <br> <br>
 <label> <input type="checkbox" id="spawn-enemies" checked> Spawn Enemies</label> <br> <br>
       <label id="fov" for="fov-slider"><span id="fovValue"> FOV: 90</label>
@@ -22,22 +22,22 @@
   <label id="difficulty" for="difficulty-slider"><span id="difficultyValue"> Difficulty: 2.5</label>
 <input type="range" id="difficulty-slider" min="1" max="5" value="2.5" step="0.5" onchange="updateDifficulty(this.value);"><br><br>
 <button onclick="resetSettings();"id="resetSettingsBtn">Reset</button>
-  <button onclick="closeOptions();">Save</button>
+  <button onclick="closeOptions();">Save <i class="fa-solid fa-angles-right"></i></button>
   </div>
 
 <div id="controlsMenu" class="menu" style="display: none;">
-  <h1>Controls:</h1>
+  <h1><i class="fa-solid fa-gamepad"></i> Controls:</h1>
   <ul>
-    <li>Use WASD to move</li>
-    <li>Shift to dash</li>
-    <li>Space to jump</li>
-    <li>Left click to shoot</li> <br>
-	<h1>How to play:</h1>
-    <li>Move mouse to look around</li>
-    <li>Touching enemies damages you</li>
-    <li>Enemies will shoot at you</li>
+    <li><i class="fa-solid fa-person-walking"></i> Use WASD to move</li>
+    <li><i class="fa-solid fa-person-running"></i> Shift to dash</li>
+    <li><i class="fa-solid fa-angles-up"></i> Space to jump</li>
+    <li><i class="fa-solid fa-meteor"></i> Left click to shoot</li> <br> <hr>
+	<h1><i class="fa-solid fa-code-pull-request"></i> How to play:</h1>
+    <li><i class="fa-solid fa-arrows-spin"></i> Move mouse to look around</li>
+    <li><i class="fa-solid fa-bomb"></i> Avoid Touching Zombies</li>
+    <li><i class="fa-brands fa-gripfire"></i> Zombies will shoot at you</li>
   </ul>
-  <button onclick="closeControls();">Continue</button>
+  <button onclick="closeControls();">Continue <i class="fa-solid fa-angles-right"></i></button>
 </div>
 
 <div id="endGame" style="display: none;">
@@ -45,20 +45,20 @@
     <h1> Game Over! </h1>
    <p> <i class="fa-solid fa-star"></i> Score: <span id="score-holder"></span> </p>
    <p> <span id="difficultyEnd"> </span></p>
-    <button onclick="location.reload()"> Play Again</button>
+    <button onclick="location.reload()"> Play Again <i class="fa-solid fa-angles-right"></i></button>
   </div>
 </div>
 
 <div id="demo" style="display: none;">
 	<div id="demoContent" class="menu">
 		<h1> Demo Version</h1> <hr>
-		<p> Full version concept: <br></p>
-		<li> Accounts</li>
-		<li> Zombie Rounds</li>
-		<li> Functioning Shop</li>
-		<li> Weapon Upgrades</li>
-		<li> Leaderboards</li>
-		<button onclick="closeDemo();">Close</button>
+		<p><i class="fa-solid fa-list"></i>  Full version concept: <br></p>
+		<li> <i class="fa-solid fa-users"></i> Accounts</li>
+		<li> <i class="fa-solid fa-biohazard"></i> Zombie Rounds</li>
+		<li> <i class="fa-solid fa-shop"></i> Functioning Shop</li>
+		<li> <i class="fa-solid fa-angles-up"></i> Weapon Upgrades</li>
+		<li> <i class="fa-solid fa-medal"></i> Leaderboards</li> <br>
+		<button onclick="closeDemo();">Close <i class="fa-solid fa-angles-right"></i></button>
 	</div>
 </div>
 
@@ -517,7 +517,9 @@ p {
   margin-bottom: 20px;
   color: #fff;
 }
-
+#controlsMenu i {
+	font-size: 27px;
+}
 #controlsMenu li {
   font-size: 20px;
   color: white;
@@ -965,6 +967,7 @@ function resetSettings(){
 	localStorage.setItem("ui", showUI);
 	localStorage.setItem("enemies", spawnEnemies);
 	document.getElementById("resetSettingsBtn").textContent = "Settings Reset";
+
 	setTimeout(() => {
 		document.getElementById("resetSettingsBtn").textContent = "Reset";
 
