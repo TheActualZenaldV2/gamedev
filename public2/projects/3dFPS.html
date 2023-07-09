@@ -1,16 +1,17 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>3D First Person Shooter</title>
+    <title>Zombies Demo</title>
 	<body>
 		<div id="background"></div>
 <div id="preGame">
     <div class="menu" id="startMenu">
-      <h1>Game Menu</h1>
+      <h1>3D Zombie Shooter Demo</h1>
       <button onclick="startGame();"><i class="fa-solid fa-play"></i> Start Game </button>
       <button onclick="openControls()"><i class="fa-solid fa-gamepad"></i> How To Play</button>
 	  <button onclick="openOptions();"><i class="fa-solid fa-gears"></i> Change Controls</button>
+	  <button onclick="openDemo();"><i class="fa-solid fa-inbox"></i> </button>
     </div>
  <div class="menu" id="optionsMenu" style="display: none;">
       <h1>Options</h1>
@@ -48,6 +49,18 @@
   </div>
 </div>
 
+<div id="demo" style="display: none;">
+	<div id="demoContent" class="menu">
+		<h1> Demo Version</h1> <hr>
+		<p> Full version concept: <br></p>
+		<li> Accounts</li>
+		<li> Zombie Rounds</li>
+		<li> Functioning Shop</li>
+		<li> Weapon Upgrades</li>
+		<li> Leaderboards</li>
+		<button onclick="closeDemo();">Close</button>
+	</div>
+</div>
 
 
 <div id="gameUI" style="display: none;">
@@ -229,6 +242,7 @@ canvas {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
+  animation: fade-in 0.75s forwards;
 }
 
 .menu h1,
@@ -755,6 +769,7 @@ background-color: #555;
   opacity: 0;
   animation:  fade-out 1s forwards;
 }
+
 /* Animations */
 
 @keyframes fade-in {
@@ -840,6 +855,14 @@ function fullscreen(){
 
 	}
 
+}
+function openDemo(){
+	document.getElementById("demo").style.display = "block";
+	document.getElementById("startMenu").style.display = "none";
+}
+function closeDemo(){
+	document.getElementById("demo").style.display = "none";
+	document.getElementById("startMenu").style.display = "block";
 }
 	 
       //get settings from local storage
