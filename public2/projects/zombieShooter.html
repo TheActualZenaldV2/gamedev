@@ -1,0 +1,3779 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Zombies Demo</title>
+	<body>
+		<div id="background"></div>
+		
+<!-- Game Menus-->
+
+    <div class="menu" id="startMenu">
+      <h1>3D Zombie Shooter v0.0.1</h1>
+      <button onclick="startGame();"><i class="fa-solid fa-play"></i> Start Game </button>
+      <button onclick="openControls()"><i class="fa-solid fa-gamepad"></i> How To Play</button>
+	  <button onclick="openOptions();"><i class="fa-solid fa-gears"></i> Change Controls</button>
+	  <button onclick="openDemo();"><i class="fa-solid fa-inbox"></i> </button>
+    </div>
+ <div class="menu" id="optionsMenu" style="display: none;">
+      <h1><i class="fa-solid fa-screwdriver-wrench"></i> Options</h1> <HR>
+      <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <i class="fa-solid fa-cookie-bite"></i> <span id="ui"> UI Enabled </span></button> <br> <br>
+<label> <input type="checkbox" id="spawn-enemies" checked> <i class="fa-solid fa-biohazard"></i> Spawn Enemies</label> <br> 
+<label> <input type="checkbox" id="antialias"> <i class="fa-solid fa-camera-retro"></i> Anti-Aliasing</label><br><br>
+      <label id="fov" for="fov-slider"><i class="fa-solid fa-magnifying-glass"></i> <span id="fovValue">  FOV: 90</label>
+  <input type="range" id="fov-slider" min="30" max="150" value="90" onchange="updateFOV(this.value);"> <br> <br>
+  <label id="difficulty" for="difficulty-slider"><i class="fa-solid fa-angles-up"></i> <span id="difficultyValue"> Difficulty: 2.5</label>
+<input type="range" id="difficulty-slider" min="1" max="5" value="2.5" step="0.5" onchange="updateDifficulty(this.value);"><br><br>
+<label id="resolution" for="resolution-slider"><i class="fa-solid fa-pen"></i> Resolution: 1 </label><input type="range" id="resolution-slider" min="0.1" max="2.5" value="1" step="0.1" onchange="updateResolution(this.value);"><br><br>
+
+<button onclick="resetSettings();"id="resetSettingsBtn"><i class="fa-solid fa-trash-can"></i> Reset</button>
+  <button onclick="closeOptions();">Save <i class="fa-solid fa-angles-right"></i></button>
+  </div>
+
+<div id="controlsMenu" class="menu" style="display: none;">
+  <h1><i class="fa-solid fa-gamepad"></i> Controls:</h1>
+  <ul>
+    <li><i class="fa-solid fa-person-walking"></i> Use WASD to move</li>
+    <li><i class="fa-solid fa-person-running"></i> Shift to dash</li>
+    <li><i class="fa-solid fa-angles-up"></i> Space to jump</li>
+    <li><i class="fa-solid fa-meteor"></i> Left click to shoot</li> <br> <hr>
+	<h1><i class="fa-solid fa-code-pull-request"></i> How to play:</h1>
+    <li><i class="fa-solid fa-arrows-spin"></i> Move mouse to look around</li>
+    <li><i class="fa-solid fa-bomb"></i> Avoid Touching Zombies</li>
+    <li><i class="fa-brands fa-gripfire"></i> Zombies will shoot at you</li>
+  </ul>
+  <button onclick="closeControls();">Continue <i class="fa-solid fa-angles-right"></i></button>
+</div>
+
+<div id="endGame" style="display: none;">
+  <div id="stats" class="menu">
+    <h1> Game Over! </h1>
+   <p> <i class="fa-solid fa-star"></i> Score: <span id="score-holder"></span> </p>
+   <p> <span id="difficultyEnd"> </span></p>
+    <button onclick="location.reload()"> Play Again <i class="fa-solid fa-angles-right"></i></button>
+  </div>
+</div>
+
+<div id="demo" style="display: none;">
+	<div id="demoContent" class="menu">
+		<h1> Demo Version</h1> <hr>
+		<p><i class="fa-solid fa-list"></i>  Full version concept: <br></p>
+		<li> <i class="fa-solid fa-users"></i> Accounts</li>
+		<li> <i class="fa-solid fa-biohazard"></i> Zombie Rounds</li>
+		<li> <i class="fa-solid fa-shop"></i> Functioning Shop</li>
+		<li> <i class="fa-solid fa-angles-up"></i> Weapon Upgrades</li>
+		<li> <i class="fa-solid fa-medal"></i> Leaderboards</li> <br>
+		<br>
+		<div id="changelog">
+		<h1> <i class="fa-solid fa-folder-open"></i> Changelogs</h1> <hr>
+		<p> v0.0.1</p>
+		<li> WASD Movement Overlay</li>
+		<li> Added Experimental Weapon</li>
+		<li> Added Recoil to camera+weapon</li>
+		<li> Reload animation</li>
+		<li> Bug Fixes</li>
+		</div> <br>
+		
+		<button onclick="closeDemo();">Close <i class="fa-solid fa-angles-right"></i></button>
+
+	</div>
+</div>
+
+<div id="loading"></div>
+<span id="loading-text">Please Wait....</span>
+<!-- Game Overlays below-->
+
+<div id="gameUI" style="display: none;">
+	<div id="inventory-container">
+		
+		<div id="inventory-slot-1" class="inventory-slot"> <i class="fa-solid fa-bomb"></i></div>
+		<div id="inventory-slot-2" class="inventory-slot"> <i class="fa-solid fa-child-combatant"></i></div>
+		<div id="inventory-slot-3" class="inventory-slot"> <i class="fa-solid fa-fire"></i></div>
+		<div id="inventory-slot-4" class="inventory-slot"> <i class="fa-solid fa-user-secret"></i></div>
+		<div id="inventory-slot-5" class="inventory-slot"> <i class="fa-sharp fa-solid fa-shield"></i></div>
+	</div>
+	<div id="keyboard-overlay">
+  <div class="key-row">
+    <div class="key" id="w-key">W</div></div>
+  	<div class="key-row">
+    <div class="key" id="a-key">A</div>
+    <div class="key" id="s-key">S</div>
+    <div class="key" id="d-key">D</div>
+	
+  </div>
+</div>
+	<div id="fps-counter"></div>
+	<div id="popup-holder" style="display: none;"> <h2 id="popup-text"> </h2></div>
+
+	<button id="pause-button"><i class="fas fa-pause"></i></button>
+	<button id="fullscreen-button" onclick="fullscreen()"><i class="fa-solid fa-maximize"></i></button>
+	<button id="shopButton" onclick=""><i class="fa-solid fa-shop"></i></button>
+	<h1 id="pausedText" style="display: none;"> Game Is Paused</h1>
+    <div id="crosshair"></div>
+    <div id="hud">
+		<div id="money"><i class="fa-solid fa-money-bill-1-wave"></i> <span id="money-count">Money: $0</span></div>
+
+      <div id="ammo-count"><i class="fa-solid fa-crosshairs"></i><span id="ammo-count-value">Ammo: 10</span></div>
+      <div id="score"><i class="fa-solid fa-star"></i><span id="score-value">Score: 0</span></div> 
+	  <div class="progress-bar-container">
+		<div id="dash-background"><i class="fa-solid fa-person-running"></i> Dash Cooldown</div>
+		<div id="dash-progress-bar" class="progress-bar"> </div>
+	  </div>
+      <div id="health-bar">
+        <div id="health-bar-number"><i class="fa-solid fa-heart" style="color: #ffffff;"></i>Health: 100</div>
+        <div id="health-bar-value"> 
+          
+          <div id="health-bar-value-inner">
+          <div class="health-section"></div>
+          <div class="health-section"></div>
+          <div class="health-section"></div>
+          <div class="health-section"></div>
+          <div class="health-section"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- Game Shop HTML-->
+</div>
+<div id="shop">
+	<div id="shop-header">
+		<div>
+			<h2><i class="fa-solid fa-shop"></i> Shop (Demo Only)</h2>
+		</div>
+		<h2 id="shopMoney"><i class="fa-solid fa-tag"></i> Money: <span id="shopMoneyCount"> $0</span></h2>
+		<span id="shop-close"><i class="fa-solid fa-circle-xmark"></i></span>
+	</div>
+	<div id="shop-tabs">
+		<button id="player-tab"class="active"><i class="fa-solid fa-person-running"></i> Player Upgrades</button>
+		<button id="weapon-tab"><i class="fa-solid fa-person-rifle"></i> Weapon Upgrades</button>
+		<button id="powerups-tab"><i class="fa-solid fa-bolt"></i> Powerups</button>
+	</div>
+
+	<div id="shop-content">
+		<div id="weapon-upgrades">
+			<h3>Weapon Upgrades</h3>
+			<button id="more-ammo">
+				<i class="fa-solid fa-rotate"></i> More Ammo: <br> 
+				<div id="ammoDetails">
+					<br>
+					Current: <span id="currentAmmo">10</span> <i class="fa-solid fa-crosshairs"></i><br>
+					<span id="shopUpgradeAmmoCount">+10</span>: <span id="shopAmmoCost">$250</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-gun"></i> Level : <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+				<br>
+			</button> 
+			
+			<button id="more-damage">
+				<i class="fa-solid fa-fire"></i> More Damage <br> 
+				<div id="damageDetails">
+					<br>
+					Current: <span id="currentDamage">10</span> <i class="fa-solid fa-fire"></i><br>
+					<span id="shopUpgradeDamageCount">+7</span>: <span id="shopDamageCost">$150</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+			</button>
+		</div>
+
+		<div id="player-upgrades" style="display: none;">
+			<h3>Player Upgrades</h3>
+			<button id="more-health">
+				<i class="fa-solid fa-heart-circle-plus"></i> More Health:
+				<div id="healthDetails">
+					<br>
+					Current: <span id="currentHealth">100</span> <i class="fa-solid fa-heart"></i><br>
+					<span id="shopHealthCount">+15</span>: <span id="shopHealthCost">$30</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-heart-circle-exclamation"></i> Level: <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>  <i class="fa-solid fa-heart"></i>
+			</button>
+			<button id="faster-movement">
+				<i class="fa-solid fa-person-running"></i> Faster Movement: <br> 
+				<div id="movementDetails">
+					<br>
+					Current: <span id="currentMovement">1.0x</span> <i class="fa-solid fa-person-running"></i><br>
+					<span id="shopMovementCount">+0.5x</span>: <span id="shopMovementCost">$20</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>  <i class="fa-solid fa-person-running"></i>
+			</button>
+		</div>
+
+		<div id="powerups-upgrades" style="display: none;">
+		<h3> Powerups</h3>
+			<button id="more-dash">
+				<i class="fa-solid fa-person-running"></i> More Dash: <br> 
+				<div id="dashDetails">
+					<br>
+					Current: <span id="currentDash">1.5s</span> <i class="fa-solid fa-person-running"></i><br>
+					<span id="shopDashCount">+1s</span>: <span id="shopDashCost">$500</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+				<br> <i class="fa-solid fa-bolt"></i> Level: <i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-chevron-right"></i>  
+				</button>
+				<button id="nuke">
+				<i class="fa-solid fa-bomb"></i> Nuke: <br>
+				<div id="nukeDetails">
+					<br>
+					Kill All Zombies<span id="currentNuke"></span> <i class="fa-solid fa-bomb"></i><br>
+					<span id="shopNukeCount">+1</span>: <span id="shopNukeCost">$2500</span>
+					<div class="buyButtonIcon">
+						<i class="fa-solid fa-cart-shopping"></i><input class="buyButton" type="button" value="Buy">
+					</div>
+				</div>
+					<br> Nukes: <span id="nukeCount"><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i><i class="fa-solid fa-explosion"></i></span>
+
+
+
+			
+	</div>
+</div>
+
+</body>
+
+<style>
+ /* import poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+
+
+#background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+button {
+  transition: 0.2s ease-in-out;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#crosshair {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: calc(50% - 10px);
+  left: calc(50% - 10px);
+}
+
+#crosshair::before,
+#crosshair::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background-color: #ffffff;
+  top: calc(50% - 1px);
+  left: calc(50% - 5px);
+}
+
+#crosshair::after {
+  transform: rotate(90deg);
+}
+
+.menu {
+  -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5); 
+  box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  animation: fade-in 0.75s forwards;
+  max-height: 600px;
+  overflow: auto; /* Only show scrollbar when content overflows */
+}
+::-webkit-scrollbar {
+  width: 15px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 10px;
+}
+ ::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+ ::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+#demoContent p {
+	  font-size: 24px;
+	  font-weight: bold;
+	  padding: 0;
+	  margin: 0;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+.menu h1,
+li,
+label,
+p {
+  color: white;
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+}
+
+
+.menu h1 {
+  font-size: 36px;
+  margin-top: 0;
+}
+
+.menu button {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.menu button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+#ammo-count,
+#score, #money {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+#changelog{
+	font-size: 18px;
+	  padding: 0;
+	  margin: 0;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+#changelog li {
+	font-size: 18px;
+	  padding: 0;
+	  margin: 0;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  word-wrap:break-word;
+
+}
+#ammo-count,
+#score,
+#money,
+#hud {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+
+}
+
+#ammo-count-value,
+#score-value,
+#money-count,
+#ammo-count-value,
+#score-value {
+  margin-left: 10px;
+  
+}
+
+#hud {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  gap: 20px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#health-bar {
+  width: 100%;
+  height: 40px;
+  padding: 20px;
+  margin-right: 2%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  opacity: 0;
+  animation: slide-in 0.5s forwards;
+  box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
+
+}
+
+.health-section {
+  width: 25%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+  margin: 5px;
+ 
+
+}
+
+#health-bar-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#health-bar-value-inner {
+  width: 90%;
+  height: 80%;
+  margin-right: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5%;
+}
+
+#health-bar-number {
+  z-index: 99;
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.progress-bar-container {
+  margin-bottom: 0px;
+  width: 75%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  position: relative;
+  opacity: 0;
+  animation: slide-in 0.5s forwards;
+}
+
+#dash-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 19px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  border-radius: 10px;
+  box-shadow: 0px 10px 13px -7px #000000, 0px 14px 7px 4px rgba(0,0,0,0.47);
+
+}
+
+#dash-progress-bar,
+.progress-bar {
+  width: 50px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: width 0.2s ease-in-out;
+}
+
+#dash-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  z-index: 2;
+  
+}
+
+
+#pause-button {
+  position: absolute;
+  margin-top: 10px;
+  right: 10px;
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#fullscreen-button{
+	position: absolute;
+  margin-top: 80px;
+  right:10px;
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#shopButton{
+	position: absolute;
+  margin-top: 150px;
+  right:10px;
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#pause-button i, #fullscreen-button i, #shopButton i {
+  font-size: 30px;
+  color: #fff;
+}
+
+#pause-button.play i::before {
+  content: "\f04b";
+}
+
+#pause-button.pause i::before {
+  content: "\f04c";
+}
+
+#uiBtn:hover {
+  color: black;
+  transition: 0.3s ease-in-out;
+}
+
+#controlsMenu {
+  position: absolute;
+  top: 50%;
+ left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+  -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5); 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 18px rgba(0,0,0,0.5);
+}
+
+#controlsMenu h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+#controlsMenu i {
+	font-size: 27px;
+}
+#controlsMenu li {
+  font-size: 20px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+#hud {
+	-webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 0px -5px 18px 21px rgba(0,0,0,0); 
+box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 0px -5px 18px 21px rgba(0,0,0,0);
+}
+#fps-counter {
+        position: fixed;
+        top: 10px;
+        right: 85px;
+        font-size: 21px;
+		font-weight: 600;
+        color: rgb(5, 255, 5);
+        z-index: 9999;
+		animation: pulse 0.5s infinite alternate;
+      }
+
+	  #pausedText {
+		animation: fade-in 1s forwards;
+		
+	z-index: 999;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	
+	font-family: 'Roboto', sans-serif;
+	font-size: 32px;
+	color: rgb(144, 144, 144);
+	text-shadow: 1px 1px 1px rgb(255, 255, 255);
+	background-color: black;
+	padding: 50px;
+	border-radius: 10px;
+}
+#popup-holder {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  color: rgb(0, 0, 0);
+  color: rgba(255,255,255,.8);
+text-shadow: 0 0 15px rgba(255,255,255,.5), 0 0 10px rgba(255,255,255,.5);
+  z-index: 999;
+  animation: pulse 0.5s infinite alternate;
+}
+
+/* Shop styles  */
+
+#shop {
+padding: 20px;
+display: none;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 600px;
+height: auto;
+background-color: #1f1f1f;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+z-index: 9999;
+font-family: 'Poppins', sans-serif;
+animation: fade-in 1s forwards;
+
+}
+
+#shop.active {
+display: block;
+}
+
+#shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #222;
+  color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#shop-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+#shopMoney {
+  font-size: 20px;
+  position: absolute;
+  right: 10%;
+
+}
+
+#shop-close {
+cursor: pointer;
+color: #fff;
+font-size: 25px;
+}
+
+#shop-tabs {
+display: flex;
+justify-content: space-around;
+align-items: center;
+height: 50px;
+background-color: #333;
+border-bottom-left-radius: 10px;
+border-bottom-right-radius: 10px;
+}
+
+#shop-tabs button {
+padding: 10px;
+background-color: transparent;
+border: none;
+cursor: pointer;
+color: #fff;
+font-size: 14px;
+width: 100%;
+height: 100%;
+}
+
+#shop-tabs button.active {
+background-color: #fff;
+color: #333;
+}
+
+#shop-content {
+padding: 10px;
+background-color: #1f1f1f;
+color: #fff;
+}
+
+#shop-content h3 {
+margin-top: 0;
+font-size: 16px;
+}
+
+#shop-content ul {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+#shop-content li {
+margin-bottom: 10px;
+}
+
+#shop-content button {
+padding: 5px 10px;
+background-color: #333;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 19px;
+width: 49%;
+height: auto;
+text-align: center;
+}
+#shop-content i {
+	font-size: 24px;
+}
+#shop-content button:hover {
+background-color: #555;
+}
+#shopUpgradeAmmoCount, #shopUpgradeDamageCount, #shopHealthCount, #shopMovementCount, #shopDashCount, #shopNukeCount {
+	margin-left: 80px;
+}
+#ammoDetails, #damageDetails, #healthDetails, #movementDetails, #dashDetails, #nukeDetails {
+	font-size: 15px;
+	text-shadow: 5px 5px 5px rgba(96, 96, 96,0.8);
+	border-radius: 5px;
+	color: #fff;
+	padding: 5px;
+}
+#ammoDetails i, #damageDetails i, #healthDetails i, #movementDetails i, #dashDetails i {
+	font-size: 20px;
+}
+#shop button:active{
+	transform: scale(1.0);
+}
+#shop button:hover{
+	background-color: #555;
+}.buyButtonIcon {
+  display: inline-block;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  padding: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease-in-out;
+}
+
+.buyButtonIcon:hover {
+  transform: scale(1.1);
+}
+
+.buyButton {
+	margin-left: 10px;
+  color: rgb(12, 12, 12);
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.buyButton:hover {
+  background-color: #ddd;
+}
+
+.buyButton:active {
+  background-color: #ccc;
+  transform: matrix(1, 0, 0, 1, 0, 2);
+}
+	
+#shop button:disabled{
+	background-color: #333;
+	color: #fff;
+}
+#shop button:disabled:hover{
+	background-color: #333;
+	color: #fff;
+}
+#shop {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+#shop.active {
+  opacity: 1;
+}
+
+#shop.fading-in {
+  opacity: 0;
+}
+
+#shop.fading-out {
+  opacity: 0;
+  animation:  fade-out 1s forwards;
+}
+#inventory-container {
+  position: fixed;
+  bottom: 125px;
+  right: 5px;
+  display: flex;
+  flex-direction: row;
+  z-index: 9999;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.59);
+  border-radius: 10px;
+}
+
+.inventory-slot {
+  width: 75px;
+  height: 75px;
+  background-color: rgba(255, 255, 255, 0.216);
+  border: 3px solid rgba(182, 182, 182, 0.774);
+  border-radius: 10px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  z-index: 9999;
+  transition: 0.2s background-color ease-in-out;
+
+}
+.inventoryActive {
+	background-color: green;
+}
+#keyboard-overlay {
+  position: fixed;
+  bottom: 25%;
+  right: 0;
+  transform: translateY(30%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 9999;
+}
+#w-key{
+	position: fixed;
+	  right: 62px;
+	  margin-bottom: 60px;
+	  bottom: auto;
+}
+.key-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.key {
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  border-radius: 5px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s background-color ease-in-out;
+}
+
+.key.active {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Animations */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+	opacity: 1;
+  }
+  to {
+	opacity: 0;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.health-section:hover {
+  animation: pulse 0.5s infinite alternate;
+}
+
+#loading {
+  display: none;
+  margin: 0 auto;
+  width: 50px;
+  height: 50px;
+  border-image: linear-gradient(0deg, #afd4d9 0%, #5fd8e0 100%) 1;
+        border-inline: 5px;
+  border-width: 5px;
+  border-style: solid;
+  animation: spin 3.5s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+
+    position: absolute;
+  top: 50%;
+  left: 48.5%;
+  background-color: #4949494b;
+  z-index: 999999;
+}
+
+
+
+      #loading-text {
+        color: white;
+        display: none;
+		font-size: large;
+		font-weight: bold;
+        /*position middle of screen*/
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        z-index: 10000;
+
+      }
+      @keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    box-shadow: 0 0 20px rgb(0, 0, 0.6);
+    background-color: #bdbdbd6c;
+  }
+  20% {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    background-color: #4949494b;
+
+  }
+  40% {
+    transform: rotate(180deg);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    background-color: #bdbdbd6c;
+  }
+  50% {
+    transform: rotate(180deg);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    background-color: #bdbdbd6c;
+  }
+  60% {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    background-color: #4949494b;
+
+  }
+  80% {
+    transform: rotate(360deg);
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+    background-color: #4949494b;
+
+  }
+  100% {
+    transform: rotate(360deg);
+    box-shadow: 0 0 20px rgb(0, 0, 0.6);
+    background-color: #bdbdbd6c;
+
+  }
+}
+
+
+</style>
+    </style>
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/FBXLoader.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.0/umd/index.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/21.0.0/tween.umd.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
+    <script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
+    <script>
+
+      gameStart = false;
+      document.getElementById("gameUI").style.display = "none";
+      showUI = true;
+      let userFov;
+      let userSenstivity;
+	  let userDifficulty;
+	  let spawnEnemies;
+	  let ui;
+	  const spawnEnemiesCheckbox = document.getElementById("spawn-enemies");
+	  const antialiasCheckbox = document.getElementById("antialias");
+	  let coolPineapplePizza = true;
+	  let antialias = false;
+	  let userResolution;
+
+function enableDevAccess() {
+  let code = prompt("Enter the code to enable developer access:");
+  if (code === "wiggles") {
+    localStorage.setItem("devAccess", "true");
+    coolPineapplePizza = true;
+    console.log("Developer access enabled. Press B to open the shop.");
+  } else {
+    console.log("Incorrect code. Developer access not enabled.");
+  }
+}
+function fullscreen(){
+	//request fullscreen 
+	if(document.fullscreenElement){
+		document.exitFullscreen();
+		//unfocus the button
+		document.getElementById("fullscreen-button").blur();
+	}else{
+		document.documentElement.requestFullscreen();
+		document.getElementById("fullscreen-button").blur();
+
+	}
+
+}
+function openDemo(){
+	document.getElementById("demo").style.display = "block";
+	document.getElementById("startMenu").style.display = "none";
+}
+function closeDemo(){
+	document.getElementById("demo").style.display = "none";
+	document.getElementById("startMenu").style.display = "block";
+}
+	 
+      //get settings from local storage
+	  if(localStorage.getItem("fov")){
+		userFov = localStorage.getItem("fov");
+		//update slider in html
+		document.getElementById("fov-slider").value = userFov;
+		document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
+
+	  }
+	  if(localStorage.getItem("difficulty")){
+		userDifficulty = localStorage.getItem("difficulty");
+		//update slider in html
+		document.getElementById("difficulty-slider").value = userDifficulty/2;
+		document.getElementById("difficultyValue").innerHTML = "Difficulty: " + userDifficulty/2;
+
+	  }
+	  if(localStorage.getItem("ui")){
+		showUI = localStorage.getItem("ui");
+		if(showUI == "true"){
+			showUI = true;
+			document.getElementById("ui").innerHTML = "UI Enabled";
+			document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
+		}else{
+			showUI = false;
+			document.getElementById("ui").innerHTML = "UI Disabled";
+			document.getElementById("uiBtn").style.backgroundColor = "red"
+		}
+	}
+	if(localStorage.getItem("enemies")){
+		spawnEnemies = localStorage.getItem("enemies");
+		if(spawnEnemies == "true"){
+			spawnEnemies = true;
+			document.getElementById("spawn-enemies").checked = true;
+		} if(spawnEnemies == "false"){
+			spawnEnemies = false;
+			document.getElementById("spawn-enemies").checked = false;
+		}
+	}
+	if(localStorage.getItem("resolution")){
+		userResolution = localStorage.getItem("resolution");
+		document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + userResolution;
+		document.getElementById("resolution-slider").value = userResolution;
+		userResolution = userResolution;
+	}
+	if(localStorage.getItem("antialias")){
+		antialias = localStorage.getItem("antialias");
+		if(antialias == "true"){
+			antialias = true;
+			document.getElementById("antialias").checked = true;
+		} if(antialias == "false"){
+			antialias = false;
+			document.getElementById("antialias").checked = false;
+		}
+	}
+
+
+
+      function startGame(){
+        gameStart = true;
+        document.getElementById("gameUI").style.display = "block";
+        document.getElementById("startMenu").style.display = "none";
+        gameStartFunction();
+        if(showUI == false){
+          document.getElementById("gameUI").style.display = "none";
+      }
+    }
+      function openOptions(){
+        document.getElementById("optionsMenu").style.display = "block";
+        document.getElementById("startMenu").style.display = "none";
+      }
+      function toggleUI(){
+        if(showUI == false){
+          document.getElementById("ui").innerHTML = "UI Enabled";
+          showUI = true;
+		  document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
+        }else{
+          document.getElementById("gameUI").style.display = "none";
+          document.getElementById("ui").innerHTML = "UI Disabled";
+          showUI = false;
+		  document.getElementById("uiBtn").style.backgroundColor = "red"
+        }
+      }
+     
+      function openControls(){
+        document.getElementById("controlsMenu").style.display = "block";
+        document.getElementById("startMenu").style.display = "none";
+      }
+      function closeControls(){
+        document.getElementById("controlsMenu").style.display = "none";
+        document.getElementById("startMenu").style.display = "block";
+      }
+      function updateFOV(value){
+        userFov = value;
+		if(value > 150.0){
+		console.log("Fuck you");
+		userFov = 150;
+	}
+        document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
+      }
+      function updateDifficulty(value1) {
+  userDifficulty = value1 *2;
+  if(value1 > 5.0){
+		console.log("Fuck you");
+		value1 = 5;
+	}
+  document.getElementById("difficultyValue").innerHTML = "Difficulty: " + value1;
+}
+function updateResolution(value){
+	userResolution = value;
+	if(value > 2.5){
+		console.log("Fuck you");
+		userResolution = 2.5;
+	}
+	document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + value;
+	localStorage.setItem("resolution", userResolution);
+}
+function resetSettings(){
+	userDifficulty = 5;
+	userFov = 90;
+	showUI = true;
+	spawnEnemies = true;
+	antialias = false;
+	userResolution = 1;
+	document.getElementById("fov-slider").value = userFov;
+	document.getElementById("fovValue").innerHTML = "FOV: " + userFov;
+	document.getElementById("difficulty-slider").value = userDifficulty/2;
+	document.getElementById("difficultyValue").innerHTML = "Difficulty: " + userDifficulty/2;
+	document.getElementById("ui").innerHTML = "UI Enabled";
+	document.getElementById("uiBtn").style.backgroundColor = "aquamarine"
+	document.getElementById("spawn-enemies").checked = true;
+	document.getElementById("antialias").checked = false;
+	document.getElementById("resolution").innerHTML = '<i class="fa-solid fa-pen"></i>' + " Resolution: " + userResolution;
+	document.getElementById("resolution-slider").value = userResolution;
+
+
+	localStorage.setItem("fov", userFov);
+	localStorage.setItem("difficulty", userDifficulty);
+	localStorage.setItem("ui", showUI);
+	localStorage.setItem("enemies", spawnEnemies);
+	localStorage.setItem("antialias", antialias);
+	localStorage.setItem("resolution", userResolution);
+	document.getElementById("resetSettingsBtn").innerHTML = '<i class="fa-solid fa-trash-can-arrow-up"></i>' +  " Settings Reset";
+
+
+	setTimeout(() => {
+		document.getElementById("resetSettingsBtn").innerHTML = '<i class="fa-solid fa-trash-can"></i>' + " Reset";
+
+	}, 1500);
+
+}
+function closeOptions(){
+        document.getElementById("optionsMenu").style.display = "none";
+        document.getElementById("startMenu").style.display = "block";
+		//save settings to local storage
+		if(userDifficulty == undefined || userDifficulty == null || userDifficulty == 0 || userDifficulty == NaN || userFov == undefined || userFov == null || userFov == 0 || userFov == NaN){
+			userDifficulty = 2.5;
+			userFov = 90;
+		
+      }
+		localStorage.setItem("fov", userFov);
+		localStorage.setItem("difficulty", userDifficulty);
+		localStorage.setItem("ui", showUI);
+		localStorage.setItem("enemies", spawnEnemies);
+		
+	}
+
+	 // Add an event listener to the checkbox to update spawnEnemies when its state changes
+	 spawnEnemiesCheckbox.addEventListener("change", () => {
+    spawnEnemies = spawnEnemiesCheckbox.checked;
+	localStorage.setItem("spawnEnemies", spawnEnemiesCheckbox.checked);
+  });
+  antialiasCheckbox.addEventListener("change", () => {
+	antialias = antialiasCheckbox.checked;
+	localStorage.setItem("antialias", antialiasCheckbox.checked);
+	  });
+
+     function gameStartFunction(){
+document.getElementById("loading").style.display = "block";
+document.getElementById("loading-text").style.display = "block";
+
+      // Set up the scene, camera, and renderer
+      const scene = new THREE.Scene();
+      // Create the camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(0, 1.6, -3);
+camera.lookAt(0, 1.6, 0);
+
+// Set the camera's field of view to a wider angle
+if(!userFov){
+  userFov = 90;
+}
+if(!userResolution){
+	userResolution = 1;
+}
+camera.fov = userFov;
+camera.updateProjectionMatrix();
+if(!userDifficulty){
+	  userDifficulty = 5;
+}
+
+      let score = 0;
+      let health = 100;
+      let enemyNumber = userDifficulty;
+      let gameOver = false;
+	  let gameLoaded = false;
+	  let enemies = [];
+let enemySpeed = 0.01; // Set initial enemy speed
+
+//if antialias is enabled 
+if(antialias == true){
+	renderer = new THREE.WebGLRenderer({ antialias: true });
+}else{
+	renderer = new THREE.WebGLRenderer({ antialias: false });
+}
+
+//set low resolution for performance
+renderer.setPixelRatio(window.devicePixelRatio * userResolution);
+ renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+     //give the canvas id of canvas
+      renderer.domElement.id = "canvas";
+	  //hide the canvas
+	  renderer.domElement.style.display = "none";
+	  //hide HUD
+	  document.getElementById("gameUI").style.display = "none";
+
+      // Create the floor object
+      const floorGeometry = new THREE.PlaneGeometry(150, 150);
+      const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+      scene.add(floor);
+
+
+
+
+      const loader = new THREE.ObjectLoader();
+     const mapData = {
+	"metadata": {
+		"version": 4.6,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+			"type": "BoxGeometry",
+			"width": 1,
+			"height": 1,
+			"depth": 1,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		},
+		{
+			"uuid": "97b63134-686e-4a46-9ede-801dff0150a4",
+			"type": "LatheGeometry",
+			"points": [
+				{
+					"x": 0,
+					"y": -0.5
+				},
+				{
+					"x": 0.5,
+					"y": 0
+				},
+				{
+					"x": 0,
+					"y": 0.5
+				}],
+			"segments": 12,
+			"phiStart": 0,
+			"phiLength": 6.283185307179586
+		},
+		{
+			"uuid": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+			"type": "CylinderGeometry",
+			"radiusTop": 1,
+			"radiusBottom": 1,
+			"height": 1,
+			"radialSegments": 32,
+			"heightSegments": 1,
+			"openEnded": false,
+			"thetaStart": 0,
+			"thetaLength": 6.283185307179586
+		}],
+	"materials": [
+		{
+			"uuid": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98",
+			"type": "MeshStandardMaterial",
+			"color": 0,
+			"roughness": 1,
+			"metalness": 0,
+			"emissive": 7039851,
+			"envMapIntensity": 1,
+			"vertexColors": true,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "b773ade2-1786-41a4-a139-b4b70657c190",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "3df052c9-e231-471a-8975-0257975c3606",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "1d16ce03-0f37-4ad0-8127-f173dca9684d",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "db62666b-3425-4c6a-8b48-b604794c5a52",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "b83071d9-80d6-47af-8d2b-79f15455d5f4",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "b379bad6-1370-4ece-95a3-f8f396973df6",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "f4cb52ff-91e5-4dc2-b3e9-9de7bce3f3fb",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "661f4ab6-d1e1-41a9-98ad-44b359aee536",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "de75d46e-e890-407d-896a-7c179cfe5324",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "a14741e2-c94a-4aa3-bfc5-899e4c37f49b",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "d094aa03-334e-4b82-b34d-b75b187f0455",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "028f3a3e-2721-4c1e-a9f9-dd956a85513e",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "61318bfa-e9da-4532-9841-14641bee6d5b",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "7a270282-e655-442a-8428-a8cad621930b",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "217da436-a916-42e9-b489-57050319e26e",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "7edc1e23-33c2-42c2-a998-8df429d6e922",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "642ff8aa-a3b6-41a7-908b-1f85c31340c0",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "561a59d2-df54-4dbf-ae63-caba866c1a46",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		},
+		{
+			"uuid": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a",
+			"type": "MeshNormalMaterial",
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"colorWrite": true,
+			"stencilWrite": false,
+			"stencilWriteMask": 255,
+			"stencilFunc": 519,
+			"stencilRef": 0,
+			"stencilFuncMask": 255,
+			"stencilFail": 7680,
+			"stencilZFail": 7680,
+			"stencilZPass": 7680
+		}],
+	"object": {
+		"uuid": "9d870c3b-fd55-4fc6-a7a2-a189b7e0d714",
+		"type": "Scene",
+		"name": "Scene",
+		"layers": 1,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"up": [0,1,0],
+		"children": [
+			{
+				"uuid": "9c2ab895-2f84-41db-be4f-2f918099de8a",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [7.932056841443746e-15,0,35.72280823540765,0,0,3.9037274670948845,0,0,-3.1384631203652242,0,6.968788036332772e-16,0,-73.20075505615131,2,0.30681450107626096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "16089d95-8e9c-400a-ad71-8d6801e27a62",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959982,-2.781116495986201e-15,0.2787407428521874,0,-6.892462910491452e-16,5.628536856140962,-6.809390035840391e-16,0,-0.2795594381269227,-2.823313558438078e-15,-23.054104745986997,0,-16.262042984714554,1.1050143366204939,30.70510041287323,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "e7824de6-7bb4-45e4-84c4-2000b2254b3d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-12.547880978677842,-1.536672227661978e-15,1.881880724944874e-31,0,-7.853613985045102e-15,64.12962488868702,-7.853613985045102e-15,0,4.0978100263736326e-47,-1.8335889682016867e-15,-14.972390157540136,0,-35.17136782405482,11.90616177980057,-30.5055374427193,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "b773ade2-1786-41a4-a139-b4b70657c190"
+			},
+			{
+				"uuid": "b4f2e674-23d4-4aa0-b632-61ef5660c064",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-12.547880978677842,-1.5366722276619778e-15,1.8818807249448738e-31,0,-8.05012957297075e-15,65.73429644021088,-8.05012957297075e-15,0,0,-1.8335889682016863e-15,-14.972390157540136,0,33.91646887870589,11.906161779800579,-30.5055374427193,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "3df052c9-e231-471a-8975-0257975c3606"
+			},
+			{
+				"uuid": "ea8f9d45-fd8a-43bd-820d-0939c405b266",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-12.547880978677842,-1.5366722276619778e-15,1.8818807249448738e-31,0,-8.43270825827812e-15,68.85828848080361,-8.43270825827812e-15,0,0,-1.8335889682016863e-15,-14.972390157540136,0,33.91646887870589,11.906161779800586,30.40109758864564,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "1d16ce03-0f37-4ad0-8127-f173dca9684d"
+			},
+			{
+				"uuid": "d4725d40-e937-4ead-9354-8aa42c2c861f",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-12.547880978677842,-1.5366722276619778e-15,1.8818807249448738e-31,0,-8.280217612048144e-15,67.61310785945102,-8.280217612048144e-15,0,0,-1.8335889682016863e-15,-14.972390157540136,0,-33.09316341817205,11.906161779800577,30.40109758864564,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "db62666b-3425-4c6a-8b48-b604794c5a52"
+			},
+			{
+				"uuid": "8548784f-c914-4a35-aabb-e2af2829890e",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-157.64558710098655,-1.9306016364292845e-14,2.3643051144817654e-30,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.768471018776772,5.952347120249376,-74.85847008178656,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "b83071d9-80d6-47af-8d2b-79f15455d5f4"
+			},
+			{
+				"uuid": "a37193ce-812e-4794-ad2a-560c3ee67587",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-157.64558710098655,-1.9306016364292845e-14,2.3643051144817654e-30,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.768471018776772,5.952347120249394,75.66554671645585,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "b379bad6-1370-4ece-95a3-f8f396973df6"
+			},
+			{
+				"uuid": "b83af6e3-d884-482e-b89e-7cd1ddcca491",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-3.500435210601317e-14,-3.4516956111280725e-45,157.64558710098655,0,-5.259904577836978e-30,18.859163488856975,-4.129268255529053e-46,0,-27.709997294036594,-7.728441492374334e-30,-6.152855401628042e-15,0,80.05652579298778,5.952347120249394,-3.4983589821475984,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "f4cb52ff-91e5-4dc2-b3e9-9de7bce3f3fb"
+			},
+			{
+				"uuid": "53ab1779-f951-4889-bf11-0810728f2920",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-3.500435210601317e-14,-3.4516956111280725e-45,157.64558710098655,0,-5.259904577836978e-30,18.859163488856975,-4.129268255529053e-46,0,-27.709997294036594,-7.728441492374334e-30,-6.152855401628042e-15,0,-86.99318973400052,5.952347120249373,-11.292247322291393,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "661f4ab6-d1e1-41a9-98ad-44b359aee536"
+			},
+			{
+				"uuid": "12983577-58a9-47c0-bb0b-e84a68d5b53e",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [1.696678827563353,1.0814823794516885e-16,-37.073156761591335,0,-6.5320770982163365e-15,51.26590271505499,-1.4939434218861767e-16,0,-27.681023520221903,-3.530686657797964e-15,-1.2668413114661274,0,-106.49686308728619,20.270022310416447,-12.036104692846854,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "de75d46e-e890-407d-896a-7c179cfe5324"
+			},
+			{
+				"uuid": "2a2ad519-cada-4e91-a1aa-7f998cb8b84e",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [1.696678827563353,1.0814823794516885e-16,-37.073156761591335,0,-6.5320770982163365e-15,51.26590271505499,-1.4939434218861767e-16,0,-27.681023520221903,-3.530686657797964e-15,-1.2668413114661274,0,107.26502634279174,20.270022310416476,-2.253143013368108,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "a14741e2-c94a-4aa3-bfc5-899e4c37f49b"
+			},
+			{
+				"uuid": "e5023e4e-6f08-4c89-9d5d-65290265db21",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [44.43299765061215,5.441472834934404e-15,-6.663882289949691e-31,0,-6.863396905095122e-15,56.043888816544374,-6.863396905095122e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,22.931823105324224,-100.67151976628942,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "d094aa03-334e-4b82-b34d-b75b187f0455"
+			},
+			{
+				"uuid": "5860f51f-fef1-4993-8242-118db4dd5bc4",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [44.43299765061215,5.441472834934404e-15,-6.663882289949691e-31,0,-6.863396905095122e-15,56.043888816544374,-6.863396905095122e-15,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,22.93182310532425,99.80949780657134,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "028f3a3e-2721-4c1e-a9f9-dd956a85513e"
+			},
+			{
+				"uuid": "6c43df7e-aa6a-421f-be78-cc3e54c3078b",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.038054936219769187,-3.843226260384432e-16,-3.1382323973412047,0,-0.042055588528038146,1.5801236219340087,-11.567378895094595,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "61318bfa-e9da-4532-9841-14641bee6d5b"
+			},
+			{
+				"uuid": "04af6f53-08a1-489e-bf8b-1212b71cfdd0",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.033100839921296,-7.299367158158158e-16,0.07315878450084025,0,-1.4884273649199447e-15,12.154825335931092,-1.4704877776462877e-15,0,-0.03805493621976918,-3.8432262603844345e-16,-3.138232397341209,0,0.09228319032174215,5.688813116500597,-11.589765962369857,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7a270282-e655-442a-8428-a8cad621930b"
+			},
+			{
+				"uuid": "4eac6231-738e-4a16-aa8d-5fd269fac6f1",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-34.967147984101885,-4.2306279702916334e-15,0.42401977222898163,0,-2.73051503149274e-17,0.2229798649711986,-2.6976049185346032e-17,0,0.017843289857639492,1.8020211558495995e-16,1.4714619407850789,0,-0.11130535450200618,-0.039848869775855,-13.013057040015546,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "33ab7b3b-7640-4b29-9406-17789dc4f01f",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [2.7462178004089655,0,0,0,0,5.7851861835403575,0,0,0,0,3.505315539006467,0,0.030206904424241454,14.872610074326317,-11.606231485634458,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "bf86bc8b-96e0-4cfc-9d12-2839aa8c2690",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [9.469633880958241,0,0,0,0,14.621487748571145,0,0,0,0,11.068576524705188,0,33.5369696857737,55.76407516798785,29.277530019953396,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "e4146310-7216-4656-824e-b307558c577a",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [9.469633880958241,0,0,0,0,14.621487748571145,0,0,0,0,11.068576524705188,0,-35.18763727534692,52.998315841401826,-30.175067819767644,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "fa664cc3-05f7-4c6a-8f64-fde1e4e4c9f9",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-36.527954965120415,5.952347120249396,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "28c74377-8852-4f7a-9e83-56827ebad5c7",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-69.99046414046487,2.0000000000000027,31.01517845641162,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "42299cf1-3af9-4fca-a9ec-1e4e73bb913e",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,-48.16936090878246,2,-0.3344763381706516,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "642ff8aa-a3b6-41a7-908b-1f85c31340c0"
+			},
+			{
+				"uuid": "34704b46-38d0-427a-bf96-9b232c9144cf",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,-76.92917816176461,2,-0.3344763381706569,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "561a59d2-df54-4dbf-ae63-caba866c1a46"
+			},
+			{
+				"uuid": "2d309984-2c29-4efb-92f0-a256193f4c21",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-71.76596123279002,5.952347120249395,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "d2bb2fc9-16ef-47c3-9785-d0862a3e6350",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-36.527954965120415,5.952347120249396,-31.15693889984447,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "3da4d00c-8f86-4e9f-bebd-626c9823933f",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,-71.76596123279002,5.952347120249395,-31.524694146343304,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "05a30869-59df-4fcc-90ba-e78d3ac9eedc",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-36.77659285892271,2.0000000000000027,31.109096432356868,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "73cf1589-a6f5-4b65-bf7c-858c51120cc0",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,-17.873513844437927,2.38545453456571,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "44a54f5f-b3b7-4ecc-b2f4-208ab63baf9d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,18.19345744810121,2.38545453456571,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "622da363-77cf-4d16-8dab-4fd290a4f98c",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959982,-2.781116495986201e-15,0.2787407428521874,0,-6.892462910491452e-16,5.628536856140962,-6.809390035840391e-16,0,-0.2795594381269227,-2.823313558438078e-15,-23.054104745986997,0,16.519493294425732,1.1050143366204939,30.70510041287323,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "71667a9b-7656-4e60-bd2b-e5254c7ae163",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-164.92326347335722,-2.0197274671758256e-14,2.473452777826865e-30,0,-4.780687347321356e-16,3.9037274670948845,-4.780687347321354e-16,0,0,-3.8600769369276494e-15,-31.519920189357343,0,-8.802778881677874,2.0000000000000027,75.1323005622754,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "f622ccba-3e29-406f-bdd8-878a6bdd4450",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-164.92326347335722,-2.0197274671758256e-14,2.473452777826865e-30,0,-4.780687347321356e-16,3.9037274670948845,-4.780687347321354e-16,0,0,-3.8600769369276494e-15,-31.519920189357343,0,-8.802778881677874,2.0000000000000027,-74.67176143526635,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "7c3bbd01-6d1e-4c7b-a147-29aa4f335c79",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,-17.873513844437927,2.38545453456571,-30.933730874803615,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "4f01f58b-6220-4f10-9221-4932c0e21442",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959982,-2.781116495986201e-15,0.2787407428521874,0,-6.892462910491452e-16,5.628536856140962,-6.809390035840391e-16,0,-0.2795594381269227,-2.823313558438078e-15,-23.054104745986997,0,-16.262042984714554,1.1050143366204939,-30.882889592824178,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "6c893138-ef88-4730-913b-1c81190456bc",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-36.77659285892271,2.0000000000000027,-31.503719158830645,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "a4ba1f9a-347d-4355-84ee-17cd2af9320d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,-69.99046414046487,2.0000000000000027,-31.732162300101294,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "86417870-259b-4f4c-9b33-c0d2425f263f",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.07078008860614,-2.8253556989343998e-15,3.4600628131527455e-31,0,-1.4107667010269477e-15,11.519784332994448,-1.4107667010269477e-15,0,0,-2.403636697404642e-15,-19.62718311171962,0,18.19345744810121,2.38545453456571,-31.66647578345569,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "e184dc81-4ad6-4c9a-84c9-c2d97026e67b",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.986590349959982,-2.781116495986201e-15,0.2787407428521874,0,-6.17042305684173e-16,5.038903225804849,-6.0960527210413335e-16,0,-0.2795594381269227,-2.823313558438078e-15,-23.054104745986997,0,16.519493294425732,1.1050143366204939,-32.14111308562484,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "56de02f6-6596-4928-8f6b-0a39f778cb6d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,37.836450256890366,2,-0.3344763381706516,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "642ff8aa-a3b6-41a7-908b-1f85c31340c0"
+			},
+			{
+				"uuid": "3368bd10-a959-480c-98d8-2570f4983206",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [2.9570387900171406e-15,0,13.317318792841297,0,0,15.587641024357756,0,0,-19.77692311425659,0,4.391359079537824e-15,0,67.72737440132441,2,-0.3344763381706569,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "561a59d2-df54-4dbf-ae63-caba866c1a46"
+			},
+			{
+				"uuid": "ea9010fa-a55d-49f5-9953-a8e20d31f291",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,35.58807229270299,5.952347120249396,-31.15693889984447,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "256fa0d8-51ec-4102-8367-671b13c32b93",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,69.65072504011387,5.952347120249395,-31.524694146343304,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "d679fcb1-e2f7-45eb-a0a5-e8ca53d46408",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,35.42892916822767,2.0000000000000027,-31.503719158830645,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "08dd919d-d0f1-4139-9ae2-4ba9defcc5ff",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,66.93330022120873,2.0000000000000027,-31.732162300101294,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "ff58188e-31ac-4383-8d68-390bd60406e3",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,36.42768817546292,5.952347120249396,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "27428601-a93a-4d65-a1c0-1055eb55d7c6",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-29.649288738282294,-3.630990655033308e-15,4.446681083420492e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,36.89151287897299,2.0000000000000027,31.109096432356868,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "7e245dfd-ec2d-4a72-a79b-f81cd0cbc186",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-24.890276044725002,-3.0481796888066517e-15,3.7329434991230405e-31,0,-2.3095814201225327e-15,18.859163488856975,-2.3095814201225327e-15,0,7.583979815347326e-47,-3.393495949052373e-15,-27.70999729403659,0,71.35898557786092,5.952347120249395,31.18313840782419,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7edc1e23-33c2-42c2-a998-8df429d6e922"
+			},
+			{
+				"uuid": "6e4ada86-ed23-40a1-8c4f-06c12650ba73",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-23.927626533926524,-2.9302891245966395e-15,3.5885691970135743e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-4.3133609137682854e-47,-3.8600769369276494e-15,-31.519920189357343,0,68.52391971428983,2.0000000000000027,31.01517845641162,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "42dd3d5f-a09a-412f-a317-cc81ee556b59",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [8.136225202956574,0,0,0,0,12.397439675464325,0,0,0,0,9.497135767776626,0,14.575733170032457,14.138296534542782,-30.10629979651295,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "fab16964-b33b-4c39-9652-4236c3ca406d",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [8.136225202956574,0,0,0,0,12.420811794275963,0,0,0,0,9.467042354393026,0,-15.96617268028309,14.290886418677637,30.94055653058794,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "646ca399-5e30-4c9a-8811-14c71d472cd2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.462773815510165,-2.75089640531355e-15,3.368876477553199e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-2.1480214621303708e-47,-1.922289433172268e-15,-15.696684419627285,0,-48.424214484285244,1.0798933206360974,-0.449221096675096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "6ebca84e-9b49-4e36-81b2-4218c34c1c4c",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [3.5402471727395747e-15,0,15.9438558479494,0,0,3.9037274670948845,0,0,-7.9193570079364015,0,1.7584504980875163e-15,0,-69.78374290298282,2,-0.4831628665772524,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "dcb50b46-6965-464e-9096-ac60f8278ad2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [3.5402471727395747e-15,0,15.9438558479494,0,0,3.9037274670948845,0,0,-7.9193570079364015,0,1.7584504980875163e-15,0,60.789325995364166,2,-0.4831628665772524,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "ca46a594-7db7-4959-9f7c-97fd670ab090",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [7.932056841443746e-15,0,35.72280823540765,0,0,3.9037274670948845,0,0,-3.1384631203652242,0,6.968788036332772e-16,0,65.66301369157914,2,0.30681450107626096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "08598b5b-9f7b-4ac5-8fe9-aa19709007e4",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-22.462773815510165,-2.75089640531355e-15,3.368876477553199e-31,0,-4.780687347321355e-16,3.9037274670948845,-4.780687347321354e-16,0,-2.1480214621303708e-47,-1.922289433172268e-15,-15.696684419627285,0,38.01842033203198,1.0798933206360974,-0.449221096675096,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "3a4b16cc-d98f-4e5c-a672-02e32ccdab29",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.9562475714490035,0,0,0,0,9.258013767689528,0,0,0,0,3.1433300935130912,0,-54.57721970781459,0,54.00571034905892,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3f03926e-4793-4e06-b897-f4b45cb36d1c",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [3.8221661239515625,0,0,0,0,9.258013767689528,0,0,0,0,3.9559894059752327,0,0.17731261621362648,0,50.82703143099926,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3c6095c9-06e9-453f-ad22-f9802228a2ae",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [3.015911036386662,0,0,0,0,9.258013767689528,0,0,0,0,2.989373476046219,0,54.1069169519656,0,53.47458142240422,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3eb1b4ba-eedc-4633-a850-dadd50890d46",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.878445929061107,0,0,0,0,9.258013767689528,0,0,0,0,2.956989462468081,0,54.1069169519656,0,-53.4233853385458,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "3d2ca052-d288-4a0b-b894-480545464e2c",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [4.039851775478013,0,0,0,0,9.258013767689528,0,0,0,0,3.9172626991891204,0,0.17731261621362648,0,-52.064235132856865,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "e3d6c318-7353-4691-bb71-f73470cf3d1d",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.918497290794087,0,0,0,0,9.258013767689528,0,0,0,0,3.134661982102363,0,-54.57721970781459,0,-53.338325827181954,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "5545ff4c-f462-4aa9-9f3f-fd0ac406c3c1",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.770569742095003,0,0,0,0,28.752834007543818,0,0,0,0,2.461327267205207,0,0.17731261621362648,8.072152251763246,-52.064235132856865,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "8519c9f6-fc26-401a-a38a-9dfebafe07b9",
+				"type": "Mesh",
+				"name": "Cylinder",
+				"layers": 1,
+				"matrix": [2.770569742095003,0,0,0,0,28.752834007543818,0,0,0,0,2.461327267205207,0,0.05871483449492931,8.072152251763246,50.94451662073768,1],
+				"up": [0,1,0],
+				"geometry": "e639800e-fc3c-4f94-8c75-e27c6522cfda",
+				"material": "fdd76534-b142-4a45-bc42-7a0f2d8f6edd"
+			},
+			{
+				"uuid": "805dcd6b-8e12-4320-b6a7-5cd0b4468caa",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [65.12724558383655,7.975787284152904e-15,-9.767522368218013e-31,0,-1.174299266372613e-14,95.88881195706435,-1.174299266372613e-14,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,18.339003550533896,-128.67866373641397,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "d094aa03-334e-4b82-b34d-b75b187f0455"
+			},
+			{
+				"uuid": "d8eacf7f-c9e8-486a-b6f9-a88e6979af51",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [65.12724558383655,7.975787284152904e-15,-9.767522368218013e-31,0,-1.174299266372613e-14,95.88881195706435,-1.174299266372613e-14,0,0,-3.393495949052373e-15,-27.70999729403659,0,-0.7684710187767742,18.339003550533896,126.47331896058091,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "d094aa03-334e-4b82-b34d-b75b187f0455"
+			},
+			{
+				"uuid": "c9d54306-f670-4565-a590-5c711ad4c519",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.252243435903801e-15,-1.2348073630051782e-46,-5.639603071313508,0,-3.30655161247983e-30,11.855499756945111,2.595795875501629e-46,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,-15.80996883813301,5.774232760671483,-5.753252611837879,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "7a8701c3-0915-4c58-9b00-bbb620566efe",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.252243435903801e-15,-1.2348073630051782e-46,-5.639603071313508,0,-3.30655161247983e-30,11.855499756945111,2.595795875501629e-46,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,-15.763431838117949,5.774232760671483,6.716777313399082,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "bc31c329-39e0-458e-b6c9-087c14f2e8f8",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [5.639603071313508,1.1911938668258359e-31,-3.331806244711102e-62,0,-2.5041121547121635e-31,11.855499756945111,-3.3160201059141274e-30,0,0,8.778378830217083e-31,3.1384631203652242,0,-14.560019705265628,5.774232760671483,11.093471635110728,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "94a07e65-2250-4534-bbb3-bb8f7adc2686",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [5.639603071313508,1.1911938668258359e-31,-3.331806244711102e-62,0,-2.5041121547121635e-31,11.855499756945111,-3.3160201059141274e-30,0,0,8.778378830217083e-31,3.1384631203652242,0,-14.560019705265628,5.774232760671483,-10.151068924384855,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "3ed7296d-105f-46b4-8e95-255e35814271",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [5.639603071313508,1.1911938668258359e-31,-3.331806244711102e-62,0,-2.5041121547121635e-31,11.855499756945111,-3.3160201059141274e-30,0,0,8.778378830217083e-31,3.1384631203652242,0,14.344150325786782,5.774232760671483,-10.590288715383554,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "f7cf3143-2623-4dd4-a5e9-f42551b95559",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.252243435903801e-15,-1.2348073630051782e-46,-5.639603071313508,0,-3.30655161247983e-30,11.855499756945111,2.595795875501629e-46,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,15.656949175403955,5.774232760671483,-6.3198314207886375,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "4a2e2065-74e6-49cc-ae92-ccbe0bcc8074",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [5.639603071313508,1.1911938668258359e-31,-3.331806244711102e-62,0,-2.5041121547121635e-31,11.855499756945111,-3.3160201059141274e-30,0,0,8.778378830217083e-31,3.1384631203652242,0,14.344150325786782,5.774232760671483,10.683272946271344,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "3c264200-53bb-48d7-b1f5-7b2e35ea4ae2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.252243435903801e-15,-1.2348073630051782e-46,-5.639603071313508,0,-3.30655161247983e-30,11.855499756945111,2.595795875501629e-46,0,3.1384631203652242,8.753313233609438e-31,-6.968788036332772e-16,0,15.656949175403955,5.774232760671483,6.396370393293858,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "93c42b97-0962-4906-aa04-8ac4bd573c1c",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-14.96169995474618,-1.8101958541325402e-15,0.18142905477604915,0,-4.780335896754834e-16,3.9037274670948845,-4.722719882001005e-16,0,-0.038054936219769187,-3.843226260384432e-16,-3.1382323973412047,0,-0.042055588528038146,1.5801236219340087,10.331888394483883,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "61318bfa-e9da-4532-9841-14641bee6d5b"
+			},
+			{
+				"uuid": "f2f96956-aada-4d9f-94ac-25e37f098dbc",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.033100839921296,-7.299367158158158e-16,0.07315878450084025,0,-1.4884273649199447e-15,12.154825335931092,-1.4704877776462877e-15,0,-0.03805493621976918,-3.8432262603844345e-16,-3.138232397341209,0,0.09228319032174215,5.688813116500597,10.265035137140124,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "7a270282-e655-442a-8428-a8cad621930b"
+			},
+			{
+				"uuid": "d671e3fa-c640-43c4-ad47-9ac8dc868a62",
+				"type": "Mesh",
+				"name": "Lathe",
+				"layers": 1,
+				"matrix": [2.7462178004089655,0,0,0,0,5.7851861835403575,0,0,0,0,3.505315539006467,0,0.030206904424241454,14.872610074326317,10.27067203526074,1],
+				"up": [0,1,0],
+				"geometry": "97b63134-686e-4a46-9ede-801dff0150a4",
+				"material": "eaf5575d-ac4a-43ff-bbd0-0bfc6a865d36"
+			},
+			{
+				"uuid": "2e533435-fe2e-4d64-b10c-60092a7931f8",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.2235883531226544e-15,-1.2065512698277802e-46,-5.510552051178065,0,-2.287437763212195e-30,8.20151052336089,1.7957443908639752e-46,0,3.61478711856871,1.0081802050287053e-30,-8.0264397763068155e-16,0,-14.816435349458185,3.0902940751708394,7.174055369506677,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "2a73d923-32b8-486e-819e-3f4d856343e0",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.2235883531226544e-15,-1.2065512698277802e-46,-5.510552051178065,0,-2.287437763212195e-30,8.20151052336089,1.7957443908639752e-46,0,3.61478711856871,1.0081802050287053e-30,-8.0264397763068155e-16,0,-14.632684787250247,3.0902940751708394,-6.580491357375751,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "d9c41933-066d-42bf-bfb9-916c3840e1cf",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.2235883531226544e-15,-1.2065512698277802e-46,-5.510552051178065,0,-2.287437763212195e-30,8.20151052336089,1.7957443908639752e-46,0,3.61478711856871,1.0081802050287053e-30,-8.0264397763068155e-16,0,14.416691415798422,3.0902940751708394,-7.28131756151846,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "49dc85d9-84ad-4a43-a874-e3ee8c9edbeb",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-1.2235883531226544e-15,-1.2065512698277802e-46,-5.510552051178065,0,-2.287437763212195e-30,8.20151052336089,1.7957443908639752e-46,0,3.61478711856871,1.0081802050287053e-30,-8.0264397763068155e-16,0,14.416691415798422,3.0902940751708394,7.192594273245678,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "990dc75f-2c7d-4707-89ff-d4fde0f45f8a"
+			},
+			{
+				"uuid": "1b7ace41-da06-4e9e-bb26-a6e10e4d16f8",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.457849693920007,-7.908584957033851e-16,9.685223253416413e-32,0,-3.711673948378834e-16,3.0308117825997227,-3.711673948378834e-16,0,-1.2553387146092079e-47,-1.123417241721618e-15,-9.173397934031142,0,-14.593654728568044,0.4232230142460329,-7.423827426235703,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "d01c8d56-e461-4a16-83c9-8182977abed8",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.457849693920007,-7.908584957033851e-16,9.685223253416413e-32,0,-3.711673948378834e-16,3.0308117825997227,-3.711673948378834e-16,0,-1.2553387146092079e-47,-1.123417241721618e-15,-9.173397934031142,0,-14.593654728568044,0.4232230142460329,8.338268841581694,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "a8cd71d3-c86d-4ee3-b511-faabc1df45a9",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.457849693920007,-7.908584957033851e-16,9.685223253416413e-32,0,-3.711673948378834e-16,3.0308117825997227,-3.711673948378834e-16,0,-1.2553387146092079e-47,-1.123417241721618e-15,-9.173397934031142,0,14.497300973295545,0.4232230142460329,8.007016608923335,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "7abfbebb-e3b0-4e24-9fa3-6650d1134f9d",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-6.457849693920007,-7.908584957033851e-16,9.685223253416413e-32,0,-3.711673948378834e-16,3.0308117825997227,-3.711673948378834e-16,0,-1.2553387146092079e-47,-1.123417241721618e-15,-9.173397934031142,0,14.497300973295545,0.4232230142460329,-7.910660213280121,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "c5ab2d01-e6b0-4a36-805d-62d7f2fc0b98"
+			},
+			{
+				"uuid": "fa9e1e40-e3b0-4ad9-819b-d41806f8c5c2",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-34.967147984101885,-4.2306279702916334e-15,0.42401977222898163,0,-2.73051503149274e-17,0.2229798649711986,-2.6976049185346032e-17,0,0.017843289857639492,1.8020211558495995e-16,1.4714619407850789,0,-0.11130535450200618,-0.039848869775855,12.428617387902612,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "01ce59e5-cbe4-427e-ac2e-18ad0c8a96d5",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-0.08217502782034924,5.005076746243137e-18,-27.044526572854387,0,2.7162236283170345e-17,0.2229798649711986,-4.126624964863962e-20,0,-1.2154505274518217,1.4806048440360698e-16,0.0036931569365264696,0,-17.769160007354934,-0.039848869775855,-0.08077918456962863,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			},
+			{
+				"uuid": "bfe15c55-53e8-4f16-9417-d9c923ccd6cd",
+				"type": "Mesh",
+				"name": "Box",
+				"layers": 1,
+				"matrix": [-0.08217502782034924,5.005076746243137e-18,-27.044526572854387,0,2.7162236283170345e-17,0.2229798649711986,-4.126624964863962e-20,0,-1.2154505274518217,1.4806048440360698e-16,0.0036931569365264696,0,17.611312884227843,-0.039848869775855,-0.49480963348676266,1],
+				"up": [0,1,0],
+				"geometry": "f456f77f-b0c9-441b-86c1-a5a7f1214244",
+				"material": "217da436-a916-42e9-b489-57050319e26e"
+			}]
+	}
+}
+ loader.parse(mapData, (object) => {
+  // Add the loaded object to the scene
+  object.renderOrder = 0;
+  scene.add(object);
+});
+let gun;
+
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onLoad = function () {
+	setTimeout(() => {
+		gameLoaded = true;
+		// Hide the loading spinner when all files are loaded
+		document.getElementById('loading-text').style.display = 'none';
+  document.getElementById('loading').style.display = 'none';
+  canvas.style.display = 'block';
+  document.getElementById('gameUI').style.display = 'block';
+  //if disabled send to local storage
+  if (!spawnEnemiesCheckbox.checked) {
+
+localStorage.setItem("spawnEnemies", false);
+}
+
+if (spawnEnemiesCheckbox.checked) {
+// Create the enemies
+const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
+const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+setTimeout(() => {
+	
+	
+for (let i = 0; i < 10; i++) {
+  const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+  enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+  scene.add(enemy);
+  enemies.push(enemy);
+}
+}, 3500);
+
+spawnEnemies = true;
+
+
+
+//set time variable to higher as time goes on
+let time = 0;
+setInterval(() => {
+  time += 10;
+}, 100);
+
+// Create enemies at random intervals
+setInterval(() => {
+	if(isPaused) return;
+  if (spawnEnemiesCheckbox.checked) {
+	const numEnemies = Math.floor(Math.random() * userDifficulty) + 1; // Generate a random number of enemies between 1 and 5
+	for (let i = 0; i < numEnemies; i++) {
+	  const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+	  enemy.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+	  scene.add(enemy);
+	  enemies.push(enemy);
+	}
+  }
+}, Math.random() * 1000 + 5000 - time);
+
+let enemySpeed;
+setInterval(() => {
+  enemySpeed = Math.random() * 0.01 + 0.01; // Generate a random enemy speed between 0.01 and 0.02
+}, 1000);
+}
+	}, 1000);
+
+};
+
+loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+  // Update the loading text with the progress percentage
+  const progress = Math.round((itemsLoaded / itemsTotal) * 100);
+  document.getElementById('loading-text').textContent = `Loading... ${progress}%`;
+};
+
+const loader1 = new THREE.FBXLoader(loadingManager);
+
+loader1.load('https://theactualzenaldv2.github.io/gamedev/public2/sounds/gun.fbx', function (object) {
+  gun = object;
+  gun.scale.set(0.01, 0.01, 0.01); // Set the scale of the gun model
+  gun.position.set(1.15, -1.2, -2); // Set the position of the gun model
+  gun.rotation.x = Math.PI; // Rotate the gun model around the x axis
+  gun.rotation.z = Math.PI; // Rotate the gun model around the y axis
+
+  // Load a gradient image
+  const textureLoader = new THREE.TextureLoader();
+  const gradientTexture = textureLoader.load('https://i.imgur.com/iUMNWNq.jpg');
+
+  // Adjust the repeat values to resize the texture
+  gradientTexture.repeat.set(0.5, 0.5); // Modify these values to adjust the size
+
+  // Create a material with the gradient texture
+  const gunMaterial = new THREE.MeshStandardMaterial({ map: gradientTexture });
+
+  // Set the material of the gun model
+  gun.traverse(function (node) {
+    if (node.isMesh) {
+      node.material = gunMaterial;
+      node.material.needsUpdate = true; // Set the needsUpdate property to true to update the material
+    }
+  });
+
+  // Set the render order and disable depth testing
+  gun.renderOrder = 999999999;
+  gun.traverse(function (node) {
+    if (node.isMesh) {
+      node.material.depthTest = false;
+    }
+  });
+	camera.add(gun); // Add the gun model as a child of the camera
+  
+
+  
+});
+
+
+
+const pauseButton = document.getElementById("pause-button");
+let isPaused = false;
+function pauseGame(){
+	if (isPaused) {
+    // Resume the game
+    isPaused = false;
+    pauseButton.classList.remove("play");
+    pauseButton.classList.add("pause");
+    // Enable user input and show UI elements here
+
+    animate(); // Restart the animation loop
+	//unfocus element 
+	pauseButton.blur();
+	document.getElementById("pausedText").style.display = "none";
+	document.getElementById("shopButton").disabled = false;
+	
+	document.addEventListener("click", lockControls);
+
+	
+
+
+
+  } else {
+    // Pause the game
+    isPaused = true;
+	pauseButton.classList.remove("pause");
+    pauseButton.classList.add("play");
+	
+		document.getElementById("pausedText").style.display = "block";
+document.getElementById("shopButton").disabled = true;
+	
+    // Disable user input and hide UI elements here
+    cancelAnimationFrame(animationId); // Stop the animation loop
+  }
+}
+pauseButton.addEventListener("click", () => {
+	pauseGame();
+});
+
+let animationId;
+
+//when user presses escape key pause the game
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+//if shop is open, return
+if (document.getElementById("shop").classList.contains("active") || document.getElementById("shop").classList.contains("active fading-in") || document.getElementById("shop").classList.contains("active fading-out")) return;
+      pauseGame();
+   
+  }
+});
+
+// Create bounding boxes for collision detection with padding
+const boundingBoxes = [];
+scene.traverse((node) => {
+  if (node.isMesh) {
+    const box = new THREE.Box3().setFromObject(node);
+    // Add padding to the box
+    const padding = new THREE.Vector3(0.32, 0.32, 0.32);
+    box.expandByVector(padding);
+    boundingBoxes.push(box);
+  }
+});
+
+// Detect collisions
+function detectCollisions() {
+  // Get origin point but take into account velocity
+  const originPoint = controls.getObject().position.clone();
+  for (let box of boundingBoxes) {
+    if (box.containsPoint(originPoint)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+//detect collison between bullets and walls
+function detectBulletCollisions() {
+  for (let bullet of bullets) {
+	const originPoint = bullet.position.clone();
+	for (let box of boundingBoxes) {
+	  if (box.containsPoint(originPoint)) {
+		return true;
+	  }
+	}
+  }
+  return false;
+}
+function detectEnemyBulletCollisions() {
+  for (let bullet of enemyBullets) {
+    // Origin point of enemy bullet
+    const originPoint = bullet.position.clone();
+    for (let box of boundingBoxes) {
+      if (box.containsPoint(originPoint)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+
+
+  
+
+  // Add an event listener to the checkbox to update spawnEnemies when its state changes
+  spawnEnemiesCheckbox.addEventListener("change", () => {
+    spawnEnemies = spawnEnemiesCheckbox.checked;
+	localStorage.setItem("spawnEnemies", spawnEnemiesCheckbox.checked);
+  });
+
+   function moveEnemies() {
+	
+  // enemies towards player
+  for (let enemy of enemies) {
+    //move in direction of player slowly 
+    enemy.position.lerp(controls.getObject().position, enemySpeed);
+
+  }
+}
+let enemyBullets = [];
+function enemyShooting() {
+	if(isPaused) return;
+
+  // Give each enemy 10% chance of shooting every second
+  for (let enemy of enemies) {
+    if (Math.random() < 0.1) {
+      const bullet = new THREE.Mesh(bulletGeometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+      // Set bullet velocity in direction of player
+      const playerPosition = controls.getObject().position.clone();
+      const enemyPosition = enemy.position.clone();
+      const direction = playerPosition.sub(enemyPosition).normalize();
+      bullet.position.copy(enemyPosition);
+      bullet.velocity = direction.multiplyScalar(0.1);
+      scene.add(bullet);
+      enemyBullets.push(bullet);
+    }
+  }
+}
+
+setInterval(() => {
+	enemyShooting();
+}, 500);
+
+let isReloading = false;
+
+function startRecoil() {
+  if (isPaused) return;
+  if(isReloading){
+	console.log("reloading");
+  }
+  // Set the recoil animation
+  let start = null;
+  const duration = 100; // Duration of the animation in milliseconds
+  const distance = 0.15; // Distance to move the gun in the z-axis
+  const animate = (timestamp) => {
+    if (!start) start = timestamp;
+    const elapsed = timestamp - start;
+    const progress = Math.min(elapsed / duration, 1);
+    gun.position.z = -distance * Math.sin(progress * Math.PI) -2;
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+  requestAnimationFrame(animate);
+}
+// Add bullets
+const bullets = [];
+const bulletGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+const bulletMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+let ammoCount = 10; // Set initial ammo count
+const ammoCountElement = document.getElementById('ammo-count-value'); // Get ammo count element
+ammoCountElement.textContent = `Ammo: ${ammoCount}`; // Update ammo count element
+
+let shootTimeout = null; // Initialize shoot timeout variable
+canvas = document.getElementById("canvas");
+// On mousedown, start shooting
+
+document.addEventListener('mousedown', () => {
+  if (isPaused) return;
+  if(!gameLoaded) return;
+  shootTimeout = setInterval(() => {
+    if (ammoCount > 0) { // Check if there is ammo left
+      const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
+      // Set bullet position to camera position
+      bullet.position.copy(camera.position);
+      // Add velocity to bullet
+      bullet.velocity = new THREE.Vector3();
+      // Set bullet velocity in direction of camera
+      camera.getWorldDirection(bullet.velocity);
+      bullet.velocity.multiplyScalar(0.1);
+		startRecoil(); // Start the recoil animation
+      if (!bullet.velocity || bullet.velocity.length() === 0) return; // Check if bullet velocity is zero
+
+      bullets.push(bullet);
+      scene.add(bullet);
+
+      ammoCount--; // Decrement ammo count
+      ammoCountElement.textContent = `Ammo: ${ammoCount}`; // Update ammo count element
+    }
+    if (ammoCount == 0) {
+      ammoCountElement.style.color = 'red'; // Update ammo count element
+    }
+  }, 150);
+});
+
+// On mouseup, stop shooting
+document.addEventListener('mouseup', () => {
+	if(isPaused) return;
+	if(!gameLoaded) return;
+  clearInterval(shootTimeout);
+});
+// On click, shoot with 150ms delay
+document.addEventListener('click', () => {
+	if(isPaused) return;
+	if(!gameLoaded) return;
+	if(isReloading) return;
+	startRecoil(); // Start the recoil animation
+
+  setTimeout(() => {
+    if (ammoCount > 0) { // Check if there is ammo left
+      const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
+      // Set bullet position to camera position
+      bullet.position.copy(camera.position);
+      // Add velocity to bullet
+      bullet.velocity = new THREE.Vector3();
+      // Set bullet velocity in direction of camera
+      camera.getWorldDirection(bullet.velocity);
+      bullet.velocity.multiplyScalar(0.2);
+
+      if (!bullet.velocity || bullet.velocity.length() === 0) return; // Check if bullet velocity is zero
+
+      bullets.push(bullet);
+      scene.add(bullet);
+
+      ammoCount--; // Decrement ammo count
+      ammoCountElement.textContent = `Ammo: ${ammoCount}`; // Update ammo count element
+    }
+    if (ammoCount == 0) {
+      ammoCountElement.style.color = 'red'; // Update ammo count element
+	  setTimeout(() => {
+		reloadWeapon();
+	  }, 500);
+    }
+  }, 150);
+});
+
+function reloadWeapon() {
+  if (isPaused) return;
+  if (ammoCount == 10) return; // Check if ammo count is already full
+
+
+  // Set reloading flag to true
+  isReloading = true;
+
+  // Reload animation
+  const reloadInterval = setInterval(() => {
+    if (gun.position.z < 2.5) {
+      gun.position.z += 0.1;
+    }
+  }, 10);
+
+  setTimeout(() => {
+    // Clear the reload interval
+    clearInterval(reloadInterval);
+
+    // Move the gun back to its original position
+    const moveBackInterval = setInterval(() => {
+      if (gun.position.z > -2) {
+        gun.position.z -= 0.1;
+      } else {
+        // Set reloading flag to false when the gun is back in its original position
+        isReloading = false;
+        clearInterval(moveBackInterval);
+
+        // Reset ammo count and update ammo count element
+        ammoCount = 10;
+        ammoCountElement.textContent = `Ammo: ${ammoCount}`;
+        ammoCountElement.style.color = 'white';
+      }
+    }, 10);
+  }, 800);
+
+  ammoCountElement.textContent = 'Reloading...'; // Update ammo count element
+  ammoCountElement.style.color = 'red'; // Update ammo count element
+  ammoCount = 0;
+
+  // Check if the gun is reloading every 100ms and stop the moveBackInterval if it's not
+  const checkReloadingInterval = setInterval(() => {
+    if (!isReloading) {
+      clearInterval(checkReloadingInterval);
+    }
+  }, 100);
+}
+// On key press, reload if 'r' is pressed
+document.addEventListener('keydown', (event) => {
+	if(isPaused) return;
+  if (event.key === 'r' || event.key === 'R') {
+	reloadWeapon();
+  }
+});
+
+
+const controls = new THREE.PointerLockControls(camera, document.body);
+
+
+const lockControls = () => {
+  controls.lock();
+};
+
+document.addEventListener("click", lockControls);
+
+scene.add(controls.getObject());
+
+
+
+
+
+
+
+	
+
+
+      // Set up the lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(1, 1, 0);
+      scene.add(directionalLight);
+
+      // Set up the raycaster for collision detection
+      const raycaster = new THREE.Raycaster();
+      const direction = new THREE.Vector3();
+
+    const keyboard = new Map();
+    let isJumping = false;
+let jumpVelocity = 0;
+const jumpSpeed = 0.2;
+const jumpHeight = 0.9;
+// Load the skybox texture
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('https://i.imgur.com/C2FAB2q.jpg');
+
+// Create the skybox geometry
+const skyboxGeometry = new THREE.SphereGeometry(1000, 32, 32);
+
+// Create the skybox material with the loaded texture
+const skyboxMaterial = new THREE.MeshStandardMaterial({ map: texture, side: THREE.BackSide });
+// Create the skybox mesh
+const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+skybox.position.set(0, 500, 0);
+// Add the skybox to the scene
+scene.add(skybox);
+// Define variables for movement
+// Define variables for movement and timer
+let velocity = new THREE.Vector3();
+let speed = 0.05;
+let lastShiftTime = 0;
+let shiftAvailable = true;
+var timeSinceLastShift;
+
+setInterval(() => {
+	//check bullets array
+	//if a bullet doesn't have a velocity, remove it from the scene
+	bullets.forEach((bullet) => {
+		if (!bullet.velocity || bullet.velocity.x === 0 && bullet.velocity.y === 0 && bullet.velocity.z === 0) {
+		    bullet.position.add(bullet.velocity);
+
+		}
+	  });
+}, 
+100);
+
+
+
+let fps = 0;
+      let frameCount = 0;
+      let lastTime = performance.now();
+      const fpsCounter = document.getElementById("fps-counter");
+	  function handleKeyDown(event) {
+  keyboard.set(event.key, true);
+  if (event.key === " ") {
+      if (!isJumping) {
+        isJumping = true;
+        jumpVelocity = jumpSpeed;
+      }
+    }
+}
+
+function handleKeyUp(event) {
+  keyboard.set(event.key, false);
+}
+document.addEventListener("keydown", handleKeyDown);
+document.addEventListener("keyup", handleKeyUp);
+// Set up the animation loop
+function animate() {
+	if(gameOver) return;
+	 // Update bullet positions
+	 bullets.forEach((bullet) => {
+  bullet.position.add(bullet.velocity);
+});
+ // Update bullet positions
+ bullets.forEach((bullet) => {
+  bullet.position.add(bullet.velocity);
+});
+
+        const currentTime = performance.now();
+        const elapsedTime = currentTime - lastTime;
+        frameCount++;
+        if (elapsedTime >= 1000) {
+          fps = frameCount / (elapsedTime / 1000);
+          frameCount = 0;
+          lastTime = currentTime;
+          fpsCounter.textContent = `FPS: ${Math.round(fps)}`;
+        }
+		
+		
+      
+
+animationId = requestAnimationFrame(animate);
+
+
+  
+
+	  
+    
+
+	  //enemy bullets 
+	  enemyBullets.forEach((enemyBullet) => {
+		enemyBullet.position.add(enemyBullet.velocity);
+	  });
+
+	  //if they can dash, update dash-progress
+	  if (timeSinceLastShift > 5000) {
+		document.getElementById("dash-progress-bar").style.color = "white"
+document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person-running"></i> Dash Ready';
+		//size 15px
+		document.getElementById("dash-progress-bar").style.fontSize = "25px";
+		document.getElementById("dash-progress-bar").style.textAlign = "center";
+
+	  } else {
+		document.getElementById("dash-progress-bar").innerHTML = "";
+	  }
+	
+
+  
+  const forward = new THREE.Vector3(
+    controls.getObject().matrix.elements[8],
+    0,
+    controls.getObject().matrix.elements[10]
+  );
+  const backward = forward.clone().negate();
+  const left = new THREE.Vector3(
+    controls.getObject().matrix.elements[0],
+    0,
+    controls.getObject().matrix.elements[2]
+  );
+  const right = left.clone().negate();
+  const velocity = new THREE.Vector3();
+
+
+
+ 
+// Check for shift key and timer
+if(!isPaused){
+   timeSinceLastShift = currentTime - lastShiftTime;
+}
+  if (keyboard.get("Shift") && shiftAvailable && timeSinceLastShift > 5000) {
+    speed = 0.18;
+	document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person-running"></i> Dashing';
+	document.getElementById("dash-progress-bar").style.color = "red";
+   setTimeout(() => {
+    shiftAvailable = false;
+	lastShiftTime = currentTime;
+
+    setTimeout(() => {
+      shiftAvailable = true;
+    }, 1500);
+    const intervalId = setInterval(() => {
+      const progress = (Date.now() - lastShiftTime) / 1500;
+      if (progress >= 1) {
+        clearInterval(intervalId);
+      }
+    }, 50);
+   }, 1500);
+  } else {
+    speed = 0.05;
+  }
+ 
+ // Move the user
+if (keyboard.get("w") || keyboard.get("W")) {
+  velocity.add(backward);
+}
+if (keyboard.get("s") || keyboard.get("S")) {
+  velocity.add(forward);
+}
+if (keyboard.get("a") || keyboard.get("A")) {
+  velocity.add(right);
+}
+if (keyboard.get("d") || keyboard.get("D")) {
+  velocity.add(left);
+}
+  if (isJumping) {
+    jumpVelocity -= 0.006;
+    controls.getObject().position.y += jumpVelocity /2;
+    if (controls.getObject().position.y < jumpHeight) {
+      controls.getObject().position.y = 1;
+      isJumping = false;
+      jumpVelocity = 0;
+    }
+  }
+
+  velocity.normalize();
+  velocity.multiplyScalar(speed);
+  controls.getObject().position.add(velocity);
+
+  // Check for collisions with the floor
+  raycaster.set(
+    controls.getObject().position,
+    new THREE.Vector3(0, -1, 0)
+  );
+  const intersects = raycaster.intersectObject(floor);
+  if (intersects.length > 0) {
+    const distance = intersects[0].distance;
+    if (distance < 1) {
+      controls.getObject().position.y += 1 - distance;
+      isJumping = false;
+      jumpVelocity = 0;
+    }
+  }
+ 
+
+  // Render the scene
+  renderer.render(scene, camera);
+
+  //stop player from moving through walls
+  if (detectCollisions()) {
+    controls.getObject().position.sub(velocity);
+
+  }
+ moveEnemies();
+
+//bullet collisions with enemies
+for (let i = 0; i < bullets.length; i++) {
+  const bullet = bullets[i];
+  for (let j = 0; j < enemies.length; j++) {
+    const enemy = enemies[j];
+    if (bullet.position.distanceTo(enemy.position) < 0.5) {
+      scene.remove(enemy);
+      enemies.splice(j, 1);
+      scene.remove(bullet);
+      bullets.splice(i, 1);
+      score++;
+      document.getElementById("score-value").innerHTML = "Score: " + score;
+      // Exit the inner loop to prevent checking for collisions with the removed enemy
+      break;
+    }
+  }
+}
+	  
+//collision detection for enemy bullets
+enemyBullets.forEach((enemyBullet) => {
+		if (enemyBullet.position.distanceTo(controls.getObject().position) < 0.5) {
+		  health -= 10;
+		  scene.remove(enemyBullet);
+		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
+		  document.getElementById("health-bar-number").innerHTML = "Health: " + health;
+		  document.getElementById("currentHealth").innerHTML = health;
+
+
+		}
+	  });
+
+      if (health < 0  && gameOver == false || health == 0 && gameOver == false) {
+  gameOver = true;
+  document.removeEventListener("click", lockControls);
+  document.getElementById("endGame").style.display = "block";
+  //hide the canvas
+  document.getElementById("canvas").style.display = "none";
+  //exit pointer lock
+  document.exitPointerLock();
+  //stop the animation
+  cancelAnimationFrame(animate);
+  //hide UI
+  document.getElementById("gameUI").style.display = "none";
+  document.getElementById("score-holder").innerHTML = score;
+  document.getElementById("difficultyEnd").innerHTML = '<i class="fa-solid fa-angles-up"></i> ' + "Difficulty: " + userDifficulty/2;
+  controls.unlock();
+  
+}
+
+updateHealth();
+updateProgressBar();
+
+//detect bullet collisions with walls
+bullets.forEach((bullet) => {
+		if (detectBulletCollisions(bullet)) {
+		  scene.remove(bullet);
+		  bullets.splice(bullets.indexOf(bullet), 1);
+		}
+	  });
+//detect enemy bullet collisions with walls
+enemyBullets.forEach((enemyBullet) => {
+		if (detectEnemyBulletCollisions(enemyBullet)) {
+		  scene.remove(enemyBullet);
+		  enemyBullets.splice(enemyBullets.indexOf(enemyBullet), 1);
+		}
+	  });
+
+
+}
+
+function updateHealth(){
+	if(gameOver) return;
+	//change health bar color based on health
+//health bar is a class called health section
+
+const healthBarValue = document.getElementById("health-bar-value");
+const healthSections = healthBarValue.querySelectorAll(".health-section");
+  const numSections = healthSections.length;
+  const sectionWidth = 100 / numSections;
+  const remainingSections = Math.floor((health / 100) * numSections);
+  for (let i = 0; i < numSections; i++) {
+    if (i < remainingSections) {
+      healthSections[i].style.width = sectionWidth + "%";
+    } else {
+      healthSections[i].style.width = "0";
+    }
+    //update the health bar value
+    document.getElementById("health-bar-number").innerHTML = '<i class="fa-solid fa-heart" style="color: #ffffff;"></i> ' + "Health: " + health;
+  }
+
+
+if (health > 80) {
+  for (let i = 0; i < healthSections.length; i++) {
+    healthSections[i].style.backgroundColor = "green";
+  }
+} else if (health > 60 && health <= 80) {
+  for (let i = 0; i < healthSections.length; i++) {
+    healthSections[i].style.backgroundColor = "greenyellow";
+  }
+} else if (health > 40 && health <= 60) {
+  for (let i = 0; i < healthSections.length; i++) {
+    healthSections[i].style.backgroundColor = "yellow";
+  }
+} else if (health > 20 && health <= 40) {
+  for (let i = 0; i < healthSections.length; i++) {
+    healthSections[i].style.backgroundColor = "orange";
+  }
+} else if (health >= 0 && health <= 20) {
+  for (let i = 0; i < healthSections.length; i++) {
+    healthSections[i].style.backgroundColor = "red";
+  }
+}
+}
+
+setInterval(() => {
+	if(!isPaused){
+  setTimeout(() => {
+      //enemy collision with player
+      for (let enemy of enemies) {
+        if (enemy.position.distanceTo(controls.getObject().position) < 0.5) {
+          health--;
+          updateHealth();
+
+        }
+      }
+    }, 50);
+}
+}, 50);
+
+
+setInterval(() => {
+  enemyNumber ++;
+}, 5000);
+
+
+
+
+function updateProgressBar() {
+  const progressBar = document.getElementById("dash-progress-bar");
+  const progress = timeSinceLastShift;
+  if (progress <= 0) {
+    progressBar.style.width = "0%";
+    progressBar.style.backgroundColor = "red";
+  } else if (progress < 1000) {
+    progressBar.style.width = "10%";
+    progressBar.style.backgroundColor = "limegreen";
+  } else {
+    const progressPercentage = Math.min(Math.floor((progress - 1000) / 500) * 10, 100) + 10;
+    progressBar.style.width = `${progressPercentage}% `;
+    progressBar.style.backgroundColor = "#4CAF50";
+  }
+  if (timeSinceLastShift > 5000) {
+    progressBar.style.width = `${100}%`;
+  }
+  progressBar.style.transition = "width 0.5s ease-in-out, background-color 0.5s ease-in-out";
+}
+
+if(!localStorage.getItem("tutorial")){
+	
+const popupText = document.getElementById("popup-text");
+const popupHolder = document.getElementById("popup-holder");
+if(score == 0){
+popupText.innerHTML = "Use WASD to move";
+popupHolder.style.display = "block";
+setTimeout(() => {
+	popupText.innerHTML = "Use the mouse to look around";
+}, 1500);
+setTimeout(() => {
+	popupText.innerHTML = "Click to shoot";
+}, 3000);
+setTimeout(() => {
+	popupText.innerHTML = "Press space to jump";
+}, 4500);
+setTimeout(() => {
+	popupText.innerHTML = "Press shift to dash";
+}, 6000);
+setTimeout(() => {
+	popupText.innerHTML = "Press R to reload";
+}, 7500);
+setTimeout(() => {
+	popupText.innerHTML = "Press escape to pause";
+}, 9000);
+setTimeout(() => {
+	popupText.innerHTML = "Good luck and get the highest score!";
+
+}, 10500);
+setTimeout(() => {
+	popupHolder.style.display = "none";
+	localStorage.setItem("tutorial", true);
+}, 13000);
+}
+}
+
+	
+let money = 0;
+setInterval(() => {
+  if (!isPaused) {
+	if(gameOver) return;
+	if(!gameLoaded) return;
+    money += 0.50;
+    document.getElementById("money-count").innerHTML = "Money: $" + money.toFixed(2);
+	document.getElementById("shopMoneyCount").innerHTML = "$" +money.toFixed(2);
+  }
+}, 500);
+
+//on window resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
+
+const shop = document.getElementById("shop");
+      const shopClose = document.getElementById("shop-close");
+      const weaponTab = document.getElementById("weapon-tab");
+      const playerTab = document.getElementById("player-tab");
+	  const powerupsTab = document.getElementById("powerups-tab");
+      const weaponUpgrades = document.getElementById("weapon-upgrades");
+      const playerUpgrades = document.getElementById("player-upgrades");
+	const shopManualButton = document.getElementById("shopButton");
+	const powerupsUpgrades = document.getElementById("powerups-upgrades");
+      function openShop() {
+        shop.classList.add("active");
+      }
+
+     function closeShop() {
+  if (!shop.classList.contains("fading-out")) {
+    shop.classList.add("fading-out");
+    setTimeout(() => {
+      shop.classList.remove("active");
+      shop.classList.remove("fading-out");
+	  document.getElementById("pause-button").disabled = false;
+
+    }, 1000);
+  }
+}
+
+function openShop() {
+  if (!shop.classList.contains("active") && !shop.classList.contains("fading-out")) {
+    shop.classList.add("active");
+    shop.classList.add("fading-in");
+	//disable manual pause button
+	document.getElementById("pause-button").disabled = true;
+	
+    setTimeout(() => {
+      shop.classList.remove("fading-in");
+	  
+    }, 1000);
+  }
+}
+
+function switchTab(tab) {
+  if (tab === "weapon") {
+    weaponTab.classList.add("active");
+    playerTab.classList.remove("active");
+	powerupsTab.classList.remove("active");
+    weaponUpgrades.style.display = "block";
+    playerUpgrades.style.display = "none";
+    weaponUpgrades.style.animation = "fade-in 1s ease-in-out";
+    playerUpgrades.style.animation = "none";
+	powerupsUpgrades.style.display = "none";
+  } else if (tab === "player") {
+    weaponTab.classList.remove("active");
+    playerTab.classList.add("active");
+	powerupsTab.classList.remove("active");
+    weaponUpgrades.style.display = "none";
+    playerUpgrades.style.display = "block";
+    playerUpgrades.style.animation = "fade-in 1s ease-in-out";
+    weaponUpgrades.style.animation = "none";
+	powerupsUpgrades.style.display = "none";
+  }
+  else if (tab === "powerups"){
+	  weaponTab.classList.remove("active");
+	playerTab.classList.remove("active");
+	powerupsTab.classList.add("active");
+	powerupsUpgrades.style.animation = "fade-in 1s ease-in-out";
+	powerupsUpgrades.style.display = "block";
+	weaponUpgrades.style.display = "none";
+	playerUpgrades.style.display = "none";
+	playerUpgrades.style.animation = "none";
+	weaponUpgrades.style.animation = "none";
+
+  }
+}
+
+shopClose.addEventListener("click", () => {
+  closeShop();
+  pauseGame();
+  
+ 
+
+  
+  document.addEventListener("click", lockControls);
+});
+if (coolPineapplePizza == true) {
+  let shopOpen = false;
+  let intervalId = null;
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "b" || event.key === "B") {
+		if(gameOver) return;
+      if (shop.classList.contains("active")) {
+        if (!shopOpen) {
+          shopOpen = true;
+          pauseGame();
+		  document.addEventListener("click", lockControls);
+          document.exitPointerLock();
+        } else {
+          shopOpen = false;
+        }
+        closeShop();
+      } else {
+        openShop();
+        pauseGame();
+        document.removeEventListener("click", lockControls);
+        document.exitPointerLock();
+      }
+    }
+  });
+
+  intervalId = setInterval(() => {
+    if (!shop.classList.contains("active")) {
+      shopOpen = false;
+    }
+  }, 250);
+}
+      weaponTab.addEventListener("click", () => {
+        switchTab("weapon");
+      });
+      playerTab.addEventListener("click", () => {
+        switchTab("player");
+      });
+	  powerupsTab.addEventListener("click", () => {
+		  switchTab("powerups");
+	  });
+	  
+	  shopManualButton.addEventListener("click", () => {
+		  if (shop.classList.contains("active")) {
+			closeShop();
+			pauseGame();
+			document.addEventListener("click", lockControls);
+			//unfocus element
+			shopManualButton.blur();
+		  } else {
+			openShop();
+			pauseGame();
+			document.removeEventListener("click", lockControls);
+document.exitPointerLock();
+		  } 
+		});
+     if(gameOver){
+		document.getElementById("fps-counter").style.display = "none";
+	 }
+
+inventorySlot1 = document.getElementById("inventory-slot-1");
+inventorySlot2 = document.getElementById("inventory-slot-2");
+inventorySlot3 = document.getElementById("inventory-slot-3");
+inventorySlot4 = document.getElementById("inventory-slot-4");
+inventorySlot5 = document.getElementById("inventory-slot-5");
+
+//if player presses 1, console log "1"
+document.addEventListener("keydown", (event) => {
+	if(isPaused) return;
+	if(!gameLoaded) return;
+	if(gameOver) return;
+	  if (event.key === "1") {
+		inventorySlot1.classList.add("inventoryActive");
+	  setTimeout(() => {
+		inventorySlot1.classList.remove("inventoryActive");
+	  }, 250);
+	}
+	  if (event.key === "2") {
+		inventorySlot2.classList.add("inventoryActive");
+		setTimeout(() => {
+		  inventorySlot2.classList.remove("inventoryActive");
+		}, 250);
+	  }
+	  if (event.key === "3") {
+		inventorySlot3.classList.add("inventoryActive");
+		setTimeout(() => {
+		  inventorySlot3.classList.remove("inventoryActive");
+		}, 250);
+	  }
+	  if (event.key === "4") {
+		inventorySlot4.classList.add("inventoryActive");
+		setTimeout(() => {
+		  inventorySlot4.classList.remove("inventoryActive");
+		}, 250);
+	  }
+	  if (event.key === "5") {
+		inventorySlot5.classList.add("inventoryActive");
+		setTimeout(() => {
+		  inventorySlot5.classList.remove("inventoryActive");
+		}, 250);
+	  }
+
+
+	});
+
+	const wKey = document.getElementById('w-key');
+const aKey = document.getElementById('a-key');
+const sKey = document.getElementById('s-key');
+const dKey = document.getElementById('d-key');
+
+document.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'w':
+      wKey.classList.add('active');
+      break;
+    case 'a':
+      aKey.classList.add('active');
+      break;
+    case 's':
+      sKey.classList.add('active');
+      break;
+    case 'd':
+      dKey.classList.add('active');
+      break;
+  }
+});
+
+document.addEventListener('keyup', (event) => {
+	
+  switch (event.key) {
+    case 'w':
+      wKey.classList.remove('active');
+      break;
+    case 'a':
+      aKey.classList.remove('active');
+      break;
+    case 's':
+      sKey.classList.remove('active');
+      break;
+    case 'd':
+      dKey.classList.remove('active');
+      break;
+  }
+});
+
+
+      }
+    </script>
+  </body>
+</html>
