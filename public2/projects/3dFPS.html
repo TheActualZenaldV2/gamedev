@@ -19,7 +19,7 @@
       <h1><i class="fa-solid fa-screwdriver-wrench"></i> Options</h1> <HR>
       <button id="uiBtn" onclick="toggleUI()" style="background-color: aquamarine;"> <i class="fa-solid fa-cookie-bite"></i> <span id="ui"> UI Enabled </span></button> <br> <br>
 <label> <input type="checkbox" id="spawn-enemies" checked> <i class="fa-solid fa-biohazard"></i> Spawn Enemies</label> <br> 
-<label> <input type="checkbox" id="antialias"> Anti-Aliasing</label><br><br>
+<label> <input type="checkbox" id="antialias"> <i class="fa-solid fa-camera-retro"></i> Anti-Aliasing</label><br><br>
       <label id="fov" for="fov-slider"><i class="fa-solid fa-magnifying-glass"></i> <span id="fovValue">  FOV: 90</label>
   <input type="range" id="fov-slider" min="30" max="150" value="90" onchange="updateFOV(this.value);"> <br> <br>
   <label id="difficulty" for="difficulty-slider"><i class="fa-solid fa-angles-up"></i> <span id="difficultyValue"> Difficulty: 2.5</label>
@@ -69,6 +69,14 @@
 <!-- Game Overlays below-->
 
 <div id="gameUI" style="display: none;">
+	<div id="inventory-container">
+		<div id="inventory-slot-0" class="inventory-slot"> Demo Only</div>
+		<div id="inventory-slot-1" class="inventory-slot"> 1...<i class="fa-solid fa-bomb"></i></div>
+		<div id="inventory-slot-2" class="inventory-slot"> 2...<i class="fa-solid fa-child-combatant"></i></div>
+		<div id="inventory-slot-3" class="inventory-slot">3... <i class="fa-solid fa-fire"></i></div>
+		<div id="inventory-slot-4" class="inventory-slot">4... <i class="fa-solid fa-user-secret"></i></div>
+		<div id="inventory-slot-5" class="inventory-slot">5... <i class="fa-sharp fa-solid fa-shield"></i></div>
+	</div>
 	<div id="fps-counter"></div>
 	<div id="popup-holder" style="display: none;"> <h2 id="popup-text"> </h2></div>
 
@@ -809,7 +817,34 @@ background-color: #555;
   opacity: 0;
   animation:  fade-out 1s forwards;
 }
+#inventory-container {
+  position: fixed;
+  bottom: 140px;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  z-index: 9999;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.59);
+  border-radius: 10px;
+}
 
+.inventory-slot {
+  width: 75px;
+  height: 75px;
+  background-color: rgba(255, 255, 255, 0.216);
+  border: 3px solid rgba(182, 182, 182, 0.774);
+  border-radius: 10px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  z-index: 9999;
+}
 /* Animations */
 
 @keyframes fade-in {
