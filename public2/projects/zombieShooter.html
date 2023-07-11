@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -72,6 +73,7 @@
 		<li> Added Recoil to camera+weapon</li>
 		<li> Reload animation</li>
 		<li> Bug Fixes</li>
+		<li> Fixed the biggest piece of <br>shit fucking bug related to movement</li>
 		</div> <br>
 		
 		<button onclick="closeDemo();">Close <i class="fa-solid fa-angles-right"></i></button>
@@ -3124,7 +3126,6 @@ scene.add(controls.getObject());
       const raycaster = new THREE.Raycaster();
       const direction = new THREE.Vector3();
 
-    const keyboard = new Map();
     let isJumping = false;
 let jumpVelocity = 0;
 const jumpSpeed = 0.2;
@@ -3169,19 +3170,25 @@ let fps = 0;
       let frameCount = 0;
       let lastTime = performance.now();
       const fpsCounter = document.getElementById("fps-counter");
-	  function handleKeyDown(event) {
-  keyboard.set(event.key, true);
-  if (event.key === " ") {
-      if (!isJumping) {
-        isJumping = true;
-        jumpVelocity = jumpSpeed;
-      }
+	  const keyboard = {};
+
+function handleKeyDown(event) {
+  const key = event.key.toLowerCase();
+  keyboard[key] = true;
+
+  if (key === " ") {
+    if (!isJumping) {
+      isJumping = true;
+      jumpVelocity = jumpSpeed;
     }
+  }
 }
 
 function handleKeyUp(event) {
-  keyboard.set(event.key, false);
+  const key = event.key.toLowerCase();
+  keyboard[key] = false;
 }
+
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
 // Set up the animation loop
@@ -3257,7 +3264,7 @@ document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person
 if(!isPaused){
    timeSinceLastShift = currentTime - lastShiftTime;
 }
-  if (keyboard.get("Shift") && shiftAvailable && timeSinceLastShift > 5000) {
+  if (keyboard["shift"] && shiftAvailable && timeSinceLastShift > 5000) {
     speed = 0.18;
 	document.getElementById("dash-progress-bar").innerHTML = '<i class="fa fa-person-running"></i> Dashing';
 	document.getElementById("dash-progress-bar").style.color = "red";
@@ -3278,20 +3285,19 @@ if(!isPaused){
   } else {
     speed = 0.05;
   }
- 
- // Move the user
-if (keyboard.get("w") || keyboard.get("W")) {
-  velocity.add(backward);
-}
-if (keyboard.get("s") || keyboard.get("S")) {
-  velocity.add(forward);
-}
-if (keyboard.get("a") || keyboard.get("A")) {
-  velocity.add(right);
-}
-if (keyboard.get("d") || keyboard.get("D")) {
-  velocity.add(left);
-}
+  // Move the user
+  if (keyboard["w"]) {
+    velocity.add(backward);
+  }
+  if (keyboard["s"]) {
+    velocity.add(forward);
+  }
+  if (keyboard["a"]) {
+    velocity.add(right);
+  }
+  if (keyboard["d"]) {
+    velocity.add(left);
+  }
   if (isJumping) {
     jumpVelocity -= 0.006;
     controls.getObject().position.y += jumpVelocity /2;
@@ -3696,7 +3702,6 @@ inventorySlot5 = document.getElementById("inventory-slot-5");
 //if player presses 1, console log "1"
 document.addEventListener("keydown", (event) => {
 	if(isPaused) return;
-	if(!gameLoaded) return;
 	if(gameOver) return;
 	  if (event.key === "1") {
 		inventorySlot1.classList.add("inventoryActive");
@@ -3736,9 +3741,8 @@ document.addEventListener("keydown", (event) => {
 const aKey = document.getElementById('a-key');
 const sKey = document.getElementById('s-key');
 const dKey = document.getElementById('d-key');
-
 document.addEventListener('keydown', (event) => {
-  switch (event.key) {
+  switch (event.key.toLowerCase()) {
     case 'w':
       wKey.classList.add('active');
       break;
@@ -3755,8 +3759,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-	
-  switch (event.key) {
+  switch (event.key.toLowerCase()) {
     case 'w':
       wKey.classList.remove('active');
       break;
