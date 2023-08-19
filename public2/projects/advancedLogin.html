@@ -6,6 +6,9 @@
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-storage.js"></script>
 <script src="https://kit.fontawesome.com/5e0a1eec4b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
@@ -69,23 +72,23 @@
 
 <form id="login-form">
     <p style="text-align: center"> Welcome back! Login to continue. </p>
-    <label for="email-input-login">Email:</label>
-    <input type="email" id="email-input-login" name="email" required>
+    <label for="email-input-login" class="form-label">Email:</label>
+    <input type="email" id="email-input-login" name="email" class="form-control" required>
   
-    <label for="password-input-login">Password:</label>
-    <input type="password" id="password-input-login" name="password" minlength="6" required>
-    <label for="remember-me"> Remember Me  <input type="checkbox" id="remember-me" name="remember-me" value="remember-me"> </label>
+    <label for="password-input-login" class="form-label"> Password:</label>
+    <input type="password" id="password-input-login" name="password" minlength="6" class="form-control" required>
+    <label for="remember-me"> Remember Me  <input type="checkbox" id="remember-me"  name="remember-me" value="remember-me"> </label>
     <p> Forgot your password? Click <a href="#" onclick="showResetPassword()">here</a> to reset it. </p>
     <p> Don't have an account? Click <a href="#" onclick="showRegistrationForm()">here</a> to register. </p> 
 
 
     
-    <button type="submit">Log In</button>
+    <button type="submit" class="btn-primary">Log In</button>
 </form>
 
 
-<form id="login-success">
-    <p>  Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> </p>
+<form id="login-success" class="hide fade">
+    <p class="bold">  Welcome, <span id="username-from-database" style="font-weight: bold;"></span> <br> </p>
   <br> 
   <img id="profile-picture-from-database" src="" alt="Profile Picture">
   <br> 
@@ -98,11 +101,10 @@
 
     
     
-    <button  class="logoutButton" title="Log Out" onclick="logout()"> <i class="fa-solid fa-circle-xmark" style="font-size: 3rem;"></i> </button>
-    <button id="setUp-profile" class="logoutButton fixAccountProblems" onclick="{event.preventDefault(); document.getElementById('fixUsername').disabled = true}"
-title="Fix Account Problems"   onclick="{event.preventDefault()}" disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
-    <button id="edit-profile" onclick="{event.preventDefault()}" class="logoutButton" title="Change Account Details"> <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
-    <button id="continue-profile" onclick="continueProfile()" class="logoutButton" title="Continue"><i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i></button>
+    <button  class="logoutButton" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip fade" data-bs-title="Logout" onclick="logout()"> <i class="fa-solid fa-circle-xmark" style="font-size: 3rem;"></i> </button>
+    <button id="setUp-profile" class="logoutButton fixAccountProblems" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip fade" data-bs-title="Fix Account Problems" onclick="{event.preventDefault(); document.getElementById('fixUsername').disabled = true}"  onclick="{event.preventDefault()}" disabled> <i class="fa-solid fa-circle-minus" style="color: #e6c221;font-size: 3rem;"></i> </button>
+    <button id="edit-profile" onclick="{event.preventDefault()}" class="logoutButton" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip fade" data-bs-title="Change Account Details" > <i class="fa-solid fa-user-pen" style="color: #db33b7; font-size: 3rem;"></i> </button>
+    <button id="continue-profile" onclick="continueProfile()" class="logoutButton" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip fade" data-bs-title="Continue To Website" ><i class="fas fa-check-circle checkmark-icon" style="color: green; font-size: 3rem;"></i></button>
 
 
     
@@ -170,6 +172,9 @@ title="Fix Account Problems"   onclick="{event.preventDefault()}" disabled> <i c
 
 
 <script> 
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
 const firebaseConfig = {
   apiKey: "AIzaSyCqB4uXUadpU3A2_xoqxEbf2E6XotmZVN0",
   authDomain: "fortnitelovers.firebaseapp.com",
@@ -383,6 +388,7 @@ registrationForm1.addEventListener('submit', (event) => {
         //the user has logged in successfully, redirect to the home page of website...
         //currently auto directing to google.com with 1.5s delay
         document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").classList.add("show");
         document.getElementById("login-success").style.display = "block";
         document.getElementById("loading").style.display = "none";
         document.getElementById("loading-text").style.display = "none";
@@ -390,6 +396,7 @@ registrationForm1.addEventListener('submit', (event) => {
 
     function showLoginSuccess() {
         document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-success").classList.add("show");
         document.getElementById("login-success").style.display = "block";
         document.getElementById("loading").style.display = "none";
         document.getElementById("loading-text").style.display = "none";
@@ -965,7 +972,22 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
 
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+    :root {
+  --bs-pink: #d63384;
+  --bs-pink-100: #f7d9e3;
+  --bs-pink-200: #f0b3c8;
+  --bs-pink-300: #e98daa;
+  --bs-pink-400: #e2668d;
+  --bs-pink-500: var(--bs-pink);
+  --bs-pink-600: #b22a63;
+  --bs-pink-700: #8c224f;
+  --bs-pink-800: #661a3b;
+  --bs-pink-900: #3f1127;
+}
+
+
 
    #databaseErrorUsername, #databaseErrorProfilePicture{
     display: none;
@@ -1278,6 +1300,22 @@ databaseErrorProfilePicture.addEventListener('submit', (event) => {
         
     }
 
+    .custom-tooltip {
+  --bs-tooltip-bg: var(--bs-pink-600);
+  --bs-tooltip-color: var(--bs-pink-100);
+  box-shadow: 0 0 1rem var(--bs-pink-600);
+}
+
+/* Example usage */
+.btn-primary {
+  background-color: var(--bs-pink);
+  border-color: var(--bs-pink);
+}
+
+.btn-primary:hover {
+  background-color: var(--bs-pink-600);
+  border-color: var(--bs-pink-600);
+}
     
 </style>
 </body>
